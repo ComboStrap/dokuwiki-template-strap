@@ -2,10 +2,15 @@
 /**
  * DokuWiki Image Detail Page
  *
- * @author   Andreas Gohr <andi@splitbrain.org>
- * @author   Anika Henke <anika@selfthinker.org>
- * @license  GPL 2 (http://www.gnu.org/licenses/gpl.html)
  */
+
+//Library of template function
+require_once('tpl_lib_strap.php');
+global $lang;
+
+// Fot the header
+global $EVENT_HANDLER;
+$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();
@@ -24,13 +29,13 @@ header('X-UA-Compatible: IE=edge,chrome=1');
         })(document.documentElement)</script>
     <?php tpl_metaheaders() ?>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <?php echo tpl_favicon(array('favicon', 'mobile')) ?>
+    <?php echo tpl_strap_favicon() ?>
     <?php tpl_includeFile('meta.html') ?>
 
 
 </head>
 
-<body>
+<body style="padding-top: 6rem">
 <!--[if lte IE 7 ]>
 <div id="IE7"><![endif]--><!--[if IE 8 ]>
 <div id="IE8"><![endif]-->
@@ -92,16 +97,22 @@ header('X-UA-Compatible: IE=edge,chrome=1');
             </div>
         </div>
         <?php include('tpl_footer.php') ?>
+        <!-- The stylesheet (before indexer work and script at the end) -->
+        <?php
+        global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
+
+        foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
+            $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
+            if ($link['crossorigin'] != "") {
+                $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
+            }
+            // No integrity here
+            $htmlLink .= '>';
+            ptln($htmlLink);
+        }
+        ?>
     </div>
 </div><!-- /site -->
 
-<!--[if ( lte IE 7 | IE 8 ) ]></div><![endif]-->
-<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
-        integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
-        crossorigin="anonymous"></script>
-</body>
+
 </html>
