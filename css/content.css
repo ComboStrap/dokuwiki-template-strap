@@ -1,0 +1,30 @@
+/**
+ * The CSS of the content
+ */
+
+/* No float when the media query is too small */
+@media (min-width: 0px) and (max-width: 576px) {
+
+    .mediaright {
+        float: none;
+    }
+
+    .medialeft {
+        float: none;
+    }
+
+}
+
+/* The edit button */
+div.secedit button {
+    float: right;
+    font-size: 10px;
+}
+
+
+/* To resolve the overlapping of right element on the left picture */
+/* See http://stackoverflow.com/questions/710158/why-do-my-list-item-bullets-overlap-floating-elements */
+/* Conflict with the header menu, then only for the content inside the dokuwiki class */
+.dokuwiki ul {
+    overflow: hidden;
+}

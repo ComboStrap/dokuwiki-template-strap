@@ -1,0 +1,7 @@
+base     strap
+author   Nicolas Gerard
+email    gerardnico@gmail.com
+date     2019-06-14
+name     Strap
+desc     A Bootstrap based template - a component of the combostrap bundle.
+url      https://combostrap.com/strap
