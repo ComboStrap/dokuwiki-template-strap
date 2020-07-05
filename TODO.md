@@ -4,9 +4,10 @@
 
 ## Style property
 
+## Fix bar
   * Create a parameter for the body property: padding-top
 to be able to change the top fix bar (in [main](/main.php) and [detail](/detail.php))
-
+  * The header in the component (card ... needs to delete the padding top ...)
 
 ## Icon
 
