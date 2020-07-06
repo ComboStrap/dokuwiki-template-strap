@@ -12,4 +12,6 @@ $lang['header'] = 'The name of the header page to search';
 $lang['sidekickbar'] = 'The name of the right sidebar page to search';
 $lang['cdn'] = 'Use a CDN for Javascript';
 
+$lang['rem'] = '<a href="https://combostrap.com/length/scale">Length Scale</a> - This configuration define in pixels the value of 1 rem';
+
 ?>

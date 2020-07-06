@@ -28,5 +28,6 @@ $meta['cdn'] = array('onoff');
 // Do we print debug statement
 $meta['debug'] = array('onoff');
 
+$meta['rem'] = array('string');
 
 ?>

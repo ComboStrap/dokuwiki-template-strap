@@ -32,10 +32,11 @@ if ($ID == "start") {
 }
 ?>
 
-<!DOCTYPE html>
+<!DOCTYPE html >
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
-      dir="<?php echo $lang['direction'] ?>">
+      dir="<?php echo $lang['direction'] ?>"
+      style="font-size:<?php echo tpl_getConf("rem") ?>">
 <head>
 
     <?php tpl_metaheaders() ?>
@@ -53,7 +54,7 @@ if ($ID == "start") {
 
 
 </head>
-<body role="document" style="padding-top: 6rem">
+<body role="document" style="padding-top: 6rem;">
 
 
 <?php

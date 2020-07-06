@@ -12,5 +12,6 @@ $conf['cdn'] = false;
 // Print Debug statement
 $conf['debug'] = false;
 
+$conf['rem']= "16";
 
 ?>
