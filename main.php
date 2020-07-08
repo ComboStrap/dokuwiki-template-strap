@@ -21,14 +21,23 @@ $showRightSidebar = $hasRightSidebar && ($ACT == 'show');
 global $EVENT_HANDLER;
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
 
-// There is no header in the Home page
-if ($ID == "start") {
-    $pageTitle = $conf['title'];
-    if ($conf['tagline']) {
-        $pageTitle .= ' - '.$conf['tagline'];
-    }
+$title = p_get_metadata($ID, "title");
+if ($title !=""){
+
+    $pageTitle = $title;
+
 } else {
-    $pageTitle = tpl_pagetitle($ID, true);
+
+    // Home page
+    if ($ID == "start") {
+        $pageTitle = $conf['title'];
+        if ($conf['tagline']) {
+            $pageTitle .= ' - ' . $conf['tagline'];
+        }
+    } else {
+        $pageTitle = tpl_pagetitle($ID, true) . strip_tags($conf['title']);
+    }
+
 }
 ?>
 
