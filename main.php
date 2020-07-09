@@ -204,12 +204,4 @@ foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
 <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
 
 
-<!-- A trigger to add resources at the end -->
-<?php
-$data = "";// Mandatory
-trigger_event('TPL_DOCUMENT_CLOSING', $data);
-tpl_flush();
-?>
-
-
 </html>
