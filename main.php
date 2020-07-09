@@ -35,7 +35,7 @@ if ($title !=""){
             $pageTitle .= ' - ' . $conf['tagline'];
         }
     } else {
-        $pageTitle = tpl_pagetitle($ID, true) . strip_tags($conf['title']);
+        $pageTitle = tpl_pagetitle($ID, true) . $conf['title'];
     }
 
 }
@@ -52,7 +52,7 @@ if ($title !=""){
 
     <meta charset="utf-8"/>
 
-    <!-- Be sure to have only htts call -->
+    <!-- Be sure to have only https call -->
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
     <title><?php echo strip_tags($pageTitle) ?></title>
