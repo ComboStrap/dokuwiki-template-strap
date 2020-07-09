@@ -2,6 +2,8 @@
 
 
 //Library of template function
+use ComboStrap\TestUtility;
+
 require_once('tpl_lib_strap.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
@@ -21,8 +23,12 @@ $showRightSidebar = $hasRightSidebar && ($ACT == 'show');
 global $EVENT_HANDLER;
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
 
-$title = p_get_metadata($ID, "title");
-if ($title !=""){
+if (defined('DOKU_UNITTEST')) {
+    $title = TestUtility::getMeta($ID, "title");
+} else {
+    $title = p_get_metadata($ID, "title");
+}
+if ($title != ""){
 
     $pageTitle = $title;
 
@@ -35,7 +41,7 @@ if ($title !=""){
             $pageTitle .= ' - ' . $conf['tagline'];
         }
     } else {
-        $pageTitle = tpl_pagetitle($ID, true) . $conf['title'];
+        $pageTitle = tpl_pagetitle($ID, true) . ' ['. $conf['title']. ']';
     }
 
 }
