@@ -8,7 +8,7 @@ if (!defined('DOKU_INC')) die();
 ?>
 
 <!-- ********** FOOTER is a nav bar class********** -->
-<footer id="dokuwiki__footer" class="container bg-light">
+<footer id="dokuwiki__footer">
 
 
     <?php
@@ -23,7 +23,7 @@ if (!defined('DOKU_INC')) die();
 
     echo '<div class="row p-3 justify-content-center">';
     echo '    <div class="col-16 text-center">';
-    echo '  Powered by the <a href="https://combostrap.com/strap" title="Bootstrap Template">Strap Template</a>';
+    echo '  Powered by the <a href="https://combostrap.com/strap" title="Strap Template">Strap Template</a>';
     echo '    </div>';
     echo '</div>';
     ?>
