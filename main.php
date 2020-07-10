@@ -47,7 +47,7 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_stra
 
 
 </head>
-<body role="document" style="padding-top: 6rem;">
+<body role="document" class="dokuwiki" style="padding-top: 6rem;">
 
 
 <?php
