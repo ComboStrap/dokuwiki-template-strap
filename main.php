@@ -2,7 +2,6 @@
 
 
 //Library of template function
-use ComboStrap\TestUtility;
 
 require_once('tpl_lib_strap.php');
 
@@ -23,28 +22,7 @@ $showRightSidebar = $hasRightSidebar && ($ACT == 'show');
 global $EVENT_HANDLER;
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
 
-if (defined('DOKU_UNITTEST')) {
-    $title = TestUtility::getMeta($ID, "title");
-} else {
-    $title = p_get_metadata($ID, "title");
-}
-if ($title != ""){
 
-    $pageTitle = $title;
-
-} else {
-
-    // Home page
-    if ($ID == "start") {
-        $pageTitle = $conf['title'];
-        if ($conf['tagline']) {
-            $pageTitle .= ' - ' . $conf['tagline'];
-        }
-    } else {
-        $pageTitle = tpl_pagetitle($ID, true) . ' ['. $conf['title']. ']';
-    }
-
-}
 ?>
 
 <!DOCTYPE html >
@@ -61,7 +39,7 @@ if ($title != ""){
     <!-- Be sure to have only https call -->
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
-    <title><?php echo strip_tags($pageTitle) ?></title>
+    <?php echo tpl_strap_title() ?>
 
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
 

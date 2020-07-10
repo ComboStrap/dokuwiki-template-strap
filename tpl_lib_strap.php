@@ -4,6 +4,8 @@
  */
 
 // must be run from within DokuWiki
+use dokuwiki\Extension\Event;
+
 const BOOTIE = 'strap';
 if (!defined('DOKU_INC')) die();
 
@@ -467,5 +469,27 @@ function tpl_strap_favicon()
 
     return $return;
 
+}
+
+function tpl_strap_title()
+{
+
+    global $conf;
+    global $ID;
+    $title = tpl_pagetitle($ID, true) . ' ['. $conf["title"]. ']';
+    // trigger event here
+    Event::createAndTrigger('TPL_TITLE_OUTPUT', $title, '_tpl_strap_title_print', true);
+    return true;
+
+}
+
+/**
+ * Print the title that we get back from the event TPL_TITLE_OUTPUT
+ * triggered by the function {@link tpl_strap_title()}
+ * @param $title
+ */
+function _tpl_strap_title_print($title)
+{
+    echo "<title>$title</title>";
 }
 
