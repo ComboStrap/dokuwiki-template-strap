@@ -471,7 +471,7 @@ function tpl_strap_favicon()
 
 }
 
-function tpl_strap_title()
+function tpl_strap_title_print()
 {
 
     global $conf;

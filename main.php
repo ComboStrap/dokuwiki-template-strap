@@ -39,7 +39,7 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_stra
     <!-- Be sure to have only https call -->
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
-    <?php echo tpl_strap_title() ?>
+    <?php tpl_strap_title_print() ?>
 
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
