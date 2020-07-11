@@ -271,73 +271,149 @@ function tpl_get_default_headers()
 {
 
     // The version
-    $bootStrapRelease = '4.4.1';
+    $bootstrapVersion = tpl_getConf('bootstrapVersion');
+    $scriptsMeta = getScripts($bootstrapVersion);
 
-    // JsScript (The data)
-    $jsScripts = array();
-    $localBaseJs = DOKU_BASE . 'lib/tpl/strap/js/' . $bootStrapRelease;
-    // jquery must not be slim because the post is needed for qsearch
-    $jsScripts['jquery'] = array(
-        'version' => '3.4.1',
-        'src_cdn' => 'https://code.jquery.com/jquery-3.4.1.min.js',
-        'src_local' => $localBaseJs . '/jquery-3.4.1.min.js',
-        'integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=',
-        'crossorigin' => "anonymous",
-        'defer' => "true"
-    );
-    $jsScripts['popper'] = array(
-        'version' => '1.16.0',
-        'src_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
-        'src_local' => $localBaseJs . '/popper.min.js',
-        'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
-        'crossorigin' => "anonymous",
-        'defer' => "true"
-    );
-    $jsScripts['bootstrap'] = array(
-        'version' => $bootStrapRelease,
-        'src_local' => $localBaseJs . '/bootstrap-' . $bootStrapRelease . '.min.js',
-        'src_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/' . $bootStrapRelease . '/js/bootstrap.min.js',
-        'integrity' => "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
-        'crossorigin' => "anonymous",
-        'defer' => "true"
-    );
-
-    // Build the returned Js script array
-    $returnJsScripts = array();
     // if cdn
     $useCdn = tpl_getConf('cdn');
-    $srcKey = 'src_local';
+    $urlKey = 'url_cdn';
     if (!$useCdn) {
-        $srcKey = 'src_cdn';
-    }
-    foreach ($jsScripts as $key => $jsScript) {
-        $returnJsScripts[$key] =
-            array(
-                'src' => $jsScript[$srcKey],
-                'integrity' => $jsScript['integrity'],
-                'crossorigin' => $jsScript['crossorigin'],
-                'defer' => $jsScript['defer']
-            );
+        $urlKey = 'url_local';
     }
 
+    // Build the returned Js script array
+    $jsScripts = array();
+    foreach ($scriptsMeta as $key => $script) {
+        if ($script['type']==="js") {
+            $jsScripts[$key] =
+                array(
+                    'src' => $script[$urlKey],
+                    'integrity' => $script['integrity'],
+                    'crossorigin' => $script['crossorigin'],
+                    'defer' => $script['defer']
+                );
+        }
+    }
 
-    $localBaseCss = DOKU_BASE . 'lib/tpl/strap/css/' . $bootStrapRelease;
-    $css['bootstrap'] = array(
-        'href' => $localBaseCss . '/bootstrap.min.css',
-        // 'integrity' => "sha256-EhkD779PJdtNFoMXFC8xiMD2q5Sirmh0RqqnW5G0Vtg=",
-        'crossorigin' => "anonymous",
-        'rel' => "stylesheet",
-    );
+    $css = array();
+    foreach ($scriptsMeta as $key => $script) {
+        if ($script['type']==="css") {
+            $css[$key] =
+                array(
+                    'href' => $script[$urlKey],
+                    'integrity' => $script['integrity'],
+                    'crossorigin' => $script['crossorigin'],
+                    'rel' => "stylesheet"
+                );
+        }
+    }
 
 
     return array(
-        'script' => $returnJsScripts,
+        'script' => $jsScripts,
         'link' => $css
     );
 
 
 }
 
+/**
+ * @param $version
+ * @return array
+ *
+ * jquery must not be slim because the post is needed for qsearch
+ */
+function getScripts($version){
+
+    $localBaseJs = DOKU_BASE . 'lib/tpl/strap/js/' . $version;
+    $localBaseCss = DOKU_BASE . 'lib/tpl/strap/css/' . $version;
+
+    $scripts = array();
+    if ($version == '4.4.1') {
+        $scripts['jquery'] = array(
+            'name' => 'jquery',
+            'type' => 'js',
+            'version' => '3.4.1',
+            'url_cdn' => 'https://code.jquery.com/jquery-3.4.1.min.js',
+            'url_local' => $localBaseJs.'/jquery-3.4.1.min.js',
+            'integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=',
+            'crossorigin' => "anonymous",
+            'defer' => "true"
+        );
+        $scripts['popper'] = array(
+            'name' => 'popper',
+            'type' => 'js',
+            'version' => '1.16.0',
+            'url_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
+            'url_local' => $localBaseJs.'/popper.min.js',
+            'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
+            'crossorigin' => "anonymous",
+            'defer' => "true"
+        );
+        $scripts['bootstrap'] = array(
+            'name' => 'bootstrap',
+            'type' => 'js',
+            'version' => '4.4.1',
+            'url_local' => $localBaseJs.'/bootstrap.min.js',
+            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js',
+            'integrity' => "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
+            'crossorigin' => "anonymous",
+            'defer' => "true"
+        );
+        $scripts['bootstrapCss'] = array(
+            'name' => 'bootstrap',
+            'type' => 'css',
+            'version' => '4.4.1',
+            'url_local' => $localBaseCss.'/bootstrap.min.css',
+            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css',
+            'integrity' => "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh",
+            'crossorigin' => "anonymous"
+        );
+    }
+    if ($version == '4.5.0'){
+        $scripts['jquery'] = array(
+            'name' => 'jquery',
+            'type' => 'js',
+            'version' => '3.5.1',
+            'url_cdn' => 'https://code.jquery.com/jquery-3.5.1.min.js',
+            'url_local' => $localBaseJs.'/jquery-3.5.1.min.js',
+            'integrity' => 'sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2',
+            'crossorigin' => "anonymous",
+            'defer' => "true"
+        );
+        $scripts['popper'] = array(
+            'name' => 'popper',
+            'type' => 'js',
+            'version' => '1.16.0',
+            'url_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
+            'url_local' => $localBaseJs.'/popper.min.js',
+            'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
+            'crossorigin' => "anonymous",
+            'defer' => "true"
+        );
+        $scripts['bootstrap'] = array(
+            'name' => 'bootstrap',
+            'type' => 'js',
+            'version' => '4.5.0',
+            'url_local' => $localBaseJs.'/bootstrap.min.js',
+            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js',
+            'integrity' => "sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI",
+            'crossorigin' => "anonymous",
+            'defer' => "true"
+        );
+        $scripts['bootstrapCss'] = array(
+            'name' => 'bootstrap',
+            'type' => 'css',
+            'version' => '4.5.0',
+            'url_local' => $localBaseCss.'/bootstrap.min.css',
+            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css',
+            'integrity' => "sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk",
+            'crossorigin' => "anonymous"
+        );
+    }
+
+    return $scripts;
+}
 /**
  * @param Doku_Event $event
  * @param $param

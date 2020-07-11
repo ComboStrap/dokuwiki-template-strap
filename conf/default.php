@@ -14,4 +14,9 @@ $conf['debug'] = false;
 
 $conf['rem']= "16";
 
+$conf['bootstrapVersion'] = '4.5.0';
+
+$conf['gridColumns'] = 12;
+
+$conf['heightTopBar'] = 40;
 ?>

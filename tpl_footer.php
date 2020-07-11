@@ -19,7 +19,6 @@ if (!defined('DOKU_INC')) die();
 ?>
 
 
-
 <?php
 $domain = "https://combostrap.com";
 $footerPageName = tpl_getConf('footer');
@@ -30,10 +29,8 @@ if (page_findnearest($footerPageName)) {
     echo '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
 }
 
-echo '<div class="row p-3 justify-content-center">';
-echo '    <div class="col-16 text-center">';
-echo '  Powered by the <a href="https://combostrap.com/strap" title="Strap Template">Strap Template</a>';
-echo '    </div>';
+echo '<div class="mx-auto" style="width: 300px;text-align: center">';
+echo '  <i>Powered by the <a href="https://combostrap.com/strap" title="Strap Template">Strap Template</a></i>';
 echo '</div>';
 ?>
 

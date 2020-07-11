@@ -3,6 +3,8 @@
 
 //Library of template function
 
+use dokuwiki\Extension\Event;
+
 require_once('tpl_lib_strap.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
@@ -17,11 +19,26 @@ $hasSidebar = page_findnearest($conf['sidebar']);
 $showSidebar = $hasSidebar && ($ACT == 'show');
 
 $hasRightSidebar = page_findnearest(tpl_getConf('sidekickbar'));
-$showRightSidebar = $hasRightSidebar && ($ACT == 'show');
+$showSideKickBar = $hasRightSidebar && ($ACT == 'show');
+
+$gridColumns = tpl_getConf('gridColumns');
+$sidebarScale = 3;
+$sideKickBarScale = 3;
+if ($showSidebar) {
+    $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
+} else {
+    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $gridColumns;
+}
 
 global $EVENT_HANDLER;
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
 
+// The padding top for the top fix bar
+$paddingTop = 0;
+$heightTopBar = tpl_getConf('heightTopBar',0);
+if ($heightTopBar!=0){
+    $paddingTop = $heightTopBar + 30;
+}
 
 ?>
 
@@ -47,7 +64,7 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_stra
 
 
 </head>
-<body role="document" class="dokuwiki" style="padding-top: 6rem;">
+<body role="document" class="dokuwiki" style="padding-top: <?php echo ($paddingTop) ?>px;">
 
 
 <?php
@@ -60,7 +77,7 @@ include('tpl_header.php')
   * used also by some plugins
 -->
 <!-- Relative positioning is important for the positioning of the pagetools -->
-<div class="container <?php echo tpl_classes() ?>" id="dokuwiki__top" style="position: relative">
+<div class="container <?php echo tpl_classes() ?> " id="dokuwiki__top" style="position: relative">
 
     <!-- TAGLINE (TODO put in on the head) -->
     <!--    --><?php //if ($conf['tagline']): ?>
@@ -73,14 +90,14 @@ include('tpl_header.php')
     <!-- A trigger to show content on the top part of the website -->
     <?php
     $data = "";// Mandatory
-    trigger_event('TPL_PAGE_TOP_OUTPUT', $data);
+    Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
     ?>
 
-    <div class="row mt-3">
+    <div class="row">
 
         <!-- SIDE BAR -->
         <?php if ($showSidebar): ?>
-            <nav role="complementary" class="col-md-3 order-last order-md-first">
+            <nav role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
                 <!-- Below data-spy="affix" data-offset-top="230"-->
                 <nav class="bs-docs-sidebar hidden-prints">
 
@@ -95,7 +112,7 @@ include('tpl_header.php')
 
 
         <main role="main"
-              class="col-md-<?php echo(($showSidebar) ? ($showRightSidebar ? 10 : 13) : ($showRightSidebar ? 13 : 16)) ?> order-first pl-md-4 pr-md-4">
+              class="col-md-<?php echo($mainGridScale) ?> order-first pl-md-4 pr-md-4">
 
 
             <!-- You are here -->
@@ -121,9 +138,9 @@ include('tpl_header.php')
 
 
         <!-- SIDE BAR -->
-        <?php if ($showRightSidebar): ?>
+        <?php if ($showSideKickBar): ?>
 
-            <nav role="complementary" class="col-md-3 order-xs-2 order-md-last">
+            <nav role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last">
 
                 <!-- Below data-spy="affix" data-offset-top="230"-->
                 <nav class="bs-docs-sidebar hidden-prints">
@@ -139,7 +156,7 @@ include('tpl_header.php')
                 <!-- A trigger to show content on the sidebar part of the website -->
                 <?php
                 $data = "";// Mandatory
-                trigger_event('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
+                Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
                 ?>
 
             </nav>
