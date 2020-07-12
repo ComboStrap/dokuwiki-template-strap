@@ -63,7 +63,7 @@ class template_strap_script_test extends DokuWikiTest
             $signatureToFind = $scriptsSignature[$i];
             $haystack = $script->getAttribute("src") . $script->textContent;
             $strpos = strpos($haystack, $signatureToFind);
-            $this->assertNotFalse($strpos, "Unable to find "+$signatureToFind);
+            $this->assertTrue($strpos!==false, "Unable to find "+$signatureToFind);
             $i++;
         }
 
