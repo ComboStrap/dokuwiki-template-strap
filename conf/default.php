@@ -19,4 +19,7 @@ $conf['bootstrapVersion'] = '4.5.0';
 $conf['gridColumns'] = 12;
 
 $conf['heightTopBar'] = 40;
+
+$conf['preloadCss'] = 0;
+
 ?>

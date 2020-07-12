@@ -22,4 +22,6 @@ $lang['sidekickbar'] = 'The name of the right sidebar page to search (Beta)';
 
 $lang['heightTopBar'] = 'The height of the top bar in pixel';
 
+$lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
+
 ?>

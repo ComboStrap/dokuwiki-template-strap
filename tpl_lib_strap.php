@@ -272,6 +272,9 @@ function tpl_get_default_headers()
 
     // The version
     $bootstrapVersion = tpl_getConf('bootstrapVersion');
+    if ($bootstrapVersion===false){
+        throw new \Exception("Should not be false");
+    }
     $scriptsMeta = getScripts($bootstrapVersion);
 
     // if cdn
@@ -284,7 +287,7 @@ function tpl_get_default_headers()
     // Build the returned Js script array
     $jsScripts = array();
     foreach ($scriptsMeta as $key => $script) {
-        if ($script['type']==="js") {
+        if ($script['type'] === "js") {
             $jsScripts[$key] =
                 array(
                     'src' => $script[$urlKey],
@@ -297,7 +300,7 @@ function tpl_get_default_headers()
 
     $css = array();
     foreach ($scriptsMeta as $key => $script) {
-        if ($script['type']==="css") {
+        if ($script['type'] === "css") {
             $css[$key] =
                 array(
                     'href' => $script[$urlKey],
@@ -323,7 +326,8 @@ function tpl_get_default_headers()
  *
  * jquery must not be slim because the post is needed for qsearch
  */
-function getScripts($version){
+function getScripts($version)
+{
 
     $localBaseJs = DOKU_BASE . 'lib/tpl/strap/js/' . $version;
     $localBaseCss = DOKU_BASE . 'lib/tpl/strap/css/' . $version;
@@ -335,7 +339,7 @@ function getScripts($version){
             'type' => 'js',
             'version' => '3.4.1',
             'url_cdn' => 'https://code.jquery.com/jquery-3.4.1.min.js',
-            'url_local' => $localBaseJs.'/jquery-3.4.1.min.js',
+            'url_local' => $localBaseJs . '/jquery-3.4.1.min.js',
             'integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=',
             'crossorigin' => "anonymous",
             'defer' => "true"
@@ -345,7 +349,7 @@ function getScripts($version){
             'type' => 'js',
             'version' => '1.16.0',
             'url_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
-            'url_local' => $localBaseJs.'/popper.min.js',
+            'url_local' => $localBaseJs . '/popper.min.js',
             'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
             'crossorigin' => "anonymous",
             'defer' => "true"
@@ -354,7 +358,7 @@ function getScripts($version){
             'name' => 'bootstrap',
             'type' => 'js',
             'version' => '4.4.1',
-            'url_local' => $localBaseJs.'/bootstrap.min.js',
+            'url_local' => $localBaseJs . '/bootstrap.min.js',
             'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js',
             'integrity' => "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
             'crossorigin' => "anonymous",
@@ -364,19 +368,19 @@ function getScripts($version){
             'name' => 'bootstrap',
             'type' => 'css',
             'version' => '4.4.1',
-            'url_local' => $localBaseCss.'/bootstrap.min.css',
+            'url_local' => $localBaseCss . '/bootstrap.min.css',
             'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css',
             'integrity' => "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh",
             'crossorigin' => "anonymous"
         );
     }
-    if ($version == '4.5.0'){
+    if ($version == '4.5.0') {
         $scripts['jquery'] = array(
             'name' => 'jquery',
             'type' => 'js',
             'version' => '3.5.1',
             'url_cdn' => 'https://code.jquery.com/jquery-3.5.1.min.js',
-            'url_local' => $localBaseJs.'/jquery-3.5.1.min.js',
+            'url_local' => $localBaseJs . '/jquery-3.5.1.min.js',
             'integrity' => 'sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2',
             'crossorigin' => "anonymous",
             'defer' => "true"
@@ -386,7 +390,7 @@ function getScripts($version){
             'type' => 'js',
             'version' => '1.16.0',
             'url_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
-            'url_local' => $localBaseJs.'/popper.min.js',
+            'url_local' => $localBaseJs . '/popper.min.js',
             'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
             'crossorigin' => "anonymous",
             'defer' => "true"
@@ -395,7 +399,7 @@ function getScripts($version){
             'name' => 'bootstrap',
             'type' => 'js',
             'version' => '4.5.0',
-            'url_local' => $localBaseJs.'/bootstrap.min.js',
+            'url_local' => $localBaseJs . '/bootstrap.min.js',
             'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js',
             'integrity' => "sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI",
             'crossorigin' => "anonymous",
@@ -405,7 +409,7 @@ function getScripts($version){
             'name' => 'bootstrap',
             'type' => 'css',
             'version' => '4.5.0',
-            'url_local' => $localBaseCss.'/bootstrap.min.css',
+            'url_local' => $localBaseCss . '/bootstrap.min.css',
             'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css',
             'integrity' => "sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk",
             'crossorigin' => "anonymous"
@@ -414,6 +418,7 @@ function getScripts($version){
 
     return $scripts;
 }
+
 /**
  * @param Doku_Event $event
  * @param $param
@@ -430,8 +435,6 @@ function tpl_strap_meta_header(Doku_Event &$event, $param)
         print_r('<!-- ' . $request . '-->');
     }
 
-    global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
-    $DOKU_TPL_BOOTIE_PRELOAD_CSS = array();
 
     $newHeaderTypes = array();
     $bootstrapHeaders = tpl_get_default_headers();
@@ -446,33 +449,40 @@ function tpl_strap_meta_header(Doku_Event &$event, $param)
             case "link":
                 // index, rss, manifest, search, alternate, stylesheet
                 // delete edit
-                $newLinkData = $bootstrapHeaders[$headerType]; // Css of Bootstrap will be unchanged
-                foreach ($headerData as $linkData) {
-                    switch ($linkData['rel']) {
-                        case 'edit':
-                            break;
-                        case 'stylesheet':
-//                             if ( strpos($linkData['href'],'css.php')){
-//                                 continue;
-//                             }
-                            // Take the stylesheet to load them at the end
-                            $DOKU_TPL_BOOTIE_PRELOAD_CSS[] = $linkData;
+                $bootstrapCss = $bootstrapHeaders[$headerType]['bootstrapCss'];
+                $headerData[] = $bootstrapCss;
+                $cssPreload = tpl_getConf("preloadCss");
+                $newLinkData = array();
+                if ($cssPreload) {
 
-                            // Change the loading mechanism to preload
-                            $linkData['rel'] = 'preload';
-                            $linkData['as'] = 'style';
-                            $newLinkData[] = $linkData;
+                    foreach ($headerData as $linkData) {
+                        switch ($linkData['rel']) {
+                            case 'edit':
+                                break;
+                            case 'stylesheet':
 
-                            break;
-                        default:
-                            $newLinkData[] = $linkData;
-                            break;
+                                // Take the stylesheet to load them at the end
+                                $DOKU_TPL_BOOTIE_PRELOAD_CSS[] = $linkData;
+
+                                // Change the loading mechanism to preload
+                                $linkData['rel'] = 'preload';
+                                $linkData['as'] = 'style';
+                                $newLinkData[] = $linkData;
+
+                                break;
+                            default:
+                                $newLinkData[] = $linkData;
+                                break;
+                        }
                     }
+                } else {
+                    $newLinkData = $headerData;
                 }
                 $newHeaderTypes[$headerType] = $newLinkData;
                 break;
 
-            case "script":
+            case
+            "script":
 
                 $newScriptData = array();
                 // A variable to hold the Jquery scripts
@@ -552,7 +562,7 @@ function tpl_strap_title_print()
 
     global $conf;
     global $ID;
-    $title = tpl_pagetitle($ID, true) . ' ['. $conf["title"]. ']';
+    $title = tpl_pagetitle($ID, true) . ' [' . $conf["title"] . ']';
     // trigger event here
     Event::createAndTrigger('TPL_TITLE_OUTPUT', $title, '_tpl_strap_title_print', true);
     return true;
@@ -567,5 +577,51 @@ function tpl_strap_title_print()
 function _tpl_strap_title_print($title)
 {
     echo "<title>$title</title>";
+}
+
+/**
+ *
+ * Set a template conf value
+ *
+ * To set a template configuration, you need to first load them
+ * and there is no set function in template.php
+ *
+ * @param $confName - the configuration name
+ * @param $confValue - the configuration value
+ * @throws Exception
+ */
+function strapTplTest_setConf($confName, $confValue){
+
+    /**
+     * Env variable
+     */
+    global $conf;
+    $template = $conf['template'];
+
+    /**
+     *  Make sure to load the configuration first by calling getConf
+     */
+    $actualValue = tpl_getConf($confName);
+    if ($actualValue===false){
+        /**
+         * When running multiple test, the function {@link tpl_getConf()}
+         * does not load the configuration twice
+         */
+        $tconf = tpl_loadConfig();
+        if($tconf !== false) {
+            foreach($tconf as $key => $value) {
+                if(isset($conf['tpl'][$template][$key])) continue;
+                $conf['tpl'][$template][$key] = $value;
+            }
+        }
+
+        // Check that the conf was loaded
+        if (tpl_getConf($confName)===false) {
+            throw new \Exception("The configuration (" . $confName . ") returns no value");
+        }
+    }
+
+    $conf['tpl'][$template][$confName]=$confValue;
+
 }
 

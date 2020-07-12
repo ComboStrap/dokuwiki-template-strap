@@ -36,4 +36,6 @@ $meta['bootstrapVersion']  = array('multichoice','_choices' => array('4.4.1','4.
 $meta['gridColumns']  = array('multichoice','_choices' => array('12','16'));
 
 $meta['heightTopBar'] = array('string');
+
+$meta['preloadCss'] = array('onoff');
 ?>
