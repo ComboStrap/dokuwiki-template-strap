@@ -15,6 +15,48 @@ require_once(__DIR__ . '/../DomUtility.php');
  */
 class template_strap_script_test extends DokuWikiTest
 {
+
+    /**
+     * An utilit function that test if the headers meta are still
+     * on the page (ie response)
+     * @param TestResponse $response
+     * @param string $loginType
+     * @param $scriptSignatures
+     */
+    private function checkMeta(TestResponse $response, $loginType, $scriptSignatures)
+    {
+        // No Css preloading
+        $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
+        $this->assertEquals(0, sizeof($stylesheets));
+
+        // Stylesheet
+        $stylesheets = $response->queryHTML('link[rel="stylesheet"]')->get();
+        $this->assertEquals(2, sizeof($stylesheets),"Two stylesheets for ${loginType}");
+        $node = DomUtility::domElements2Attributes($stylesheets);
+        $version = tpl_getConf('bootstrapVersion');
+        $this->assertEquals('/./lib/tpl/strap/bootstrap/' . $version . '/bootstrap.min.css', $node[1]["href"]);
+        $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
+        $this->assertEquals(0, $post, "The css php file is present for ${loginType}");
+
+        /**
+         * @var array|DomElement $scripts
+         */
+        $scripts = $response->queryHTML('script')->get();
+        foreach ($scriptSignatures as $signatureToFind) {
+            $strpos = false;
+            foreach ($scripts as $script) {
+                $haystack = $script->getAttribute("src") . $script->textContent;
+                $strpos = strpos($haystack, $signatureToFind);
+                if ($strpos !== false){
+                    break;
+                }
+            }
+            $this->assertTrue($strpos !== false, "Unable to find ($signatureToFind) for ${loginType}");
+        }
+        $this->assertEquals(5, sizeof($scripts));
+
+    }
+
     public function setUp()
     {
 
@@ -34,44 +76,40 @@ class template_strap_script_test extends DokuWikiTest
     /**
      * A simple test to test that the template is working
      * on every language
+     * Test the {@link \Combostrap\TplUtility::handleBootstrapMetaHeaders()} function
      */
-    public function test_base()
+    public function test_handleBootStrapMetaHeaders_anonymous()
     {
 
+        // Anonymous
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
         idx_addPage($pageId);
 
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId, '/doku.php'));
+        $scriptsSignature = ['code.jquery.com/jquery', 'popper.min.js', 'bootstrap.min.js', 'JSINFO', 'js.php'];
+        $this->checkMeta($response, "Anonymous",$scriptsSignature);
 
-        // No Css preloading
-        $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
-        $this->assertEquals(0, sizeof($stylesheets));
 
-        // Stylesheet
-        $stylesheets = $response->queryHTML('link[rel="stylesheet"]')->get();
-        $this->assertEquals(2, sizeof($stylesheets));
-        $node = DomUtility::domElements2Attributes($stylesheets);
-        $version = tpl_getConf('bootstrapVersion');
-        $this->assertEquals('/./lib/tpl/strap/bootstrap/' . $version . '/bootstrap.min.css', $node[1]["href"]);
-        $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
-        $this->assertEquals(0, $post, "The css php file is present");
+    }
 
-        /**
-         * @var DomElement $scripts
-         */
-        $scripts = $response->queryHTML('script')->get();
-        $this->assertEquals(5, sizeof($scripts));
-        $scriptsSignature = ['jquery', 'popper', 'bootstrap', 'JSINFO', 'js.php'];
-        $i = 0;
-        foreach ($scripts as $script) {
-            $signatureToFind = $scriptsSignature[$i];
-            $haystack = $script->getAttribute("src") . $script->textContent;
-            $strpos = strpos($haystack, $signatureToFind);
-            $this->assertTrue($strpos !== false, "Unable to find " . $signatureToFind);
-            $i++;
-        }
+    public function test_handleBootStrapMetaHeaders_loggedin()
+    {
+
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+        // Log in
+        global $conf;
+        $conf['useacl'] = 1;
+        $user = 'admin';
+        $conf['superuser'] = $user;
+        $request = new TestRequest();
+        $request->setServer('REMOTE_USER', $user);
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+        $scriptsSignature = ['jquery.php', 'popper.min.js', 'bootstrap.min.js', 'JSINFO', 'js.php'];
+        $this->checkMeta($response,  "Logged in",$scriptsSignature);
 
 
     }
@@ -150,8 +188,8 @@ class template_strap_script_test extends DokuWikiTest
         $this->assertEquals(3, sizeof($metas['script']), "There is three js script");
         $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
 
-
     }
+
 
     /**
      * Test the {@link \Combostrap\TplUtility::getCustomStylesheet()} function

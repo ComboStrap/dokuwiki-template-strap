@@ -29,7 +29,7 @@ $lang['sidekickbar'] = '<a href="https://combostrap.com/sidekickbar">Sidekick ba
 $lang['heightTopBar'] = 'The height of the top bar in pixel';
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
-$lang['preloadCss'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
+$lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
 
 $lang['bootstrapVersion'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
 $lang['bootstrapStylesheet'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap Stylesheet';
