@@ -77,7 +77,10 @@ include('tpl_header.php')
   * used also by some plugins
 -->
 <!-- Relative positioning is important for the positioning of the pagetools -->
-<div class="container <?php echo tpl_classes() ?> " id="dokuwiki__top" style="position: relative">
+<div class="container <?php echo tpl_classes() ?> " style="position: relative">
+
+    <!-- To go at the top of the page, style is for the fix top page -->
+    <div id="dokuwiki__top" style="padding: 70px 0 0;margin: -80px 0 10px;"></div>
 
     <!-- TAGLINE (TODO put in on the head) -->
     <!--    --><?php //if ($conf['tagline']): ?>
@@ -91,6 +94,12 @@ include('tpl_header.php')
     <?php
     $data = "";// Mandatory
     Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
+    ?>
+
+    <?php
+    if ($conf['youarehere']) {
+        TplUtility::renderTrailBreadcrumb();
+    }
     ?>
 
     <div class="row">

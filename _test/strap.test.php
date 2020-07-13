@@ -131,7 +131,7 @@ class template_strap_script_test extends DokuWikiTest
         $this->assertEquals(4, sizeof($metas));
         $this->assertEquals("bootstrap.min.css", $metas["css"]["file"]);
 
-        TplUtility::setConf("bootstrapCssFile", "bootstrap.16col");
+        TplUtility::setConf("bootstrapStylesheet", "bootstrap.16col");
         $metas = TplUtility::buildBootstrapMetas("4.5.0");
         $this->assertEquals(4, sizeof($metas));
         $this->assertEquals("bootstrap.16col.min.css", $metas["css"]["file"]);
@@ -154,12 +154,23 @@ class template_strap_script_test extends DokuWikiTest
     }
 
     /**
-     * Test the {@link \Combostrap\TplUtility::getCustomCssFiles()} function
+     * Test the {@link \Combostrap\TplUtility::getCustomStylesheet()} function
      */
     public function test_getCustomCssFiles()
     {
-        $files = TplUtility::getCustomCssFiles();
+
+        // Default
+        $files = TplUtility::getCustomStylesheet();
         $this->assertEquals(1, sizeof($files), "There is one css script");
+
+        // With a custom file
+        $destination = __DIR__ . '/../bootstrap/bootstrapLocal.json';
+        copy (__DIR__.'/resources/bootstrapLocal.json', $destination);
+        $files = TplUtility::getCustomStylesheet();
+        $this->assertEquals(2, sizeof($files), "There is two css script");
+        unlink($destination);
+
+
     }
 
     /**

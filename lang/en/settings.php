@@ -21,7 +21,7 @@ $lang['cdn'] = 'Use a CDN for the Javascript and Stylesheet';
 
 $lang['rem'] = '<a href="https://combostrap.com/length/scale">Length Scale</a> - This configuration define in pixels the value of 1 rem';
 
-$lang['bootstrapVersion'] = 'The bootstrap version';
+
 
 $lang['gridColumns'] = 'The number of columns in the grid';
 $lang['sidekickbar'] = 'The name of the right sidebar page to search (Beta)';
@@ -30,6 +30,7 @@ $lang['heightTopBar'] = 'The height of the top bar in pixel';
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
 
-$lang['bootstrapCssFile'] = "The Bootstrap CSS file";
+$lang['bootstrapVersion'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
+$lang['bootstrapStylesheet'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap Stylesheet';
 
 ?>

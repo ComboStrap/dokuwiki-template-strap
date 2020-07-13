@@ -9,7 +9,7 @@ If you want to bring your own custom Css file, check the [custom Bootstrap artic
 In a nutshell, if you already have your CSS file:
 
   * Copy your CSS file into the sub version directory (`4.4.1`, `4.5.0`, ...)
-  * Copy the [bootstrapCustomCss.json](./bootstrapCustomCss.json) to `bootstrapLocalCss.json`
+  * Copy the [bootstrapCustomCss.json](./bootstrapCustom.json) to `bootstrapLocalCss.json`
   * And adapt the file by changing or adding your values
 
 

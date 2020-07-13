@@ -58,9 +58,9 @@ class TplUtility
         //check if enabled
         if (!$conf['breadcrumbs']) return false;
 
-        $crumbs = array_reverse(breadcrumbs()); //setup crumb trace
+        $crumbs = breadcrumbs(); //setup crumb trace
 
-        echo '<nav aria-label="breadcrumb">';
+        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="ml-3 mr-3 mb-3">' . PHP_EOL;
 
         $last = count($crumbs);
         $i = 0;
@@ -71,14 +71,13 @@ class TplUtility
             $breadCrumb = $lang['breadcrumb'];
         }
 
-        echo '<div id="breadcrumb">' . PHP_EOL;
         echo '<span id="breadCrumbTitle" ">' . $breadCrumb . ':   </span>' . PHP_EOL;
         echo '<ol class="breadcrumb justify-content-start m-0 p-0 pb-1">' . PHP_EOL;
 
         foreach ($crumbs as $id => $name) {
             $i++;
 
-            if ($i == $last) {
+            if ($i == 0) {
                 print '<li class="breadcrumb-item active">';
             } else {
                 print '<li class="breadcrumb-item">';
@@ -92,7 +91,6 @@ class TplUtility
 
         }
         echo '</ol>' . PHP_EOL;
-        echo '</div>' . PHP_EOL;
         echo '</nav>' . PHP_EOL;
         return true;
     }
@@ -383,7 +381,7 @@ class TplUtility
      * @return array - A list of the file name in the custom JSON file
      * This function is used to build the configuration as a list of files
      */
-    static function getCustomCssFiles()
+    static function getCustomStylesheet()
     {
         $cssVersionsMetas = self::getCustomCssMeta();
         $cssFiles = array();
@@ -404,16 +402,16 @@ class TplUtility
     {
 
         $jsonAsArray = true;
-        $bootstrapCustomJsonFile = __DIR__ . '/bootstrap/bootstrapCustomCss.json';
+        $bootstrapCustomJsonFile = __DIR__ . '/bootstrap/bootstrapCustom.json';
         $bootstrapCustomMetas = json_decode(file_get_contents($bootstrapCustomJsonFile), $jsonAsArray);
         if ($bootstrapCustomMetas == null) {
-            tpl_strap_msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
+            self::msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
         }
         $bootstrapLocalJsonFile = __DIR__ . '/bootstrap/bootstrapLocal.json';
         if (file_exists($bootstrapLocalJsonFile)) {
             $bootstrapLocalMetas = json_decode(file_get_contents($bootstrapLocalJsonFile), $jsonAsArray);
             if ($bootstrapLocalMetas == null) {
-                tpl_strap_msg("Unable to read the file {$bootstrapLocalMetas} as json");
+                self::msg("Unable to read the file {$bootstrapLocalMetas} as json");
             }
             $bootstrapCustomMetas = array_merge($bootstrapCustomMetas, $bootstrapLocalMetas);
         }
@@ -454,7 +452,7 @@ class TplUtility
 
 
         // Css
-        $bootstrapCssFile = tpl_getConf('bootstrapCssFile');
+        $bootstrapCssFile = tpl_getConf('bootstrapStylesheet');
         if ($bootstrapCssFile != "bootstrap.min.css") {
 
             $bootstrapCustomMetas = self::getCustomCssMeta($version);

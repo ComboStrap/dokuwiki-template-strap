@@ -33,7 +33,7 @@ $meta['debug'] = array('onoff');
 $meta['rem'] = array('string');
 
 
-$meta['bootstrapVersion']  = array('multichoice','_choices' => array('4.4.1','4.5.0'));
+
 
 $meta['gridColumns']  = array('multichoice','_choices' => array('12','16'));
 
@@ -42,9 +42,10 @@ $meta['heightTopBar'] = array('string');
 $meta['preloadCss'] = array('onoff');
 
 
+$meta['bootstrapVersion']  = array('multichoice','_choices' => array('4.4.1','4.5.0'));
 require_once (__DIR__ . '/../TplUtility.php');
 $cssFiles=array("bootstrap.min.css");
-$cssFiles = array_merge($cssFiles, TplUtility::getCustomCssFiles());
-$meta['bootstrapCssFile'] = array('multichoice','_choices' => $cssFiles);
+$cssFiles = array_merge($cssFiles, TplUtility::getCustomStylesheet());
+$meta['bootstrapStylesheet'] = array('multichoice','_choices' => $cssFiles);
 
 ?>

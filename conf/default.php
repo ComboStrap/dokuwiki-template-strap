@@ -24,6 +24,6 @@ $conf['preloadCss'] = 0;
 
 $conf['preloadCss'] = 0;
 
-$conf['bootstrapCssFile']="bootstrap.min.css";
+$conf['bootstrapStylesheet']="bootstrap.min.css";
 
 ?>
