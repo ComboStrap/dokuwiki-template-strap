@@ -207,5 +207,39 @@ class template_strap_script_test extends DokuWikiTest
 
     }
 
+    /**
+     * Test that a toolbar is not shown when it's private
+     * @throws Exception
+     */
+    public function test_privateToolbar()
+    {
+        TplUtility::setConf('privateToolbar',0);
+
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
+        $this->assertEquals(1, $toolbarCount);
+
+        // Anonymous user should not see it
+        TplUtility::setConf('privateToolbar',1);
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
+        $this->assertEquals(0, $toolbarCount);
+
+        // Connected user should see it
+        $request = new TestRequest();
+        $request->setServer('REMOTE_USER', 'auser');
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
+        $this->assertEquals(1, $toolbarCount);
+
+    }
+
 
 }

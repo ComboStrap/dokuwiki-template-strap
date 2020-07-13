@@ -24,6 +24,10 @@ $conf['preloadCss'] = 0;
 
 $conf['preloadCss'] = 0;
 
+$conf['privateToolbar'] = 0;
+
 $conf['bootstrapStylesheet']="bootstrap.min.css";
+
+
 
 ?>

@@ -41,6 +41,8 @@ $meta['heightTopBar'] = array('string');
 
 $meta['preloadCss'] = array('onoff');
 
+$meta['privateToolbar'] = array('onoff');
+
 
 $meta['bootstrapVersion']  = array('multichoice','_choices' => array('4.4.1','4.5.0'));
 require_once (__DIR__ . '/../TplUtility.php');

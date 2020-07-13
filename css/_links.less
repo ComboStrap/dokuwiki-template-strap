@@ -21,6 +21,16 @@
     border-bottom-width: 0;
 }
 
+/**
+ * Conflict with
+ * https://getbootstrap.com/docs/4.0/layout/media-object/
+ * and the media class of a dokuwiki link
+ * The image will not go to the right with a float inside a flex box
+ */
+.dokuwiki a.media {
+    display: inline!important;
+}
+
 /* any link to current page */
 .dokuwiki span.curid a {
     font-weight: bold;

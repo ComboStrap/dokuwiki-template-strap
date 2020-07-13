@@ -23,12 +23,13 @@ $lang['rem'] = '<a href="https://combostrap.com/length/scale">Length Scale</a> -
 
 
 
-$lang['gridColumns'] = 'The number of columns in the grid';
-$lang['sidekickbar'] = 'The name of the right sidebar page to search (Beta)';
+$lang['gridColumns'] = '<a href="https://combostrap.com/dynamic/grid">Dynamic Grid</a> - The number of columns in the grid';
+$lang['sidekickbar'] = '<a href="https://combostrap.com/sidekickbar">Sidekick bar</a> - The name of the right sidebar page';
 
 $lang['heightTopBar'] = 'The height of the top bar in pixel';
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
+$lang['preloadCss'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
 
 $lang['bootstrapVersion'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
 $lang['bootstrapStylesheet'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap Stylesheet';

@@ -5,6 +5,9 @@
 
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
+use dokuwiki\Menu\PageMenu;
+use dokuwiki\Menu\SiteMenu;
+use dokuwiki\Menu\UserMenu;
 
 require_once('TplUtility.php');
 
@@ -77,7 +80,7 @@ include('tpl_header.php')
   * used also by some plugins
 -->
 <!-- Relative positioning is important for the positioning of the pagetools -->
-<div class="container <?php echo tpl_classes() ?> " style="position: relative">
+<div class="container mb-3 <?php echo tpl_classes() ?> " style="position: relative">
 
     <!-- To go at the top of the page, style is for the fix top page -->
     <div id="dokuwiki__top" style="padding: 70px 0 0;margin: -80px 0 10px;"></div>
@@ -167,13 +170,13 @@ include('tpl_header.php')
 
 
     <!-- PAGE/USER/SITE ACTIONS -->
-    <?php if (!empty($_SERVER['REMOTE_USER'])) { ?>
+    <?php if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
         <div id="dokuwiki__pagetools" style="z-index: 1030;" class="d-none d-md-block">
             <div class="tools">
                 <ul>
-                    <?php echo (new \dokuwiki\Menu\PageMenu())->getListItems(); ?>
-                    <?php echo (new \dokuwiki\Menu\UserMenu())->getListItems('action'); ?>
-                    <?php echo (new \dokuwiki\Menu\SiteMenu())->getListItems('action'); ?>
+                    <?php echo (new PageMenu())->getListItems(); ?>
+                    <?php echo (new UserMenu())->getListItems('action'); ?>
+                    <?php echo (new SiteMenu())->getListItems('action'); ?>
                     <?php // FYI: for all menu in mobile: echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']); ?>
                 </ul>
             </div>
