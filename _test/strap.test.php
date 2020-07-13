@@ -1,6 +1,6 @@
 <?php
 
-require_once (__DIR__.'/../tpl_lib_strap.php');
+require_once(__DIR__ . '/../tpl_lib_strap.php');
 
 /**
  *
@@ -63,7 +63,7 @@ class template_strap_script_test extends DokuWikiTest
             $signatureToFind = $scriptsSignature[$i];
             $haystack = $script->getAttribute("src") . $script->textContent;
             $strpos = strpos($haystack, $signatureToFind);
-            $this->assertTrue($strpos!==false, "Unable to find ".$signatureToFind);
+            $this->assertTrue($strpos !== false, "Unable to find " . $signatureToFind);
             $i++;
         }
 
@@ -77,7 +77,7 @@ class template_strap_script_test extends DokuWikiTest
     public function test_css_preload()
     {
 
-        tpl_strap_setConf('preloadCss',1);
+        tpl_strap_setConf('preloadCss', 1);
 
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -100,7 +100,7 @@ class template_strap_script_test extends DokuWikiTest
             }
         }
 
-        $this->assertEquals(2, sizeof($node),"The stylesheet count should be 2");
+        $this->assertEquals(2, sizeof($node), "The stylesheet count should be 2");
 
         $version = tpl_getConf('bootstrapVersion');
         $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
@@ -122,7 +122,7 @@ class template_strap_script_test extends DokuWikiTest
     {
         $nodes = array();
         foreach ($domElements as $key => $domElement) {
-            $nodes[$key]=$this->extractsAttributes($domElement);
+            $nodes[$key] = $this->extractsAttributes($domElement);
         }
         return $nodes;
     }
@@ -155,13 +155,13 @@ class template_strap_script_test extends DokuWikiTest
     public function test_built_bootstrap_meta()
     {
         $metas = tpl_strap_build_meta("4.5.0");
-        $this->assertEquals(4,sizeof($metas));
-        $this->assertEquals("bootstrap.min.css",$metas["css"]["file"]);
+        $this->assertEquals(4, sizeof($metas));
+        $this->assertEquals("bootstrap.min.css", $metas["css"]["file"]);
 
-        tpl_strap_setConf("bootstrapCustomCssFile","bootstrap.16col");
+        tpl_strap_setConf("bootstrapCssFile", "bootstrap.16col");
         $metas = tpl_strap_build_meta("4.5.0");
-        $this->assertEquals(4,sizeof($metas));
-        $this->assertEquals("bootstrap.16col.min.css",$metas["css"]["file"]);
+        $this->assertEquals(4, sizeof($metas));
+        $this->assertEquals("bootstrap.16col.min.css", $metas["css"]["file"]);
     }
 
     /**
@@ -172,12 +172,18 @@ class template_strap_script_test extends DokuWikiTest
     {
         tpl_strap_reload_conf();
         $metas = tpl_strap_get_bootstrap_headers();
-        $this->assertEquals(2,sizeof($metas));
+        $this->assertEquals(2, sizeof($metas));
 
-        $this->assertEquals(3,sizeof($metas['script']),"There is three js script");
-        $this->assertEquals(1,sizeof($metas['link']),"There is one css script");
+        $this->assertEquals(3, sizeof($metas['script']), "There is three js script");
+        $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
 
 
+    }
+
+    public function test_get_custom_css_files()
+    {
+        $files = tpl_strap_get_custom_css_files();
+        $this->assertEquals(1, sizeof($files), "There is one css script");
     }
 
 

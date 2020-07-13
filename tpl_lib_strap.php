@@ -315,14 +315,14 @@ function tpl_strap_get_bootstrap_headers()
             $href = $script["url"];
         }
     }
-    $css[] =
+    $css['css'] =
         array(
             'href' => $href,
             'rel' => "stylesheet"
         );
     if (isset($script['integrity'])) {
-        $css[]['integrity'] = $script['integrity'];
-        $css[]['crossorigin'] = 'anonymous';
+        $css['css']['integrity'] = $script['integrity'];
+        $css['css']['crossorigin'] = 'anonymous';
     }
 
 
@@ -338,14 +338,13 @@ function tpl_strap_get_bootstrap_headers()
  * @return array - A list of the file name in the custom JSON file
  * This function is used to build the configuration as a list of files
  */
-function tpl_strap_getCustomCssFiles()
+function tpl_strap_get_custom_css_files()
 {
-    $cssMetas = tpl_strap_build_custom_css_meta();
+    $cssVersionsMetas = tpl_strap_build_custom_css_meta();
     $cssFiles = array();
-    foreach ($cssMetas as $cssMeta) {
-        if (isset($cssMeta["file"])) {
-            $file = $cssMeta["file"];
-            $cssFiles[$file] = $file;
+    foreach ($cssVersionsMetas as $cssVersionMeta) {
+        foreach ($cssVersionMeta as $fileName => $values){
+            $cssFiles[$fileName] = $fileName;
         }
     }
     return $cssFiles;
@@ -409,16 +408,16 @@ function tpl_strap_build_meta($version)
 
 
     // Css
-    $bootstrapCustomCssFile = tpl_getConf('bootstrapCustomCssFile');
-    if (!empty($bootstrapCustomCssFile)) {
+    $bootstrapCssFile = tpl_getConf('bootstrapCssFile');
+    if ($bootstrapCssFile!="bootstrap.min.css") {
 
         $bootstrapCustomMetas = tpl_strap_build_custom_css_meta($version);
 
 
-        if (!isset($bootstrapCustomMetas[$bootstrapCustomCssFile])) {
-            tpl_strap_msg("The bootstrap custom file ($bootstrapCustomCssFile) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile) for the version ($version)");
+        if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
+            tpl_strap_msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile) for the version ($version)");
         } else {
-            $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCustomCssFile];
+            $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCssFile];
         }
 
     }
@@ -458,7 +457,7 @@ function tpl_strap_meta_header(Doku_Event &$event, $param)
             case "link":
                 // index, rss, manifest, search, alternate, stylesheet
                 // delete edit
-                $bootstrapCss = $bootstrapHeaders[$headerType][0];
+                $bootstrapCss = $bootstrapHeaders[$headerType]['css'];
                 $headerData[] = $bootstrapCss;
                 $cssPreload = tpl_getConf("preloadCss");
                 $newLinkData = array();
