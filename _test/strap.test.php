@@ -1,6 +1,10 @@
 <?php
 
-require_once(__DIR__ . '/../tpl_lib_strap.php');
+use ComboStrap\DomUtility;
+use ComboStrap\TplUtility;
+
+require_once(__DIR__ . '/../TplUtility.php');
+require_once(__DIR__ . '/../DomUtility.php');
 
 /**
  *
@@ -21,7 +25,7 @@ class template_strap_script_test extends DokuWikiTest
          * static variable bug in the {@link tpl_getConf()}
          * that does not load the configuration twice
          */
-        tpl_strap_reload_conf();
+        TplUtility::reloadConf();
 
 
     }
@@ -48,13 +52,15 @@ class template_strap_script_test extends DokuWikiTest
         // Stylesheet
         $stylesheets = $response->queryHTML('link[rel="stylesheet"]')->get();
         $this->assertEquals(2, sizeof($stylesheets));
-        $node = $this->domElements2Attributes($stylesheets);
+        $node = DomUtility::domElements2Attributes($stylesheets);
         $version = tpl_getConf('bootstrapVersion');
-        $this->assertEquals('/./lib/tpl/strap/css/' . $version . '/bootstrap.min.css', $node[1]["href"]);
+        $this->assertEquals('/./lib/tpl/strap/bootstrap/' . $version . '/bootstrap.min.css', $node[1]["href"]);
         $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
         $this->assertEquals(0, $post, "The css php file is present");
 
-        // Javascript
+        /**
+         * @var DomElement $scripts
+         */
         $scripts = $response->queryHTML('script')->get();
         $this->assertEquals(5, sizeof($scripts));
         $scriptsSignature = ['jquery', 'popper', 'bootstrap', 'JSINFO', 'js.php'];
@@ -73,11 +79,12 @@ class template_strap_script_test extends DokuWikiTest
     /**
      * test the css preload configuration
      *
+     * @throws Exception
      */
     public function test_css_preload()
     {
 
-        tpl_strap_setConf('preloadCss', 1);
+        TplUtility::setConf('preloadCss', 1);
 
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -105,73 +112,39 @@ class template_strap_script_test extends DokuWikiTest
         $version = tpl_getConf('bootstrapVersion');
         $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
         $this->assertEquals(0, $post, "The css php file is present");
-        $this->assertEquals('/./lib/tpl/strap/css/' . $version . '/bootstrap.min.css', $node[1]["href"]);
+        $this->assertEquals('/./lib/tpl/strap/bootstrap/' . $version . '/bootstrap.min.css', $node[1]["href"]);
 
 
     }
 
 
-    /**
-     * @param DOMElement $domElements
-     * @return array with one element by dom element  with its attributes
-     *
-     * This funcion was created because there is no way to get this information
-     * from the phpQuery element
-     */
-    public function domElements2Attributes($domElements)
-    {
-        $nodes = array();
-        foreach ($domElements as $key => $domElement) {
-            $nodes[$key] = $this->extractsAttributes($domElement);
-        }
-        return $nodes;
-    }
 
-    /**
-     * @param DOMElement $domElement
-     * @return array with one element  with its attributes
-     *
-     * This function was created because there is no way to get this information
-     * from the phpQuery element
-     */
-    public function extractsAttributes($domElement)
-    {
-        $node = array();
-        if ($domElement->hasAttributes()) {
-            foreach ($domElement->attributes as $attr) {
-                $name = $attr->name;
-                $value = $attr->value;
-                $node[$name] = $value;
-            }
-        }
-        return $node;
-    }
 
 
     /**
-     *
+     * Test the {@link \Combostrap\TplUtility::buildBootstrapMetas()} function
      * @throws Exception
      */
-    public function test_built_bootstrap_meta()
+    public function test_buildBootstrapMetas()
     {
-        $metas = tpl_strap_build_meta("4.5.0");
+        $metas = TplUtility::buildBootstrapMetas("4.5.0");
         $this->assertEquals(4, sizeof($metas));
         $this->assertEquals("bootstrap.min.css", $metas["css"]["file"]);
 
-        tpl_strap_setConf("bootstrapCssFile", "bootstrap.16col");
-        $metas = tpl_strap_build_meta("4.5.0");
+        TplUtility::setConf("bootstrapCssFile", "bootstrap.16col");
+        $metas = TplUtility::buildBootstrapMetas("4.5.0");
         $this->assertEquals(4, sizeof($metas));
         $this->assertEquals("bootstrap.16col.min.css", $metas["css"]["file"]);
     }
 
+
     /**
-     *
+     * Test the {@link \Combostrap\TplUtility::getBootstrapMetaHeaders()} function
      * @throws Exception
      */
-    public function test_get_bootstrap_headers()
+    public function test_getBootstrapMetaHeaders()
     {
-        tpl_strap_reload_conf();
-        $metas = tpl_strap_get_bootstrap_headers();
+        $metas = TplUtility::getBootstrapMetaHeaders();
         $this->assertEquals(2, sizeof($metas));
 
         $this->assertEquals(3, sizeof($metas['script']), "There is three js script");
@@ -180,10 +153,47 @@ class template_strap_script_test extends DokuWikiTest
 
     }
 
-    public function test_get_custom_css_files()
+    /**
+     * Test the {@link \Combostrap\TplUtility::getCustomCssFiles()} function
+     */
+    public function test_getCustomCssFiles()
     {
-        $files = tpl_strap_get_custom_css_files();
+        $files = TplUtility::getCustomCssFiles();
         $this->assertEquals(1, sizeof($files), "There is one css script");
+    }
+
+    /**
+     * Test that a detail page is rendering
+     */
+    public function test_detail_php()
+    {
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/detail.php'));
+
+        $generator = $response->queryHTML('meta[name="generator"]')->attr("content");
+        $this->assertEquals("DokuWiki", $generator);
+
+    }
+
+    /**
+     * Test that a media page is rendering
+     */
+    public function test_media_manager_php()
+    {
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/mediamanager.php'));
+
+        $generator = $response->queryHTML('meta[name="generator"]')->attr("content");
+        $this->assertEquals("DokuWiki", $generator);
+
     }
 
 

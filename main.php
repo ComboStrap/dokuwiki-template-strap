@@ -3,9 +3,10 @@
 
 //Library of template function
 
+use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 
-require_once('tpl_lib_strap.php');
+require_once('TplUtility.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 header('X-UA-Compatible: IE=edge,chrome=1');
@@ -35,14 +36,9 @@ if ($showSidebar) {
 }
 
 global $EVENT_HANDLER;
-$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
+$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders'));
 
-// The padding top for the top fix bar
-$paddingTop = 0;
-$heightTopBar = tpl_getConf('heightTopBar',0);
-if ($heightTopBar!=0){
-    $paddingTop = $heightTopBar + 30;
-}
+
 
 ?>
 
@@ -60,15 +56,15 @@ if ($heightTopBar!=0){
     <!-- Be sure to have only https call -->
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
-    <?php tpl_strap_title_print() ?>
+    <?php TplUtility::renderPageTitle() ?>
 
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-    <?php echo tpl_strap_favicon() ?>
+    <?php TplUtility::renderFaviconMetaLinks() ?>
 
 
 </head>
-<body role="document" class="dokuwiki" style="padding-top: <?php echo ($paddingTop) ?>px;">
+<body role="document" class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
 
 
 <?php
@@ -117,14 +113,6 @@ include('tpl_header.php')
 
         <main role="main"
               class="col-md-<?php echo($mainGridScale) ?> order-first pl-md-4 pr-md-4">
-
-
-            <!-- You are here -->
-            <?php
-            if ($conf['youarehere']) {
-                tpl_youarehere_bootstrap();
-            }
-            ?>
 
 
             <!-- The content: Show, Edit, .... -->

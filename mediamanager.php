@@ -1,6 +1,7 @@
 <?php
 
-require_once('tpl_lib_strap.php');
+use ComboStrap\TplUtility;
+require_once('TplUtility.php');
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();
@@ -18,7 +19,7 @@ global $lang;
     <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
     <?php tpl_metaheaders()?>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <?php echo tpl_strap_favicon() ?>
+    <?php TplUtility::renderFaviconMetaLinks() ?>
     <?php tpl_includeFile('meta.html') ?>
 </head>
 

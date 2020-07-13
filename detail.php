@@ -5,12 +5,14 @@
  */
 
 //Library of template function
-require_once('tpl_lib_strap.php');
+use ComboStrap\TplUtility;
+require_once('TplUtility.php');
+
 global $lang;
 
 // Fot the header
 global $EVENT_HANDLER;
-$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, 'tpl_strap_meta_header');
+$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, '\Combostrap\TplUtility::handleBootstrapMetaHeaders');
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();
@@ -29,20 +31,19 @@ header('X-UA-Compatible: IE=edge,chrome=1');
         })(document.documentElement)</script>
     <?php tpl_metaheaders() ?>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <?php echo tpl_strap_favicon() ?>
+    <?php TplUtility::renderFaviconMetaLinks() ?>
     <?php tpl_includeFile('meta.html') ?>
 
 
 </head>
 
-<body style="padding-top: 6rem">
+<body style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
 <!--[if lte IE 7 ]>
 <div id="IE7"><![endif]--><!--[if IE 8 ]>
 <div id="IE8"><![endif]-->
 <div id="dokuwiki__site">
     <div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?>">
 
-        <?php include_once('tpl_lib_strap.php'); ?>
         <?php include('tpl_header.php') ?>
         <!-- Bootstrap Container -->
         <div class="container">
@@ -55,7 +56,7 @@ header('X-UA-Compatible: IE=edge,chrome=1');
             <!-- Must contain One row -->
             <div class="row">
 
-				<div role="main" class="col-md-12">
+				<div role="main" class="col-md-<?php tpl_getConf('gridColumns')?>">
                     <!-- ********** CONTENT ********** -->
 
 

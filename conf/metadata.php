@@ -40,7 +40,7 @@ $meta['heightTopBar'] = array('string');
 $meta['preloadCss'] = array('onoff');
 
 
-require_once (__DIR__.'/../tpl_lib_strap.php');
+require_once (__DIR__ . '/../TplUtility.php');
 $cssFiles=array("bootstrap.min.css");
 $cssFiles = array_merge($cssFiles, tpl_strap_get_custom_css_files());
 $meta['bootstrapCssFile'] = array('multichoice','_choices' => $cssFiles);
