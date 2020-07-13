@@ -1,5 +1,7 @@
 # Strap Web Template
 
+[![Build Status](https://travis-ci.org/ComboStrap/dokuwiki-template-strap.svg?branch=master)](https://travis-ci.org/ComboStrap/dokuwiki-template-strap)
+
 ## About
 
 `Strap` is the template of [ComboStrap](https://combostrap.com/strap)
@@ -85,7 +87,6 @@ Ter info, the template file are:
 ## Todo ?
 
   * [JqueryUI Bootstrap](https://cdn.rawgit.com/arschmitz/jqueryui-bootstrap-adapter/v0.3.0/index.html)
-  * [tagline](https://www.dokuwiki.org/config:tagline) is used in the [manifest](https://www.dokuwiki.org/devel:manifest) description
 
 ## Dev Note
 

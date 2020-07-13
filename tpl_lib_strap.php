@@ -266,49 +266,63 @@ function tpl_actionlink_strap($type, $class = '', $pre = '', $suf = '', $inner =
 /**
  * @return array
  * Return the headers needed by this template
- * */
-function tpl_get_default_headers()
+ *
+ * @throws Exception
+ */
+function tpl_strap_get_bootstrap_headers()
 {
 
     // The version
     $bootstrapVersion = tpl_getConf('bootstrapVersion');
-    if ($bootstrapVersion===false){
-        throw new \Exception("Should not be false");
+    if ($bootstrapVersion === false) {
+        throw new \Exception("Bootstrap version should not be false");
     }
-    $scriptsMeta = getScripts($bootstrapVersion);
+    $scriptsMeta = tpl_strap_build_meta($bootstrapVersion);
 
     // if cdn
     $useCdn = tpl_getConf('cdn');
-    $urlKey = 'url_cdn';
-    if (!$useCdn) {
-        $urlKey = 'url_local';
-    }
+
 
     // Build the returned Js script array
     $jsScripts = array();
     foreach ($scriptsMeta as $key => $script) {
-        if ($script['type'] === "js") {
+        $path_parts = pathinfo($script["file"]);
+        $extension = $path_parts['extension'];
+        if ($extension === "js") {
+            $src = DOKU_BASE . "lib/tpl/strap/bootstrap/$bootstrapVersion/" . $script["file"];
+            if ($useCdn) {
+                if (isset($script["url"])) {
+                    $src = $script["url"];
+                }
+            }
             $jsScripts[$key] =
                 array(
-                    'src' => $script[$urlKey],
-                    'integrity' => $script['integrity'],
-                    'crossorigin' => $script['crossorigin'],
-                    'defer' => $script['defer']
+                    'src' => $src,
+                    'defer' => true
                 );
+            if (isset($script['integrity'])) {
+                $jsScripts[$key]['integrity'] = $script['integrity'];
+                $jsScripts[$key]['crossorigin'] = 'anonymous';
+            }
         }
     }
 
     $css = array();
-    foreach ($scriptsMeta as $key => $script) {
-        if ($script['type'] === "css") {
-            $css[$key] =
-                array(
-                    'href' => $script[$urlKey],
-                    'integrity' => $script['integrity'],
-                    'crossorigin' => $script['crossorigin'],
-                    'rel' => "stylesheet"
-                );
+    $cssScript = $scriptsMeta['css'];
+    $href = DOKU_BASE . "lib/tpl/strap/bootstrap/$bootstrapVersion/" . $cssScript["file"];
+    if ($useCdn) {
+        if (isset($script["url"])) {
+            $href = $script["url"];
         }
+    }
+    $css[] =
+        array(
+            'href' => $href,
+            'rel' => "stylesheet"
+        );
+    if (isset($script['integrity'])) {
+        $css[]['integrity'] = $script['integrity'];
+        $css[]['crossorigin'] = 'anonymous';
     }
 
 
@@ -321,102 +335,96 @@ function tpl_get_default_headers()
 }
 
 /**
+ * @return array - A list of the file name in the custom JSON file
+ * This function is used to build the configuration as a list of files
+ */
+function tpl_strap_getCustomCssFiles()
+{
+    $cssMetas = tpl_strap_build_custom_css_meta();
+    $cssFiles = array();
+    foreach ($cssMetas as $cssMeta) {
+        if (isset($cssMeta["file"])) {
+            $file = $cssMeta["file"];
+            $cssFiles[$file] = $file;
+        }
+    }
+    return $cssFiles;
+}
+
+/**
+ *
+ * @param $version - return only the selected version if set
+ * @return void - an array of the meta JSON custom files
+ */
+function tpl_strap_build_custom_css_meta($version = null)
+{
+
+    $jsonAsArray = true;
+    $bootstrapCustomJsonFile = __DIR__ . '/bootstrap/bootstrapCustomCss.json';
+    $bootstrapCustomMetas = json_decode(file_get_contents($bootstrapCustomJsonFile), $jsonAsArray);
+    if ($bootstrapCustomMetas == null) {
+        tpl_strap_msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
+    }
+    $bootstrapLocalJsonFile = __DIR__ . '/bootstrap/bootstrapLocal.json';
+    if (file_exists($bootstrapLocalJsonFile)) {
+        $bootstrapLocalMetas = json_decode(file_get_contents($bootstrapLocalJsonFile), $jsonAsArray);
+        if ($bootstrapLocalMetas == null) {
+            tpl_strap_msg("Unable to read the file {$bootstrapLocalMetas} as json");
+        }
+        $bootstrapCustomMetas = array_merge($bootstrapCustomMetas, $bootstrapLocalMetas);
+    }
+
+    if (isset($version)) {
+        if (!isset($bootstrapCustomMetas[$version])) {
+            tpl_strap_msg("The bootstrap version ($version) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile)");
+        } else {
+            $bootstrapCustomMetas = $bootstrapCustomMetas[$version];
+        }
+    }
+    return $bootstrapCustomMetas;
+}
+
+/**
  * @param $version
  * @return array
  *
- * jquery must not be slim because the post is needed for qsearch
+ *
  */
-function getScripts($version)
+function tpl_strap_build_meta($version)
 {
 
-    $localBaseJs = DOKU_BASE . 'lib/tpl/strap/js/' . $version;
-    $localBaseCss = DOKU_BASE . 'lib/tpl/strap/css/' . $version;
-
-    $scripts = array();
-    if ($version == '4.4.1') {
-        $scripts['jquery'] = array(
-            'name' => 'jquery',
-            'type' => 'js',
-            'version' => '3.4.1',
-            'url_cdn' => 'https://code.jquery.com/jquery-3.4.1.min.js',
-            'url_local' => $localBaseJs . '/jquery-3.4.1.min.js',
-            'integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=',
-            'crossorigin' => "anonymous",
-            'defer' => "true"
-        );
-        $scripts['popper'] = array(
-            'name' => 'popper',
-            'type' => 'js',
-            'version' => '1.16.0',
-            'url_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
-            'url_local' => $localBaseJs . '/popper.min.js',
-            'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
-            'crossorigin' => "anonymous",
-            'defer' => "true"
-        );
-        $scripts['bootstrap'] = array(
-            'name' => 'bootstrap',
-            'type' => 'js',
-            'version' => '4.4.1',
-            'url_local' => $localBaseJs . '/bootstrap.min.js',
-            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js',
-            'integrity' => "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
-            'crossorigin' => "anonymous",
-            'defer' => "true"
-        );
-        $scripts['bootstrapCss'] = array(
-            'name' => 'bootstrap',
-            'type' => 'css',
-            'version' => '4.4.1',
-            'url_local' => $localBaseCss . '/bootstrap.min.css',
-            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css',
-            'integrity' => "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh",
-            'crossorigin' => "anonymous"
-        );
+    $jsonAsArray = true;
+    $bootstrapJsonFile = __DIR__ . '/bootstrap/bootstrap.json';
+    $bootstrapMetas = json_decode(file_get_contents($bootstrapJsonFile), $jsonAsArray);
+    // Decodage problem
+    if ($bootstrapMetas == null) {
+        tpl_strap_msg("Unable to read the file {$bootstrapJsonFile} as json");
+        return array();
     }
-    if ($version == '4.5.0') {
-        $scripts['jquery'] = array(
-            'name' => 'jquery',
-            'type' => 'js',
-            'version' => '3.5.1',
-            'url_cdn' => 'https://code.jquery.com/jquery-3.5.1.min.js',
-            'url_local' => $localBaseJs . '/jquery-3.5.1.min.js',
-            'integrity' => 'sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2',
-            'crossorigin' => "anonymous",
-            'defer' => "true"
-        );
-        $scripts['popper'] = array(
-            'name' => 'popper',
-            'type' => 'js',
-            'version' => '1.16.0',
-            'url_cdn' => 'https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
-            'url_local' => $localBaseJs . '/popper.min.js',
-            'integrity' => 'sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo',
-            'crossorigin' => "anonymous",
-            'defer' => "true"
-        );
-        $scripts['bootstrap'] = array(
-            'name' => 'bootstrap',
-            'type' => 'js',
-            'version' => '4.5.0',
-            'url_local' => $localBaseJs . '/bootstrap.min.js',
-            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js',
-            'integrity' => "sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI",
-            'crossorigin' => "anonymous",
-            'defer' => "true"
-        );
-        $scripts['bootstrapCss'] = array(
-            'name' => 'bootstrap',
-            'type' => 'css',
-            'version' => '4.5.0',
-            'url_local' => $localBaseCss . '/bootstrap.min.css',
-            'url_cdn' => 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css',
-            'integrity' => "sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk",
-            'crossorigin' => "anonymous"
-        );
+    if (!isset($bootstrapMetas[$version])) {
+        tpl_strap_msg("The bootstrap version ($version) could not be found in the file $bootstrapJsonFile");
+        return array();
+    }
+    $bootstrapMetas = $bootstrapMetas[$version];
+
+
+    // Css
+    $bootstrapCustomCssFile = tpl_getConf('bootstrapCustomCssFile');
+    if (!empty($bootstrapCustomCssFile)) {
+
+        $bootstrapCustomMetas = tpl_strap_build_custom_css_meta($version);
+
+
+        if (!isset($bootstrapCustomMetas[$bootstrapCustomCssFile])) {
+            tpl_strap_msg("The bootstrap custom file ($bootstrapCustomCssFile) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile) for the version ($version)");
+        } else {
+            $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCustomCssFile];
+        }
+
     }
 
-    return $scripts;
+
+    return $bootstrapMetas;
 }
 
 /**
@@ -425,6 +433,7 @@ function getScripts($version)
  * Function that handle the META HEADER event
  *   * It will add the Bootstrap Js and CSS
  *   * Make all script and resources defer
+ * @throws Exception
  */
 function tpl_strap_meta_header(Doku_Event &$event, $param)
 {
@@ -437,7 +446,7 @@ function tpl_strap_meta_header(Doku_Event &$event, $param)
 
 
     $newHeaderTypes = array();
-    $bootstrapHeaders = tpl_get_default_headers();
+    $bootstrapHeaders = tpl_strap_get_bootstrap_headers();
     $eventHeaderTypes = $event->data;
     foreach ($eventHeaderTypes as $headerType => $headerData) {
         switch ($headerType) {
@@ -449,7 +458,7 @@ function tpl_strap_meta_header(Doku_Event &$event, $param)
             case "link":
                 // index, rss, manifest, search, alternate, stylesheet
                 // delete edit
-                $bootstrapCss = $bootstrapHeaders[$headerType]['bootstrapCss'];
+                $bootstrapCss = $bootstrapHeaders[$headerType][0];
                 $headerData[] = $bootstrapCss;
                 $cssPreload = tpl_getConf("preloadCss");
                 $newLinkData = array();
@@ -590,7 +599,8 @@ function _tpl_strap_title_print($title)
  * @param $confValue - the configuration value
  * @throws Exception
  */
-function strapTplTest_setConf($confName, $confValue){
+function tpl_strap_setConf($confName, $confValue)
+{
 
     /**
      * Env variable
@@ -602,26 +612,76 @@ function strapTplTest_setConf($confName, $confValue){
      *  Make sure to load the configuration first by calling getConf
      */
     $actualValue = tpl_getConf($confName);
-    if ($actualValue===false){
-        /**
-         * When running multiple test, the function {@link tpl_getConf()}
-         * does not load the configuration twice
-         */
-        $tconf = tpl_loadConfig();
-        if($tconf !== false) {
-            foreach($tconf as $key => $value) {
-                if(isset($conf['tpl'][$template][$key])) continue;
-                $conf['tpl'][$template][$key] = $value;
-            }
-        }
+    if ($actualValue === false) {
+
+        tpl_strap_reload_conf();
 
         // Check that the conf was loaded
-        if (tpl_getConf($confName)===false) {
+        if (tpl_getConf($confName) === false) {
             throw new \Exception("The configuration (" . $confName . ") returns no value");
         }
     }
 
-    $conf['tpl'][$template][$confName]=$confValue;
+    $conf['tpl'][$template][$confName] = $confValue;
 
 }
 
+/**
+ * When running multiple test, the function {@link tpl_getConf()}
+ * does not load the configuration twice
+ */
+function tpl_strap_reload_conf(){
+    /**
+     * Env variable
+     */
+    global $conf;
+    $template = $conf['template'];
+
+    $tconf = tpl_loadConfig();
+    if ($tconf !== false) {
+        foreach ($tconf as $key => $value) {
+            if (isset($conf['tpl'][$template][$key])) continue;
+            $conf['tpl'][$template][$key] = $value;
+        }
+    }
+}
+
+
+if (!defined("LVL_MSG_ERROR")) {
+    define("LVL_MSG_ERROR", -1);
+    define("LVL_MSG_WARNING", 2);
+    define("LVL_MSG_INFO", 0);
+    define("LVL_MSG_DEBUG", 3);
+}
+
+/**
+ * Send a message to a manager and log it
+ * Fail if in test
+ * @param string $message
+ * @param int $level - the level see LVL constant
+ * @param string $canonical - the canonical
+ */
+function tpl_strap_msg($message, $level = LVL_MSG_ERROR, $canonical = null)
+{
+    $prefix = '<a href="https://combostrap.com/strap">Strap</a>';
+    if ($canonical != null) {
+        $prefix = '<a href="https://combostrap.com/' . $canonical . '">' . ucfirst($canonical) . '</a>';
+    }
+    $htmlMsg = $prefix . " - " . $message;
+    if ($level != LVL_MSG_DEBUG) {
+        msg($htmlMsg, $level, $allow = MSG_MANAGERS_ONLY);
+    }
+    /**
+     * Print to a log file
+     * Note: {@link dbg()} dbg print to the web page
+     */
+    $prefix = 'strap';
+    if ($canonical != null) {
+        $prefix .= ' - ' . $canonical;
+    }
+    $msg = $prefix . ' - ' . $message;
+    dbglog($msg);
+    if (defined('DOKU_UNITTEST') && ($level == LVL_MSG_WARNING || $level == LVL_MSG_ERROR)) {
+        throw new RuntimeException($msg);
+    }
+}

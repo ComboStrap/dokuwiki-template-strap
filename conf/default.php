@@ -22,4 +22,8 @@ $conf['heightTopBar'] = 40;
 
 $conf['preloadCss'] = 0;
 
+$conf['preloadCss'] = 0;
+
+$conf['bootstrapCustomCssFile']="";
+
 ?>

@@ -21,7 +21,7 @@ class template_strap_script_test extends DokuWikiTest
          * static variable bug in the {@link tpl_getConf()}
          * that does not load the configuration twice
          */
-        tpl_loadConfig();
+        tpl_strap_reload_conf();
 
 
     }
@@ -77,7 +77,7 @@ class template_strap_script_test extends DokuWikiTest
     public function test_css_preload()
     {
 
-        strapTplTest_setConf('preloadCss',1);
+        tpl_strap_setConf('preloadCss',1);
 
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -145,6 +145,39 @@ class template_strap_script_test extends DokuWikiTest
             }
         }
         return $node;
+    }
+
+
+    /**
+     *
+     * @throws Exception
+     */
+    public function test_built_bootstrap_meta()
+    {
+        $metas = tpl_strap_build_meta("4.5.0");
+        $this->assertEquals(4,sizeof($metas));
+        $this->assertEquals("bootstrap.min.css",$metas["css"]["file"]);
+
+        tpl_strap_setConf("bootstrapCustomCssFile","bootstrap.16col");
+        $metas = tpl_strap_build_meta("4.5.0");
+        $this->assertEquals(4,sizeof($metas));
+        $this->assertEquals("bootstrap.16col.min.css",$metas["css"]["file"]);
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    public function test_get_bootstrap_headers()
+    {
+        tpl_strap_reload_conf();
+        $metas = tpl_strap_get_bootstrap_headers();
+        $this->assertEquals(2,sizeof($metas));
+
+        $this->assertEquals(3,sizeof($metas['script']),"There is three js script");
+        $this->assertEquals(1,sizeof($metas['link']),"There is one css script");
+
+
     }
 
 

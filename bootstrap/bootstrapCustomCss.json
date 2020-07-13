@@ -1,0 +1,14 @@
+{
+    "4.4.1": {
+        "bootstrap.16col": {
+            "file": "bootstrap.16col.min.css",
+            "integrity": "sha384-7/QJWEBUuqkcuwRA+9t03pPgZlWIijurW5dMHOroOhOnuvLJNs/+ia7CiFz7Sws2"
+        }
+    },
+    "4.5.0": {
+        "bootstrap.16col": {
+            "file": "bootstrap.16col.min.css",
+            "integrity": "sha384-6YMUsimvBMWMU6VPmQwCKP28RrKPSaSaD48Hfabk1yxb5zQZ21XDRL/vljin9SZ3"
+        }
+    }
+}

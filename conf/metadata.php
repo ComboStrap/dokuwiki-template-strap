@@ -38,4 +38,10 @@ $meta['gridColumns']  = array('multichoice','_choices' => array('12','16'));
 $meta['heightTopBar'] = array('string');
 
 $meta['preloadCss'] = array('onoff');
+
+$meta['bootstrapCss']  = array('multichoice','_choices' => array('bootstrap.min.css','bootstrap.16col.min.css'));
+
+$customCssFiles = tpl_strap_getCustomCssFiles();
+$meta['bootstrapCustomCssFile'] = array('multichoice','_choices' => $customCssFiles);
+
 ?>
