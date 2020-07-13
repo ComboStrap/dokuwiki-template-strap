@@ -4,6 +4,8 @@
 //https://www.dokuwiki.org/devel:configuration#configuration_metadata
 
 
+use ComboStrap\TplUtility;
+
 $meta['footer'] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
@@ -42,7 +44,7 @@ $meta['preloadCss'] = array('onoff');
 
 require_once (__DIR__ . '/../TplUtility.php');
 $cssFiles=array("bootstrap.min.css");
-$cssFiles = array_merge($cssFiles, tpl_strap_get_custom_css_files());
+$cssFiles = array_merge($cssFiles, TplUtility::getCustomCssFiles());
 $meta['bootstrapCssFile'] = array('multichoice','_choices' => $cssFiles);
 
 ?>

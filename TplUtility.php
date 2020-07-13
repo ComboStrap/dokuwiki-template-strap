@@ -36,6 +36,9 @@ class TplUtility
     const LVL_MSG_SUCCESS = 1;
     const LVL_MSG_WARNING = 2;
     const LVL_MSG_DEBUG = 3;
+    const TEMPLATE_NAME = 'strap';
+
+
 
     /**
      * Print the breadcrumbs trace with Bootstrap class
