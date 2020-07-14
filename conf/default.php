@@ -49,7 +49,12 @@ $conf['bootstrapStylesheet']="bootstrap.min.css";
 
 $conf['gridColumns'] = 12;
 
-$conf['heightTopBar'] = 40;
+/**
+ * The height of the navbar when
+ * it's fixed in order to calculate the needed style
+ * @see {@link \ComboStrap\TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR
+ */
+$conf['heightFixedTopNavbar'] = 0;
 
 $conf['preloadCss'] = 0;
 

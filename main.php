@@ -84,8 +84,12 @@ include('tpl_header.php')
 <!-- Relative positioning is important for the positioning of the pagetools -->
 <div class="container mb-3 <?php echo tpl_classes() ?> " style="position: relative">
 
+    <?php
+    $topHeaderStyle = TplUtility::getStyleForFixedTopNavbar();
+
+    ?>
     <!-- To go at the top of the page, style is for the fix top page -->
-    <div id="dokuwiki__top" style="padding: 70px 0 0;margin: -80px 0 10px;"></div>
+    <div id="dokuwiki__top" style="<?php echo $topHeaderStyle ?>"></div>
 
     <!-- TAGLINE (TODO put in on the head) -->
     <!--    --><?php //if ($conf['tagline']): ?>

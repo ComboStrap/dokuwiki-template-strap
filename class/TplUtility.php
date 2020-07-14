@@ -110,6 +110,23 @@ class TplUtility
         return $paddingTop;
     }
 
+    /**
+     * When using a topbar, all header and top element should
+     * get this style in order to navigate correctly
+     * @return string
+     */
+    public static function getStyleForFixedTopNavbar()
+    {
+        $topHeaderStyle = "";
+        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
+        if ($heightTopBar !==0){
+            $paddingTop = 2*$heightTopBar-10;
+            $marginTop = -2*$heightTopBar;
+            $topHeaderStyle = "padding: {$paddingTop}px 0 0;margin: {$marginTop}px 0 10px;";
+        }
+        return $topHeaderStyle;
+    }
+
 
     /**
      * Hierarchical breadcrumbs
@@ -316,9 +333,18 @@ class TplUtility
     {
 
         // The version
-        $bootstrapVersion = tpl_getConf('bootstrapVersion');
+        $bootstrapVersion = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
         if ($bootstrapVersion === false) {
-            throw new Exception("Bootstrap version should not be false");
+            /**
+             * Strap may be called for test
+             * by combo
+             * In this case, the conf may not be reloaded
+             */
+            self::reloadConf();
+            $bootstrapVersion = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+            if ($bootstrapVersion === false) {
+                throw new Exception("Bootstrap version should not be false");
+            }
         }
         $scriptsMeta = self::buildBootstrapMetas($bootstrapVersion);
 

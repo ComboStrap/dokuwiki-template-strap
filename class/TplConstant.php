@@ -34,6 +34,7 @@ class TplConstant
     const CONF_FOOTER = "footerbar";
     const CONF_HEADER = "headerbar";
     const CONF_SIDEKICK = "sidekickbar";
+    const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
 
 
 }
