@@ -5,8 +5,9 @@
  */
 
 //Library of template function
-use ComboStrap\TplUtility;
+use ComboStrap\TplConstant;use ComboStrap\TplUtility;
 require_once(__DIR__.'/class/TplUtility.php');
+require_once(__DIR__.'/class/TplConstant.php');
 
 global $lang;
 
@@ -101,15 +102,16 @@ header('X-UA-Compatible: IE=edge,chrome=1');
         <!-- The stylesheet (before indexer work and script at the end) -->
         <?php
         global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
-
-        foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
-            $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
-            if ($link['crossorigin'] != "") {
-                $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
+        if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
+            foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
+                $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
+                if ($link['crossorigin'] != "") {
+                    $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
+                }
+                // No integrity here
+                $htmlLink .= '>';
+                ptln($htmlLink);
             }
-            // No integrity here
-            $htmlLink .= '>';
-            ptln($htmlLink);
         }
         ?>
     </div>

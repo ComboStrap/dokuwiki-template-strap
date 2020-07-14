@@ -16,7 +16,6 @@ use Doku_Event;
 use dokuwiki\Extension\Event;
 
 
-use DateTime;
 use Exception;
 
 /**
