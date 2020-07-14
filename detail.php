@@ -6,7 +6,7 @@
 
 //Library of template function
 use ComboStrap\TplUtility;
-require_once('TplUtility.php');
+require_once(__DIR__.'/class/TplUtility.php');
 
 global $lang;
 
