@@ -407,7 +407,7 @@ class TplUtility
         if ($bootstrapCustomMetas == null) {
             self::msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
         }
-        $bootstrapLocalJsonFile = __DIR__ . '/bootstrap/bootstrapLocal.json';
+        $bootstrapLocalJsonFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
         if (file_exists($bootstrapLocalJsonFile)) {
             $bootstrapLocalMetas = json_decode(file_get_contents($bootstrapLocalJsonFile), $jsonAsArray);
             if ($bootstrapLocalMetas == null) {
@@ -418,7 +418,7 @@ class TplUtility
 
         if (isset($version)) {
             if (!isset($bootstrapCustomMetas[$version])) {
-                tpl_strap_msg("The bootstrap version ($version) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile)");
+                self::msg("The bootstrap version ($version) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile)");
             } else {
                 $bootstrapCustomMetas = $bootstrapCustomMetas[$version];
             }
@@ -513,6 +513,7 @@ class TplUtility
                                 case 'stylesheet':
 
                                     // Take the stylesheet to load them at the end
+                                    global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
                                     $DOKU_TPL_BOOTIE_PRELOAD_CSS[] = $linkData;
 
                                     // Change the loading mechanism to preload

@@ -168,14 +168,14 @@ class template_strap_script_test extends DokuWikiTest
          * Script signature
          */
         $version = tpl_getConf('bootstrapVersion');
-        $localDirPattern =  '\/lib\/tpl\/strap\/bootstrap\/' . $version ;
-        $scriptsSignature = ["jquery.php","$localDirPattern\/popper.min.js", "$localDirPattern\/bootstrap.min.js", 'JSINFO', 'js.php'];
+
+        $scriptsSignature = ["jquery.php","cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
         $this->checkMeta($response,  'script',"src",$scriptsSignature,"Logged in");
 
         /**
          * Stylesheet signature (href)
          */
-        $stylsheetSignature = ["$localDirPattern\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
+        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
         $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Logged in");
 
 
