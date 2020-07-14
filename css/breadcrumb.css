@@ -15,7 +15,7 @@
 
 #breadcrumb a {
     color: #676464 !important;
-    z-index: 100 !important;
+    z-index: 10 !important;
 }
 
 #breadCrumbTitle {

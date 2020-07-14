@@ -1,7 +1,7 @@
 <?php
 
 use ComboStrap\TplUtility;
-require_once('TplUtility.php');
+require_once(__DIR__.'/class/TplUtility.php');
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();

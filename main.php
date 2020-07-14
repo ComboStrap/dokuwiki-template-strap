@@ -10,8 +10,8 @@ use dokuwiki\Menu\PageMenu;
 use dokuwiki\Menu\SiteMenu;
 use dokuwiki\Menu\UserMenu;
 
-require_once(__DIR__.'/class/TplUtility.php');
-require_once(__DIR__.'/class/TplConstant.php');
+require_once(__DIR__ . '/class/TplUtility.php');
+require_once(__DIR__ . '/class/TplConstant.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 header('X-UA-Compatible: IE=edge,chrome=1');
@@ -44,7 +44,6 @@ global $EVENT_HANDLER;
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders'));
 
 
-
 ?>
 
 <!DOCTYPE html >
@@ -73,6 +72,21 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\C
 
 
 <?php
+/**
+ * In case of fix top bar
+ */
+$topHeaderStyle = TplUtility::getStyleForFixedTopNavbar();
+if ($topHeaderStyle !== "") {
+    ?>
+    <style>
+        main > h1, main > h2, main > h3, main > h4, main h5 {
+            <?php echo $topHeaderStyle ?>
+        }
+    </style>
+    <?php
+}
+
+
 // The header (used also in detail.php)
 include('tpl_header.php')
 ?>
@@ -84,10 +98,7 @@ include('tpl_header.php')
 <!-- Relative positioning is important for the positioning of the pagetools -->
 <div class="container mb-3 <?php echo tpl_classes() ?> " style="position: relative">
 
-    <?php
-    $topHeaderStyle = TplUtility::getStyleForFixedTopNavbar();
 
-    ?>
     <!-- To go at the top of the page, style is for the fix top page -->
     <div id="dokuwiki__top" style="<?php echo $topHeaderStyle ?>"></div>
 
@@ -130,7 +141,7 @@ include('tpl_header.php')
 
 
         <main role="main"
-              class="col-md-<?php echo($mainGridScale) ?> order-first pl-md-4 pr-md-4">
+              class="col-md-<?php echo($mainGridScale) ?> order-first">
 
 
             <!-- The content: Show, Edit, .... -->

@@ -29,12 +29,12 @@ $lang[TplConstant::CONF_REM_SIZE] = '<a href="https://combostrap.com/length/scal
 $lang[TplConstant::CONF_GRID_COLUMNS] = '<a href="https://combostrap.com/dynamic/grid">Dynamic Grid</a> - The number of columns in the grid';
 
 
-$lang['heightTopBar'] = 'The height of the top bar in pixel';
+$lang[TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR] = '<a href="https://combostrap.com/top/navbar">Fixed-top Navbar</a> - The height of the top bar in pixel (40px normally)';
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
 $lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
 
-$lang['bootstrapVersion'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
+$lang[TplConstant::CONF_BOOTSTRAP_VERSION] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
 $lang[TplConstant::CONF_BOOTSTRAP_STYLESHEET] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap Stylesheet';
 
 ?>

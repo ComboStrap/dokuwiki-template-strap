@@ -60,7 +60,7 @@ class TplUtility
 
         $crumbs = breadcrumbs(); //setup crumb trace
 
-        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="ml-3 mr-3 mb-3">' . PHP_EOL;
+        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3">' . PHP_EOL;
 
         $last = count($crumbs);
         $i = 0;
@@ -96,33 +96,39 @@ class TplUtility
     }
 
     /**
-     * Return the padding top in pixel
+     *
+     * Return the padding top in pixel that must be applied when using a top bar
      * @return int
      */
     public static function getPaddingTop()
     {
         // The padding top for the top fix bar
         $paddingTop = 0;
-        $heightTopBar = tpl_getConf('heightTopBar',0);
+        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR,0);
         if ($heightTopBar!=0){
-            $paddingTop = $heightTopBar + 30;
+            $paddingTop = $heightTopBar + 10;
         }
         return $paddingTop;
     }
+
+
 
     /**
      * When using a topbar, all header and top element should
      * get this style in order to navigate correctly
      * @return string
+     * As the top-nav-bar is fix, the two below values must be equal to the navbar offset
+     * in order to get a correct navigation to the anchor
+     * See http://stackoverflow.com/questions/17181355/boostrap-using-fixed-navbar-and-anchor-tags-to-jump-to-sections
      */
     public static function getStyleForFixedTopNavbar()
     {
         $topHeaderStyle = "";
         $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
         if ($heightTopBar !==0){
-            $paddingTop = 2*$heightTopBar-10;
+            $paddingTop = 2*$heightTopBar;
             $marginTop = -2*$heightTopBar;
-            $topHeaderStyle = "padding: {$paddingTop}px 0 0;margin: {$marginTop}px 0 10px;";
+            $topHeaderStyle = "padding: {$paddingTop}px 0 0;margin: {$marginTop}px 0 10px;z-index:0";
         }
         return $topHeaderStyle;
     }
