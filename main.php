@@ -64,7 +64,7 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\C
 
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-    <?php TplUtility::renderFaviconMetaLinks() ?>
+    <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
 
 </head>

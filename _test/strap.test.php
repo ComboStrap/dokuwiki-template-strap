@@ -278,20 +278,21 @@ class template_strap_script_test extends DokuWikiTest
 
     }
 
+
     /**
      * Test that a detail page is rendering
      */
-    public function test_detail_php()
+    public function test_favicon()
     {
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
         idx_addPage($pageId);
 
         $request = new TestRequest();
-        $response = $request->get(array('id' => $pageId, '/detail.php'));
+        $response = $request->get(array('id' => $pageId));
 
-        $generator = $response->queryHTML('meta[name="generator"]')->attr("content");
-        $this->assertEquals("DokuWiki", $generator);
+        $generator = $response->queryHTML('link[rel="shortcut icon"]')->count();
+        $this->assertEquals(1, $generator);
 
     }
 
