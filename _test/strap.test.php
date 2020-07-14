@@ -1,10 +1,11 @@
 <?php
 
 use ComboStrap\DomUtility;
+use ComboStrap\TplConstant;
 use ComboStrap\TplUtility;
 
-require_once(__DIR__ . '/../TplUtility.php');
-require_once(__DIR__ . '/../DomUtility.php');
+require_once(__DIR__ . '/../class/TplUtility.php');
+require_once(__DIR__ . '/../class/DomUtility.php');
 
 /**
  *
@@ -20,40 +21,33 @@ class template_strap_script_test extends DokuWikiTest
      * An utilit function that test if the headers meta are still
      * on the page (ie response)
      * @param TestResponse $response
-     * @param string $loginType
-     * @param $scriptSignatures
+     * @param $selector - the DOM elementselector
+     * @param $attr - the attribute to check
+     * @param $scriptSignatures - the pattern signature to find
+     * @param string $loginType - the login type (anonymous, logged in, ...)
      */
-    private function checkMeta(TestResponse $response, $loginType, $scriptSignatures)
+    private function checkMeta(TestResponse $response, $selector, $attr, $scriptSignatures,$loginType )
     {
-        // No Css preloading
-        $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
-        $this->assertEquals(0, sizeof($stylesheets));
 
-        // Stylesheet
-        $stylesheets = $response->queryHTML('link[rel="stylesheet"]')->get();
-        $this->assertEquals(2, sizeof($stylesheets),"Two stylesheets for ${loginType}");
-        $node = DomUtility::domElements2Attributes($stylesheets);
-        $version = tpl_getConf('bootstrapVersion');
-        $this->assertEquals('/./lib/tpl/strap/bootstrap/' . $version . '/bootstrap.min.css', $node[1]["href"]);
-        $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
-        $this->assertEquals(0, $post, "The css php file is present for ${loginType}");
 
         /**
          * @var array|DomElement $scripts
          */
-        $scripts = $response->queryHTML('script')->get();
+        $domElements = $response->queryHTML($selector)->get();
+
         foreach ($scriptSignatures as $signatureToFind) {
-            $strpos = false;
-            foreach ($scripts as $script) {
-                $haystack = $script->getAttribute("src") . $script->textContent;
-                $strpos = strpos($haystack, $signatureToFind);
-                if ($strpos !== false){
+            $patternFound = 0;
+            foreach ($domElements as $domElement) {
+                $haystack = $domElement->getAttribute($attr) . $domElement->textContent;
+                $patternFound = preg_match("/$signatureToFind/i", $haystack);
+                if ($patternFound===1) {
                     break;
                 }
             }
-            $this->assertTrue($strpos !== false, "Unable to find ($signatureToFind) for ${loginType}");
+            $this->assertTrue($patternFound !== 0, "Unable to find ($signatureToFind) for ${loginType}");
         }
-        $this->assertEquals(5, sizeof($scripts));
+
+        $this->assertEquals(sizeof($scriptSignatures), sizeof($domElements),"The number of signatures should be the same for ($selector)");
 
     }
 
@@ -74,11 +68,11 @@ class template_strap_script_test extends DokuWikiTest
 
 
     /**
-     * A simple test to test that the template is working
-     * on every language
+     * Test the default configuration
+     *
      * Test the {@link \Combostrap\TplUtility::handleBootstrapMetaHeaders()} function
      */
-    public function test_handleBootStrapMetaHeaders_anonymous()
+    public function test_handleBootStrapMetaHeaders_anonymous_default()
     {
 
         // Anonymous
@@ -88,13 +82,68 @@ class template_strap_script_test extends DokuWikiTest
 
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId, '/doku.php'));
-        $scriptsSignature = ['code.jquery.com/jquery', 'popper.min.js', 'bootstrap.min.js', 'JSINFO', 'js.php'];
-        $this->checkMeta($response, "Anonymous",$scriptsSignature);
+
+        $cdn = tpl_getConf(TplConstant::CONF_USE_CDN);
+        $this->assertEquals(1,$cdn,"The CDN is by default on");
+
+        /**
+         * Script signature
+         * CDN is on by default
+         *
+         * js.php is needed for custom script such as a consent box
+         */
+        $version = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+        $scriptsSignature = ["jquery.com\/jquery-(.*).js", "cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
+        $this->checkMeta($response,  'script',"src",$scriptsSignature,"Anonymous");
+
+        /**
+         * Stylesheet signature (href)
+         */
+        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
+        $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Anonymous");
 
 
     }
 
-    public function test_handleBootStrapMetaHeaders_loggedin()
+    /**
+     * @throws Exception
+     */
+    public function test_handleBootStrapMetaHeaders_anonymous_nocdn()
+    {
+
+        /**
+         * CDN is on by default, disable
+         */
+        TplUtility::setConf(TplConstant::CONF_USE_CDN,0);
+
+        // Anonymous
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+        /**
+         * Script signature
+         */
+        $version = tpl_getConf('bootstrapVersion');
+        $localDirPattern =  '\/lib\/tpl\/strap\/bootstrap\/' . $version ;
+        $scriptsSignature = ["$localDirPattern\/jquery-(.*).js", "$localDirPattern\/popper.min.js", "$localDirPattern\/bootstrap.min.js", 'JSINFO', 'js.php'];
+        $this->checkMeta($response,  'script',"src",$scriptsSignature,"Anonymous");
+
+        /**
+         * Stylesheet signature (href)
+         */
+        $stylsheetSignature = ["$localDirPattern\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
+        $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Anonymous");
+
+    }
+
+    /**
+     * When a user is logged in, the CDN is no more
+     */
+    public function test_handleBootStrapMetaHeaders_loggedin_default()
     {
 
         $pageId = 'start';
@@ -108,8 +157,26 @@ class template_strap_script_test extends DokuWikiTest
         $request = new TestRequest();
         $request->setServer('REMOTE_USER', $user);
         $response = $request->get(array('id' => $pageId, '/doku.php'));
-        $scriptsSignature = ['jquery.php', 'popper.min.js', 'bootstrap.min.js', 'JSINFO', 'js.php'];
-        $this->checkMeta($response,  "Logged in",$scriptsSignature);
+
+        /**
+         * No Css preloading
+         */
+        $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
+        $this->assertEquals(0, sizeof($stylesheets));
+
+        /**
+         * Script signature
+         */
+        $version = tpl_getConf('bootstrapVersion');
+        $localDirPattern =  '\/lib\/tpl\/strap\/bootstrap\/' . $version ;
+        $scriptsSignature = ["jquery.php","$localDirPattern\/popper.min.js", "$localDirPattern\/bootstrap.min.js", 'JSINFO', 'js.php'];
+        $this->checkMeta($response,  'script',"src",$scriptsSignature,"Logged in");
+
+        /**
+         * Stylesheet signature (href)
+         */
+        $stylsheetSignature = ["$localDirPattern\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
+        $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Logged in");
 
 
     }
@@ -119,7 +186,7 @@ class template_strap_script_test extends DokuWikiTest
      *
      * @throws Exception
      */
-    public function test_css_preload()
+    public function test_css_preload_anonymous()
     {
 
         TplUtility::setConf('preloadCss', 1);
@@ -147,10 +214,10 @@ class template_strap_script_test extends DokuWikiTest
 
         $this->assertEquals(2, sizeof($node), "The stylesheet count should be 2");
 
-        $version = tpl_getConf('bootstrapVersion');
-        $post = strpos($node[0]["href"], '/./lib/exe/css.php?t=strap');
-        $this->assertEquals(0, $post, "The css php file is present");
-        $this->assertEquals('/./lib/tpl/strap/bootstrap/' . $version . '/bootstrap.min.css', $node[1]["href"]);
+        $version = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
+        $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Anonymous");
+
 
 
     }
@@ -278,6 +345,8 @@ class template_strap_script_test extends DokuWikiTest
         $this->assertEquals(1, $toolbarCount);
 
     }
+
+
 
 
 }

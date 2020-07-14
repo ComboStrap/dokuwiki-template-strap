@@ -10,6 +10,8 @@
  *
  */
 
+use ComboStrap\TplConstant;
+
 /**
  * Template footer, included in the main and detail files
  */
@@ -21,7 +23,7 @@ if (!defined('DOKU_INC')) die();
 
 <?php
 $domain = "https://combostrap.com";
-$footerPageName = tpl_getConf('footer');
+$footerPageName = tpl_getConf(TplConstant::CONF_FOOTER);
 if (page_findnearest($footerPageName)) {
     tpl_flush();
     tpl_include_page($footerPageName, 1, 1);

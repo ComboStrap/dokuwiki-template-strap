@@ -9,22 +9,25 @@
  * @author   ComboStrap <support@combostrap.com>
  *
  */
+require_once(__DIR__.'/../../class/TplConstant.php');
+
+use ComboStrap\TplConstant;
 
 $lang['debug'] = 'Enable the rendering / processing of debug information';
 
 // for the configuration manager
-$lang['footer'] = 'The name of the footer page to search';
-$lang['header'] = 'The name of the header page to search';
+$lang[TplConstant::CONF_FOOTER] = '<a href="https://combostrap.com/footerbor">Footer bar</a> - The name of the footer page to search';
+$lang[TplConstant::CONF_HEADER] = '<a href="https://combostrap.com/headerbor">Header bar</a> - The name of the header page to search';
+$lang[TplConstant::CONF_SIDEKICK] = '<a href="https://combostrap.com/sidekickbor">Sidekick bar</a> - The name of the right sidebar page';
+
+$lang[TplConstant::CONF_USE_CDN] = '<a href="https://combostrap.com/cdn">CDN</a> - Use a frontend CDN for the Bootstrap files';
+
+$lang[TplConstant::CONF_REM_SIZE] = '<a href="https://combostrap.com/length/scale">Length Scale</a> - This configuration define in pixels the value of 1 rem';
 
 
-$lang['cdn'] = 'Use a CDN for the Javascript and Stylesheet';
 
-$lang['rem'] = '<a href="https://combostrap.com/length/scale">Length Scale</a> - This configuration define in pixels the value of 1 rem';
+$lang[TplConstant::CONF_GRID_COLUMNS] = '<a href="https://combostrap.com/dynamic/grid">Dynamic Grid</a> - The number of columns in the grid';
 
-
-
-$lang['gridColumns'] = '<a href="https://combostrap.com/dynamic/grid">Dynamic Grid</a> - The number of columns in the grid';
-$lang['sidekickbar'] = '<a href="https://combostrap.com/sidekickbar">Sidekick bar</a> - The name of the right sidebar page';
 
 $lang['heightTopBar'] = 'The height of the top bar in pixel';
 
@@ -32,6 +35,6 @@ $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optim
 $lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
 
 $lang['bootstrapVersion'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
-$lang['bootstrapStylesheet'] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap Stylesheet';
+$lang[TplConstant::CONF_BOOTSTRAP_STYLESHEET] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap Stylesheet';
 
 ?>

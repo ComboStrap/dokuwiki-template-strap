@@ -48,7 +48,7 @@ The configuration can be change with the [Configuration Manager Plugin](https://
 
 For developers
 
-The function `tpl_strap_meta_header` found in the file [tpl_lib_strap](TplUtility.php)
+The function `tpl_strap_meta_header` found in the file [tpl_lib_strap](class/TplUtility.php)
 
   * control the headers and is call via the registration of the event `TPL_METAHEADER_OUTPUT`
   * control the Jquery version. Not logged in, Bootstrap, logged in Dokuwiki (with ui,..)

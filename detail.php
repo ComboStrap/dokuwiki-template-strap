@@ -56,7 +56,7 @@ header('X-UA-Compatible: IE=edge,chrome=1');
             <!-- Must contain One row -->
             <div class="row">
 
-				<div role="main" class="col-md-<?php tpl_getConf('gridColumns')?>">
+				<div role="main" class="col-md-<?php tpl_getConf(TplConstant::CONF_GRID_COLUMNS)?>">
                     <!-- ********** CONTENT ********** -->
 
 

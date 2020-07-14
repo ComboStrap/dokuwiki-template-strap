@@ -4,6 +4,8 @@
  */
 
 // must be run from within DokuWiki
+use ComboStrap\TplConstant;
+
 if (!defined('DOKU_INC')) die();
 
 global $conf;
@@ -13,7 +15,7 @@ global $conf;
 
 
 <?php
-$navBarPageName = tpl_getConf('header');
+$navBarPageName = tpl_getConf(TplConstant::CONF_HEADER);
 if (page_findnearest($navBarPageName)) {
     tpl_flush();
     tpl_include_page($navBarPageName, 1, 1);

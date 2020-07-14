@@ -323,7 +323,7 @@ class TplUtility
         $scriptsMeta = self::buildBootstrapMetas($bootstrapVersion);
 
         // if cdn
-        $useCdn = tpl_getConf('cdn');
+        $useCdn = tpl_getConf(TplConstant::CONF_USE_CDN);
 
 
         // Build the returned Js script array
@@ -341,7 +341,7 @@ class TplUtility
                 $jsScripts[$key] =
                     array(
                         'src' => $src,
-                        'defer' => true
+                        'defer' => "true"
                     );
                 if (isset($script['integrity'])) {
                     $jsScripts[$key]['integrity'] = $script['integrity'];
@@ -402,7 +402,7 @@ class TplUtility
     {
 
         $jsonAsArray = true;
-        $bootstrapCustomJsonFile = __DIR__ . '/bootstrap/bootstrapCustom.json';
+        $bootstrapCustomJsonFile = __DIR__ . '/../bootstrap/bootstrapCustom.json';
         $bootstrapCustomMetas = json_decode(file_get_contents($bootstrapCustomJsonFile), $jsonAsArray);
         if ($bootstrapCustomMetas == null) {
             self::msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
@@ -437,7 +437,7 @@ class TplUtility
     {
 
         $jsonAsArray = true;
-        $bootstrapJsonFile = __DIR__ . '/bootstrap/bootstrap.json';
+        $bootstrapJsonFile = __DIR__ . '/../bootstrap/bootstrap.json';
         $bootstrapMetas = json_decode(file_get_contents($bootstrapJsonFile), $jsonAsArray);
         // Decodage problem
         if ($bootstrapMetas == null) {
@@ -452,7 +452,7 @@ class TplUtility
 
 
         // Css
-        $bootstrapCssFile = tpl_getConf('bootstrapStylesheet');
+        $bootstrapCssFile = tpl_getConf(TplConstant::CONF_BOOTSTRAP_STYLESHEET);
         if ($bootstrapCssFile != "bootstrap.min.css") {
 
             $bootstrapCustomMetas = self::getCustomCssMeta($version);
@@ -559,7 +559,7 @@ class TplUtility
                         // We take the Jqueries of doku and we add Bootstrap
                         $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
                         $newScriptData[] = $bootstrapHeaders[$headerType]['popper'];
-                        $newScriptData[] = $bootstrapHeaders[$headerType]['bootstrap'];
+                        $newScriptData[] = $bootstrapHeaders[$headerType]['js'];
                     }
 
 
@@ -697,7 +697,7 @@ class TplUtility
      * @param int $level - the level see LVL constant
      * @param string $canonical - the canonical
      */
-    function msg($message, $level = self::LVL_MSG_ERROR, $canonical = null)
+    static function msg($message, $level = self::LVL_MSG_ERROR, $canonical = null)
     {
         $prefix = '<a href="https://combostrap.com/strap">Strap</a>';
         if ($canonical != null) {

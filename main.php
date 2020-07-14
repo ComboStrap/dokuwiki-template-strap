@@ -3,13 +3,15 @@
 
 //Library of template function
 
+use ComboStrap\TplConstant;
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 use dokuwiki\Menu\PageMenu;
 use dokuwiki\Menu\SiteMenu;
 use dokuwiki\Menu\UserMenu;
 
-require_once('TplUtility.php');
+require_once(__DIR__.'/class/TplUtility.php');
+require_once(__DIR__.'/class/TplConstant.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 header('X-UA-Compatible: IE=edge,chrome=1');
@@ -26,10 +28,10 @@ $DOKU_TPL_BOOTIE_PRELOAD_CSS = array();
 $hasSidebar = page_findnearest($conf['sidebar']);
 $showSidebar = $hasSidebar && ($ACT == 'show');
 
-$hasRightSidebar = page_findnearest(tpl_getConf('sidekickbar'));
+$hasRightSidebar = page_findnearest(tpl_getConf(TplConstant::CONF_SIDEKICK));
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 
-$gridColumns = tpl_getConf('gridColumns');
+$gridColumns = tpl_getConf(TplConstant::CONF_GRID_COLUMNS);
 $sidebarScale = 3;
 $sideKickBarScale = 3;
 if ($showSidebar) {
@@ -151,7 +153,7 @@ include('tpl_header.php')
 
                     <?php tpl_flush() ?>
 
-                    <?php tpl_include_page(tpl_getConf('sidekickbar'), 1, 1) ?>
+                    <?php tpl_include_page(tpl_getConf(TplConstant::CONF_SIDEKICK), 1, 1) ?>
 
                     <!--                    <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>-->
 

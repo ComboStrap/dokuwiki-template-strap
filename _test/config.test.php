@@ -5,7 +5,7 @@ use ComboStrap\TplUtility;
 use dokuwiki\plugin\config\core\ConfigParser;
 use dokuwiki\plugin\config\core\Loader;
 
-require_once(__DIR__ . '/../TplUtility.php');
+require_once(__DIR__ . '/../class/TplUtility.php');
 
 
 
