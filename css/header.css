@@ -2,15 +2,13 @@
 
 div.dokuwiki h1, div.dokuwiki h2, div.dokuwiki h3, div.dokuwiki h4, div.dokuwiki h5 {
     background-color: inherit;
-    /*text-decoration: underline; underline property cross hackes whereas border does not*/
-    width: -moz-max-content;
     /* The content will go outside of the parent
      The border will stop to the end of the content */
     /*noinspection CssInvalidPropertyValue*/
-    /* width: -webkit-max-content; disable text-center:align */
     /* The content may become so long that it goes outside the parent
     max width prevent it */
     max-width: 100%;
+    width: fit-content;
     /* The border will stop to the end of the content
     - Pb: The content will go outside of the parent*/
     border-bottom: 1px solid #8cacbb;

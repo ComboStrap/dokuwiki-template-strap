@@ -79,7 +79,7 @@ if ($topHeaderStyle !== "") {
     ?>
     <style>
         main > h1, main > h2, main > h3, main > h4, main h5 {
-            <?php echo $topHeaderStyle ?>
+        <?php echo $topHeaderStyle ?>
         }
     </style>
     <?php
@@ -116,9 +116,7 @@ include('tpl_header.php')
     ?>
 
     <?php
-    if ($conf['youarehere']) {
-        TplUtility::renderTrailBreadcrumb();
-    }
+    TplUtility::renderTrailBreadcrumb();
     ?>
 
     <div class="row">
