@@ -7,7 +7,7 @@ div.dokuwiki h1, div.dokuwiki h2, div.dokuwiki h3, div.dokuwiki h4, div.dokuwiki
     /* The content will go outside of the parent
      The border will stop to the end of the content */
     /*noinspection CssInvalidPropertyValue*/
-    width: -webkit-max-content;
+    /* width: -webkit-max-content; disable text-center:align */
     /* The content may become so long that it goes outside the parent
     max width prevent it */
     max-width: 100%;
