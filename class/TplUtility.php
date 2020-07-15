@@ -61,17 +61,17 @@ class TplUtility
 
         echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3">' . PHP_EOL;
 
-        $last = count($crumbs);
         $i = 0;
         // Try to get the template custom breadcrumb
-        $breadCrumb = tpl_getLang('breadcrumb');
-        if ($breadCrumb == '') {
-            // If not present for the language, get the default one
-            $breadCrumb = $lang['breadcrumb'];
-        }
+        // $breadCrumb = tpl_getLang('breadcrumb');
+        // if ($breadCrumb == '') {
+        //    // If not present for the language, get the default one
+        //    $breadCrumb = $lang['breadcrumb'];
+        // }
 
-        echo '<span id="breadCrumbTitle" ">' . $breadCrumb . ':   </span>' . PHP_EOL;
-        echo '<ol class="breadcrumb justify-content-start m-0 p-0 pb-1">' . PHP_EOL;
+        // echo '<span id="breadCrumbTitle" ">' . $breadCrumb . ':   </span>' . PHP_EOL;
+        echo '<ol class="breadcrumb py-1 px-2" style="background-color:unset">' . PHP_EOL;
+        print '<li class="pr-2" style="display:flex;font-weight: 200">Navigational History :</li>';
 
         foreach ($crumbs as $id => $name) {
             $i++;
