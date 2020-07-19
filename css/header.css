@@ -8,10 +8,7 @@ div.dokuwiki h1, div.dokuwiki h2, div.dokuwiki h3, div.dokuwiki h4, div.dokuwiki
     /* The content may become so long that it goes outside the parent
     max width prevent it */
     max-width: 100%;
-    width: fit-content;
-    /* The border will stop to the end of the content
-    - Pb: The content will go outside of the parent*/
-    border-bottom: 1px solid #8cacbb;
+    text-decoration: underline #8cacbb solid;
     clear: left;
     color: #000;
     font-size: 100%;
