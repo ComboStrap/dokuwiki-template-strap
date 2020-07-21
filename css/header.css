@@ -1,6 +1,6 @@
 /*Header and level*/
 
-div.dokuwiki h1, div.dokuwiki h2, div.dokuwiki h3, div.dokuwiki h4, div.dokuwiki h5 {
+main > h1, main > h2, main > h3, main > h4, main > h5 {
     background-color: inherit;
     /* The content will go outside of the parent
      The border will stop to the end of the content */
@@ -17,51 +17,51 @@ div.dokuwiki h1, div.dokuwiki h2, div.dokuwiki h3, div.dokuwiki h4, div.dokuwiki
 
 
 
-div.dokuwiki h1 {
+main > h1 {
     font-size: 160%;
     font-weight: bold;
     margin-left: 0;
 }
 
-div.dokuwiki div.level1 {
+main > div.level1 {
     margin-left: 0px;
 }
 
-div.dokuwiki h2 {
+main > h2 {
     font-size: 150%;
     margin-left: 0px;
     margin-bottom: 1rem!important;
 }
-div.dokuwiki div.level2 {
+main > div.level2 {
     margin-left: 0px;
 }
-div.dokuwiki h3 {
+main > h3 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 140%;
     font-weight: bold;
     margin-left: 15px;
 }
-div.dokuwiki div.level3 {
+main > div.level3 {
     margin-left: 15px;
 }
 
-div.dokuwiki h4 {
+main > h4 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 120%;
     font-weight: bold;
     margin-left: 30px;
 }
-div.dokuwiki div.level4 {
+main > div.level4 {
     margin-left: 30px;
 }
 
-div.dokuwiki h5 {
+main > h5 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 100%;
     font-weight: bold;
     margin-left: 45px;
 }
-div.dokuwiki div.level5 {
+main > div.level5 {
     margin-left: 45px;
 }
 
@@ -74,67 +74,43 @@ div.dokuwiki div.level5 {
 	}
 
 
-	div.dokuwiki h2 {
+	main > h2 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki div.level2 {
+	main > div.level2 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki h3 {
+	main > h3 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki div.level3 {
+	main > div.level3 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki h4 {
+	main > h4 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki div.level4 {
+	main > div.level4 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki h5 {
+	main > h5 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki div.level5 {
+	main > div.level5 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki h6 {
+	main > h6 {
 		margin-left: 0px;
 	}
 
-	div.dokuwiki div.level6 {
-		margin-left: 0px;
-	}
-
-	div.dokuwiki h7 {
-		margin-left: 0px;
-	}
-
-	div.dokuwiki div.level7 {
-		margin-left: 0px;
-	}
-
-	div.dokuwiki h8 {
-		margin-left: 0px;
-	}
-
-	div.dokuwiki div.level8 {
-		margin-left: 0px;
-	}
-
-	div.dokuwiki h9 {
-		margin-left: 0px;
-	}
-
-	div.dokuwiki div.level9 {
+	main > div.level6 {
 		margin-left: 0px;
 	}
 

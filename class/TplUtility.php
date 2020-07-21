@@ -84,7 +84,7 @@ class TplUtility
             if ($name == "start") {
                 $name = "Home";
             }
-            tpl_link(wl($id), hsc($name), 'title="' . $name . '" style="width: 100%;"');
+            tpl_link(wl($id), hsc($name), 'title="' . $name . '" style="width: 100%;z-index:10"');
 
             print '</li>' . PHP_EOL;
 
@@ -127,7 +127,7 @@ class TplUtility
         if ($heightTopBar !==0){
             $paddingTop = 2*$heightTopBar;
             $marginTop = -2*$heightTopBar;
-            $topHeaderStyle = "padding: {$paddingTop}px 0 0;margin: {$marginTop}px 0 10px;z-index:0";
+            $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
         }
         return $topHeaderStyle;
     }
