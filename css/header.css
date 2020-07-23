@@ -1,6 +1,13 @@
 /*Header and level*/
 
-main > h1, main > h2, main > h3, main > h4, main > h5 {
+/*
+Section Highlight is a wrapper added when hovering around the edit button by the page.js file
+See sectionHighlight function
+*/
+
+main > h1, main > h2, main > h3, main > h4, main > h5, main > h6,
+main > .section_highlight > h1, main > .section_highlight > h2, main > .section_highlight > h3, main > .section_highlight > h4, main > .section_highlight  > h5
+ {
     background-color: inherit;
     /* The content will go outside of the parent
      The border will stop to the end of the content */
@@ -16,52 +23,62 @@ main > h1, main > h2, main > h3, main > h4, main > h5 {
 }
 
 
-
-main > h1 {
+main > h1,
+main > .section_highlight  > h1 {
     font-size: 160%;
     font-weight: bold;
     margin-left: 0;
 }
 
-main > div.level1 {
+main > div.level1,
+main > .section_highlight > div.level1{
     margin-left: 0px;
 }
 
-main > h2 {
+main > h2 ,
+main > .section_highlight  > h2  {
     font-size: 150%;
     margin-left: 0px;
     margin-bottom: 1rem!important;
 }
-main > div.level2 {
+main > div.level2,
+main > .section_highlight > div.level2 {
     margin-left: 0px;
 }
-main > h3 {
+
+main > h3,
+main > .section_highlight  > h3 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 140%;
     font-weight: bold;
     margin-left: 15px;
 }
-main > div.level3 {
+main > div.level3,
+main > .section_highlight > div.level3 {
     margin-left: 15px;
 }
 
-main > h4 {
+main > h4,
+main > .section_highlight  > h4 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 120%;
     font-weight: bold;
     margin-left: 30px;
 }
-main > div.level4 {
+main > div.level4,
+main > .section_highlight > div.level3 {
     margin-left: 30px;
 }
 
-main > h5 {
+main > h5,
+main > .section_highlight  > h5 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 100%;
     font-weight: bold;
     margin-left: 45px;
 }
-main > div.level5 {
+main > div.level5,
+main > .section_highlight > div.level5 {
     margin-left: 45px;
 }
 
@@ -114,4 +131,12 @@ main > div.level5 {
 		margin-left: 0px;
 	}
 
+}
+
+/* style for section highlighting */
+main > div.section_highlight {
+    margin: 0 -1em; /* negative side margin = side padding + side border */
+    padding: 0 .5em;
+    border: solid #f8f9fa;
+    border-width: 0 .5em;
 }
