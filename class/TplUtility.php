@@ -125,7 +125,7 @@ class TplUtility
         $topHeaderStyle = "";
         $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
         if ($heightTopBar !==0){
-            $paddingTop = 2*$heightTopBar;
+            $paddingTop = 2*$heightTopBar+10; // + 10 to get the message area not below the topnavbar
             $marginTop = -2*$heightTopBar;
             $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
         }
