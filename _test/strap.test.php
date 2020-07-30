@@ -6,6 +6,7 @@ use ComboStrap\TplUtility;
 
 require_once(__DIR__ . '/../class/TplUtility.php');
 require_once(__DIR__ . '/../class/DomUtility.php');
+require_once(__DIR__ . '/../class/TplConstant.php');
 
 /**
  *
@@ -106,6 +107,52 @@ class template_strap_script_test extends DokuWikiTest
     }
 
     /**
+     * Test the Jquery conf
+     *
+     * Test the {@link \Combostrap\TplUtility::handleBootstrapMetaHeaders()} function
+     * @throws Exception
+     */
+    public function test_handleBootStrapMetaHeaders_anonymous_jquery_doku()
+    {
+
+        /**
+         * Jquery is off by default, enable
+         */
+        $jqueryUI = tpl_getConf(TplConstant::CONF_JQUERY_DOKU);
+        $this->assertEquals(0,$jqueryUI,"jquery is off");
+        TplUtility::setConf(TplConstant::CONF_JQUERY_DOKU,1);
+        $jqueryUI = tpl_getConf(TplConstant::CONF_JQUERY_DOKU);
+        $this->assertEquals(1,$jqueryUI,"jquery is on");
+
+        // Anonymous
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+
+        /**
+         * Script signature
+         * CDN is on by default
+         *
+         * js.php is needed for custom script such as a consent box
+         */
+        $version = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+        $scriptsSignature = ["jquery.php","cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
+        $this->checkMeta($response,  'script',"src",$scriptsSignature,"Anonymous");
+
+        /**
+         * Stylesheet signature (href)
+         */
+        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css",'\/lib\/exe\/css.php\?t\=strap'];
+        $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Anonymous");
+
+
+    }
+
+    /**
      * @throws Exception
      */
     public function test_handleBootStrapMetaHeaders_anonymous_nocdn()
@@ -139,6 +186,8 @@ class template_strap_script_test extends DokuWikiTest
         $this->checkMeta($response,  'link[rel="stylesheet"]',"href",$stylsheetSignature,"Anonymous");
 
     }
+
+
 
     /**
      * When a user is logged in, the CDN is no more

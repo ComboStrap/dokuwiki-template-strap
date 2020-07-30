@@ -36,5 +36,10 @@ class TplConstant
     const CONF_SIDEKICK = "sidekickbar";
     const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
 
+    /**
+     * Jquery UI
+     */
+    const CONF_JQUERY_DOKU = 'jQueryDoku';
+
 
 }

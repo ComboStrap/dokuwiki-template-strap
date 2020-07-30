@@ -62,6 +62,11 @@ $conf['preloadCss'] = 0;
 
 $conf['privateToolbar'] = 0;
 
+/**
+ * @see {@link TplConstant::CONF_JQUERY_DOKU}
+ */
+$conf['jQueryDoku'] = 0;
+
 
 
 

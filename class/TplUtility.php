@@ -583,7 +583,7 @@ class TplUtility
                     }
 
                     // Add Jquery at the beginning
-                    if (empty($_SERVER['REMOTE_USER'])) {
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplConstant::CONF_JQUERY_DOKU)==0) {
                         // We take the Jquery of Bootstrap
                         $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
                     } else {

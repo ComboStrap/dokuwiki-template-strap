@@ -61,4 +61,6 @@ $cssFiles = array(TplConstant::DEFAULT_BOOTSTRAP_STYLESHEET);
 $cssFiles = array_merge($cssFiles, TplUtility::getCustomStylesheet());
 $meta[TplConstant::CONF_BOOTSTRAP_STYLESHEET] = array('multichoice','_choices' => $cssFiles);
 
+$meta[TplConstant::CONF_JQUERY_DOKU] = array('onoff');
+
 ?>
