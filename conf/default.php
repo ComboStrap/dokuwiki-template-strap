@@ -31,7 +31,7 @@ $conf['headerbar'] = 'headerbar';
  * The name of the header page to search
  * See {@link TplConstant::CONF_SIDEKICK}
  */
-$conf['sidekickbar'] = 'sideckickbar';
+$conf['sidekickbar'] = 'sidekickbar';
 
 /**
  * CDN for anonymous
