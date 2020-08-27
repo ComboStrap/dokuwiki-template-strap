@@ -12,7 +12,12 @@ global $conf;
 
 ?>
 
-
+<!--header node-->
+<!--transition: all .2s ease-->
+<!--position: absolute;-->
+<!--top: 0;-->
+<!--left: 0;-->
+<!--width: 100%;-->
 
 <?php
 $navBarPageName = tpl_getConf(TplConstant::CONF_HEADER);
@@ -37,7 +42,3 @@ if (page_findnearest($navBarPageName)) {
 
 }
 ?>
-
-
-
-
