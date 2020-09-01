@@ -9,6 +9,10 @@
  *
  */
 
+/**
+ * Icon is not always 24px
+ * https://github.com/splitbrain/dokuwiki-plugin-searchindex/issues/44
+ */
 .dokuwiki div.ui-admin ul li a span.icon {
     width: 1.5em;
     min-height: 1.5em;
@@ -16,11 +20,4 @@
     vertical-align: top;
 }
 
-/**
- * Icon is not always 24px
- * https://github.com/splitbrain/dokuwiki-plugin-searchindex/issues/44
- */
-.icon > svg {
-    width: 24px
-}
 
