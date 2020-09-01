@@ -20,4 +20,8 @@
     vertical-align: top;
 }
 
+.dokuwiki div.ui-admin .icon svg {
+    width: 24px;
+}
+
 
