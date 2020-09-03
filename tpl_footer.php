@@ -32,7 +32,7 @@ if (page_findnearest($footerPageName)) {
 }
 
 echo '<div class="mx-auto" style="width: 300px;text-align: center">';
-echo '  <i>Powered by the <a href="https://combostrap.com/strap" title="Strap Template">Strap Template</a></i>';
+echo '  <i>Powered by <a href="https://combostrap.com/" title="ComboStrap">ComboStrap</a></i>';
 echo '</div>';
 ?>
 
