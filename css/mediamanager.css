@@ -1,0 +1,6 @@
+/*
+ * Does not show the failed state of the file uploade
+ */
+.qq-upload-failed-text {
+    display: none;
+}
