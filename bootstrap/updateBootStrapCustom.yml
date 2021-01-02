@@ -13,6 +13,8 @@ flow:
                 - logicalName
                 - name
                 - sha384_integrity
+    -   name: "Print"
+        op: "print"
     -   name: "Json"
         op: "template"
         args:
@@ -27,5 +29,9 @@ flow:
                             }
                         }
                     }
-    -   name: "Copy"
-        op: "print"
+    -   name: "Transfer"
+        op: "transfer"
+        args:
+            transfer-operation: "copy"
+            target-uri: "bootstrapCustom.json@sd"
+            target-operation: "replace"
