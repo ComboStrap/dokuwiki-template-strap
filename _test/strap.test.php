@@ -315,7 +315,7 @@ class template_strap_script_test extends DokuWikiTest
 
         // Default
         $files = TplUtility::getCustomStylesheet();
-        $this->assertEquals(1, sizeof($files), "There is one css script");
+        $this->assertEquals(22, sizeof($files), "There is one css script");
 
         // With a custom file
         $destination = __DIR__ . '/../bootstrap/bootstrapLocal.json';
