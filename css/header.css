@@ -1,87 +1,15 @@
 /*Header and level*/
 
 /*
-Section Highlight is a wrapper added when hovering around the edit button by the page.js file
+section_highlight is a node added when hovering around the edit button by the page.js file
 See sectionHighlight function
+We have just disable this function in script.js because it was moving element around
 */
 
-main > h1, main > h2, main > h3, main > h4, main > h5, main > h6,
-main > .section_highlight > h1, main > .section_highlight > h2, main > .section_highlight > h3, main > .section_highlight > h4, main > .section_highlight  > h5
- {
-    background-color: inherit;
-    /* The content will go outside of the parent
-     The border will stop to the end of the content */
-    /*noinspection CssInvalidPropertyValue*/
-    /* The content may become so long that it goes outside the parent
-    max width prevent it */
-    max-width: 100%;
-    text-decoration: underline #8cacbb solid;
-    clear: left;
-    color: #000;
-    font-size: 100%;
-    font-weight: normal;
+/* style for section highlighting */
+.strap_section_highlight {
+   background: #f8f9fa;
 }
-
-
-main > h1,
-main > .section_highlight  > h1 {
-    font-size: 160%;
-    font-weight: bold;
-    margin-left: 0;
-}
-
-main > div.level1,
-main > .section_highlight > div.level1{
-    margin-left: 0px;
-}
-
-main > h2 ,
-main > .section_highlight  > h2  {
-    font-size: 150%;
-    margin-left: 0px;
-    margin-bottom: 1rem!important;
-}
-main > div.level2,
-main > .section_highlight > div.level2 {
-    margin-left: 0px;
-}
-
-main > h3,
-main > .section_highlight  > h3 {
-    border-bottom: medium none -moz-use-text-color;
-    font-size: 140%;
-    font-weight: bold;
-    margin-left: 15px;
-}
-main > div.level3,
-main > .section_highlight > div.level3 {
-    margin-left: 15px;
-}
-
-main > h4,
-main > .section_highlight  > h4 {
-    border-bottom: medium none -moz-use-text-color;
-    font-size: 120%;
-    font-weight: bold;
-    margin-left: 30px;
-}
-main > div.level4,
-main > .section_highlight > div.level3 {
-    margin-left: 30px;
-}
-
-main > h5,
-main > .section_highlight  > h5 {
-    border-bottom: medium none -moz-use-text-color;
-    font-size: 100%;
-    font-weight: bold;
-    margin-left: 45px;
-}
-main > div.level5,
-main > .section_highlight > div.level5 {
-    margin-left: 45px;
-}
-
 
 /* No margin left on small screen */
 @media (min-width: 0px) and (max-width: 576px) {
@@ -133,10 +61,4 @@ main > .section_highlight > div.level5 {
 
 }
 
-/* style for section highlighting */
-main > div.section_highlight {
-    margin: 0 -1em; /* negative side margin = side padding + side border */
-    padding: 0 .5em;
-    border: solid #f8f9fa;
-    border-width: 0 .5em;
-}
+
