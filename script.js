@@ -22,4 +22,4 @@ dw_page.sectionHighlight = function () {
                 $tgt = $tgt.prev();
             }
         });
-}
+};
