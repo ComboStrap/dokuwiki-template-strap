@@ -1,7 +1,7 @@
 base     strap
 author   ComboStrap
 email    support@combostrap.com
-date     2020-10-31
+date     2021-01-09
 name     Strap
 desc     The Bootstrap based template of ComboStrap
 url      https://combostrap.com/strap
