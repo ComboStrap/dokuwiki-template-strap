@@ -702,7 +702,7 @@ class TplUtility
 
     /**
      * When running multiple test, the function {@link tpl_getConf()}
-     * does not load the configuration twice
+     * does not reload the configuration twice
      */
     static function reloadConf()
     {
