@@ -8,14 +8,13 @@ We have just disable this function in script.js because it was moving element ar
 
 /* style for section highlighting */
 .strap_section_highlight {
-   background: #f8f9fa;
+    background: #f8f9fa;
 }
 
 /* Main (in the render page, preview, the preview page)
  */
 main > h1, main > h2, main > h3, main > h4, main > h5, main > h6,
-.preview > .pad h1, .preview > .pad h2, .preview > .pad h3, .preview > .pad h4, .preview > .pad h5, .preview > .pad h6
-{
+.preview > .pad h1, .preview > .pad h2, .preview > .pad h3, .preview > .pad h4, .preview > .pad h5, .preview > .pad h6 {
     background-color: inherit;
     /* The content will go outside of the parent
      The border will stop to the end of the content */
@@ -44,70 +43,94 @@ main > div.level1, .preview > .pad div.level1 {
 main > h2, .preview > .pad h2 {
     font-size: 150%;
     margin-left: 0px;
-    margin-bottom: 1rem!important;
+    margin-bottom: 1rem !important;
 }
+
 main > div.level2, .preview > .pad div.level2 {
     margin-left: 0px;
 }
 
-main > h3, .preview > h3  {
+main > h3, .preview > .pad h3 {
     border-bottom: medium none -moz-use-text-color;
     font-size: 140%;
     font-weight: bold;
     margin-left: 15px;
 }
+
 main > div.level3, .preview > .pad div.level3 {
     margin-left: 15px;
+}
+
+main > h4, .preview > .pad h4 {
+    border-bottom: medium none -moz-use-text-color;
+    font-size: 120%;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+main > div.level4, .preview > .pad div.level4 {
+    margin-left: 30px;
+}
+
+main > h5, .preview > .pad h5 {
+    border-bottom: medium none -moz-use-text-color;
+    font-size: 100%;
+    font-weight: bold;
+    margin-left: 45px;
+}
+
+main > div.level5, .preview > .pad div.level5 {
+    margin-left: 45px;
 }
 
 
 /* No margin left on small screen */
 @media (min-width: 0px) and (max-width: 576px) {
 
-	#dw__toc h3 {
-		margin-left: 0px;
-	}
+    #dw__toc h3 {
+        margin-left: 0px;
+    }
 
 
-	main > h2 {
-		margin-left: 0px;
-	}
+    main > h2 {
+        margin-left: 0px;
+    }
 
-	main > div.level2 {
-		margin-left: 0px;
-	}
+    main > div.level2 {
+        margin-left: 0px;
+    }
 
-	main > h3 {
-		margin-left: 0px;
-	}
+    main > h3 {
+        margin-left: 0px;
+    }
 
-	main > div.level3 {
-		margin-left: 0px;
-	}
+    main > div.level3 {
+        margin-left: 0px;
+    }
 
-	main > h4 {
-		margin-left: 0px;
-	}
+    main > h4 {
+        margin-left: 0px;
+    }
 
-	main > div.level4 {
-		margin-left: 0px;
-	}
+    main > div.level4 {
+        margin-left: 0px;
+    }
 
-	main > h5 {
-		margin-left: 0px;
-	}
+    main > h5 {
+        margin-left: 0px;
+    }
 
-	main > div.level5 {
-		margin-left: 0px;
-	}
+    main > div.level5 {
+        margin-left: 0px;
+    }
 
-	main > h6 {
-		margin-left: 0px;
-	}
+    main > h6 {
+        margin-left: 0px;
+    }
 
-	main > div.level6 {
-		margin-left: 0px;
-	}
+    main > div.level6 {
+        margin-left: 0px;
+    }
 
 }
 
