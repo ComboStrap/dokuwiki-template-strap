@@ -51,7 +51,6 @@ main > div.level2, .preview > .pad div.level2 {
 }
 
 main > h3, .preview > .pad h3 {
-    border-bottom: medium none -moz-use-text-color;
     font-size: 140%;
     font-weight: bold;
     margin-left: 15px;
@@ -62,7 +61,6 @@ main > div.level3, .preview > .pad div.level3 {
 }
 
 main > h4, .preview > .pad h4 {
-    border-bottom: medium none -moz-use-text-color;
     font-size: 120%;
     font-weight: bold;
     margin-left: 30px;
@@ -73,7 +71,6 @@ main > div.level4, .preview > .pad div.level4 {
 }
 
 main > h5, .preview > .pad h5 {
-    border-bottom: medium none -moz-use-text-color;
     font-size: 100%;
     font-weight: bold;
     margin-left: 45px;
