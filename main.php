@@ -141,12 +141,6 @@ include('tpl_header.php')
               class="col-md-<?php echo($mainGridScale) ?> order-first">
 
 
-            <?php
-            // Quality Control
-            // https://github.com/cosmocode/qc
-            $qc = plugin_load('helper','qc');
-            if ($qc) $qc->tpl();
-            ?>
 
             <!-- The content: Show, Edit, .... -->
             <?php tpl_flush() ?>
