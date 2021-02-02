@@ -38,7 +38,6 @@ class TplUtility
     const TEMPLATE_NAME = 'strap';
 
 
-
     /**
      * Print the breadcrumbs trace with Bootstrap class
      *
@@ -103,13 +102,12 @@ class TplUtility
     {
         // The padding top for the top fix bar
         $paddingTop = 0;
-        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR,0);
-        if ($heightTopBar!=0){
+        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
+        if ($heightTopBar != 0) {
             $paddingTop = $heightTopBar + 10;
         }
         return $paddingTop;
     }
-
 
 
     /**
@@ -124,9 +122,9 @@ class TplUtility
     {
         $topHeaderStyle = "";
         $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
-        if ($heightTopBar !==0){
-            $paddingTop = 2*$heightTopBar+10; // + 10 to get the message area not below the topnavbar
-            $marginTop = -2*$heightTopBar;
+        if ($heightTopBar !== 0) {
+            $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
+            $marginTop = -2 * $heightTopBar;
             $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
         }
         return $topHeaderStyle;
@@ -574,16 +572,23 @@ class TplUtility
                     $jqueryDokuScripts = array();
                     foreach ($headerData as $scriptData) {
                         $scriptData['defer'] = "true";
-                        $pos = strpos($scriptData['src'], 'jquery');
-                        if ($pos === false) {
+
+                        // Jquery ?
+                        $jqueryFound = false;
+                        // script may also be just an online script without the src attribute
+                        if (array_key_exists('src', $scriptData)) {
+                            $jqueryFound = strpos($scriptData['src'], 'jquery');
+                        }
+                        if ($jqueryFound === false) {
                             $newScriptData[] = $scriptData;
                         } else {
                             $jqueryDokuScripts[] = $scriptData;
                         }
+
                     }
 
                     // Add Jquery at the beginning
-                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplConstant::CONF_JQUERY_DOKU)==0) {
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplConstant::CONF_JQUERY_DOKU) == 0) {
                         // We take the Jquery of Bootstrap
                         $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
                     } else {
