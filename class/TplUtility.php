@@ -130,6 +130,14 @@ class TplUtility
         return $topHeaderStyle;
     }
 
+    /**
+     * @param string $text add a comment into the HTML page
+     */
+    private static function addAsHtmlComment($text)
+    {
+        print_r('<!-- TplUtility Comment: ' . hsc($text) . '-->');
+    }
+
 
     /**
      * Hierarchical breadcrumbs
@@ -511,8 +519,7 @@ class TplUtility
 
         $debug = tpl_getConf('debug');
         if ($debug) {
-            $request = 'Request: ' . json_encode($_REQUEST);
-            print_r('<!-- ' . $request . '-->');
+            self::addAsHtmlComment('Request: ' . json_encode($_REQUEST));
         }
 
 
@@ -607,7 +614,7 @@ class TplUtility
         }
 
         if ($debug) {
-            print_r('<!-- ' . 'Script Header : ' . json_encode($newHeaderTypes['script']) . '-->');
+            self::addAsHtmlComment('Script Header : ' . json_encode($newHeaderTypes['script']));
         }
         $event->data = $newHeaderTypes;
 
