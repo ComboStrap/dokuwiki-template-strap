@@ -70,7 +70,7 @@ class TplUtility
 
         // echo '<span id="breadCrumbTitle" ">' . $breadCrumb . ':   </span>' . PHP_EOL;
         echo '<ol class="breadcrumb py-1 px-2" style="background-color:unset">' . PHP_EOL;
-        print '<li class="pr-2" style="display:flex;font-weight: 200">Navigational History :</li>';
+        print '<li class="pr-2" style="display:flex;font-weight: 200">'.$lang['breadcrumb'].'</li>';
 
         foreach ($crumbs as $id => $name) {
             $i++;
