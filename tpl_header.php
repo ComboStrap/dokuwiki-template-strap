@@ -3,7 +3,6 @@
  * Template header, included in the files main.php and detail.php
  */
 
-// must be run from within DokuWiki
 use ComboStrap\TplConstant;
 
 if (!defined('DOKU_INC')) die();
@@ -12,25 +11,13 @@ global $conf;
 
 ?>
 
-<!--header node-->
-<!--transition: all .2s ease-->
-<!--position: absolute;-->
-<!--top: 0;-->
-<!--left: 0;-->
-<!--width: 100%;-->
-
+<!--header -->
 <?php
 $navBarPageName = tpl_getConf(TplConstant::CONF_HEADER);
 if (page_findnearest($navBarPageName)) {
+
     tpl_flush();
     tpl_include_page($navBarPageName, 1, 1);
-
-//    // Breadcrumb is here to be able to have a large introduction text
-//    echo '<nav class="container">';
-//    if ($conf['breadcrumbs']) {
-//        tpl_breadcrumbs_bootstrap();
-//    }
-//    echo '</nav>';
 
 } else {
 

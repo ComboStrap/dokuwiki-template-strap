@@ -31,8 +31,10 @@ if (page_findnearest($footerPageName)) {
     echo '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
 }
 
-echo '<div class="mx-auto" style="width: 300px;text-align: center">';
-echo '  <i>Powered by <a href="https://combostrap.com/" title="ComboStrap">ComboStrap</a></i>';
+$info = confToHash(__DIR__ . '/template.info.txt');
+
+echo '<div class="mx-auto" style="width: 300px;text-align: center;">';
+echo '  <small><i>Powered by <a href="https://combostrap.com/" title="ComboStrap v'.$info['date'].'">ComboStrap</a></i></small>';
 echo '</div>';
 ?>
 
