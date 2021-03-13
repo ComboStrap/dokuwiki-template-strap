@@ -101,10 +101,6 @@ include('tpl_header.php')
     <!-- To go at the top of the page, style is for the fix top page -->
     <div id="dokuwiki__top" style="<?php echo $topHeaderStyle ?>"></div>
 
-    <!-- TAGLINE (TODO put in on the head) -->
-    <!--    --><?php //if ($conf['tagline']): ?>
-    <!--        <p class="claim">--><?php //echo $conf['tagline']; ?><!--</p>-->
-    <!--    --><?php //endif ?>
 
     <!-- The global message array -->
     <?php html_msgarea() ?>
