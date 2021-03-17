@@ -24,12 +24,33 @@ global $conf;
 // For the preload if any
 global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
 
+/**
+ * Sidebar
+ */
 $hasSidebar = page_findnearest($conf['sidebar']);
 $showSidebar = $hasSidebar && ($ACT == 'show');
+if ($showSidebar) {
+    $sidebarHtml = tpl_include_page($conf['sidebar'], 0, 1);
+}
 
+/**
+ * Sidekickbar
+ */
 $hasRightSidebar = page_findnearest(tpl_getConf(TplConstant::CONF_SIDEKICK));
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
+if ($showSideKickBar) {
+    $sideKickBarHtml = tpl_include_page(tpl_getConf(TplConstant::CONF_SIDEKICK), 0, 1);
+}
 
+/**
+ * Content
+ * The content: Show, Edit, ....
+ */
+$mainHtml = TplUtility::tpl_content($prependTOC = false);
+
+/**
+ * Grid
+ */
 $gridColumns = tpl_getConf(TplConstant::CONF_GRID_COLUMNS);
 $sidebarScale = 3;
 $sideKickBarScale = 3;
@@ -39,6 +60,9 @@ if ($showSidebar) {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $gridColumns;
 }
 
+/**
+ * Bootstrap meta-headers
+ */
 global $EVENT_HANDLER;
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders'));
 
@@ -64,7 +88,6 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\C
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
-
 
 </head>
 <body role="document" class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
@@ -117,15 +140,16 @@ include('tpl_header.php')
 
     <div class="row">
 
-        <!-- SIDE BAR -->
-        <?php if ($showSidebar): ?>
+
+        <?php
+        // SIDE BAR
+        if ($showSidebar): ?>
             <nav role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
-                <!-- Below data-spy="affix" data-offset-top="230"-->
+
                 <nav class="bs-docs-sidebar hidden-prints">
 
-                    <?php tpl_flush() ?>
 
-                    <?php tpl_include_page($conf['sidebar'], 1, 1) ?>
+                    <?php echo $sidebarHtml ?>
 
                 </nav>
 
@@ -136,24 +160,21 @@ include('tpl_header.php')
         <main role="main"
               class="col-md-<?php echo($mainGridScale) ?> order-first">
 
+            <?php
+            // Add a p around the content to enable the reader view in Mozilla
+            // https://github.com/mozilla/readability
+            // But Firefox close the P because they must contain only inline element ???
+            echo $mainHtml;
+            ?>
 
-
-            <!-- The content: Show, Edit, .... -->
             <?php tpl_flush() ?>
 
-
-            <!-- Add a p around the content to enable the reader view in Mozilla -->
-            <!-- https://github.com/mozilla/readability -->
-            <!-- But Firefox close the P because they must contain only inline element ???-->
-            <?php tpl_content($prependTOC = false) ?>
-
-            <?php //tpl_pageinfo() ?>
-            <?php tpl_flush() ?>
         </main>
 
 
-        <!-- SIDE BAR -->
-        <?php if ($showSideKickBar): ?>
+        <?php
+        // SIDE BAR
+        if ($showSideKickBar): ?>
 
             <nav role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last">
 
@@ -162,26 +183,33 @@ include('tpl_header.php')
 
                     <?php tpl_flush() ?>
 
-                    <?php tpl_include_page(tpl_getConf(TplConstant::CONF_SIDEKICK), 1, 1) ?>
+                    <?php
+                    echo $sideKickBarHtml
 
-                    <!--                    <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>-->
+                    // <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>
+                    ?>
 
                 </nav>
 
-                <!-- A trigger to show content on the sidebar part of the website -->
+
                 <?php
+                // A trigger to show content on the sidebar part of the website
                 $data = "";// Mandatory
                 Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
                 ?>
 
             </nav>
-        <?php endif; ?>
-        <!-- /content -->
+        <?php
+            // end content
+        endif;
+        ?>
+
     </div>
 
 
-    <!-- PAGE/USER/SITE ACTIONS -->
-    <?php if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
+    <?php
+    // PAGE/USER/SITE ACTIONS
+    if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
         <div id="dokuwiki__pagetools" style="z-index: 1030;" class="d-none d-md-block">
             <div class="tools">
                 <ul>
@@ -195,15 +223,17 @@ include('tpl_header.php')
     <?php } ?>
 
 </div>
-<!-- /wrapper -->
-
-<!-- Footer (used also in details.php -->
-<?php include('tpl_footer.php') ?>
 
 
-<!-- The stylesheet (before indexer work and script at the end) -->
 <?php
+// Footer (used also in details.php
+include('tpl_footer.php')
+?>
 
+
+
+<?php
+// The stylesheet (before indexer work and script at the end)
 if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
     foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
         $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
@@ -217,8 +247,13 @@ if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
 }
 ?>
 
-<!-- Indexer -->
-<div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
+
+<div class="no">
+    <?php
+    // Indexer (Background tasks)
+    tpl_indexerWebBug()
+    ?>
+</div>
 
 
 </html>

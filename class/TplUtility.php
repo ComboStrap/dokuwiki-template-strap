@@ -13,6 +13,7 @@
 namespace ComboStrap;
 
 use Doku_Event;
+use dokuwiki\Cache\CacheRenderer;
 use dokuwiki\Extension\Event;
 
 
@@ -70,7 +71,7 @@ class TplUtility
 
         // echo '<span id="breadCrumbTitle" ">' . $breadCrumb . ':   </span>' . PHP_EOL;
         echo '<ol class="breadcrumb py-1 px-2" style="background-color:unset">' . PHP_EOL;
-        print '<li class="pr-2" style="display:flex;font-weight: 200">'.$lang['breadcrumb'].'</li>';
+        print '<li class="pr-2" style="display:flex;font-weight: 200">' . $lang['breadcrumb'] . '</li>';
 
         foreach ($crumbs as $id => $name) {
             $i++;
@@ -528,11 +529,7 @@ class TplUtility
         $eventHeaderTypes = $event->data;
         foreach ($eventHeaderTypes as $headerType => $headerData) {
             switch ($headerType) {
-                case "meta":
-                    // generator, color, robots, keywords
-                    // nothing to do pick them all
-                    $newHeaderTypes[$headerType] = $headerData;
-                    break;
+
                 case "link":
                     // index, rss, manifest, search, alternate, stylesheet
                     // delete edit
@@ -608,6 +605,13 @@ class TplUtility
 
 
                     $newHeaderTypes[$headerType] = $newScriptData;
+                    break;
+                default:
+                case "meta":
+                case "style":
+                    // generator, color, robots, keywords
+                    // nothing to do pick them all
+                    $newHeaderTypes[$headerType] = $headerData;
                     break;
 
             }
@@ -765,6 +769,31 @@ class TplUtility
             throw new \RuntimeException($msg);
         }
     }
+
+    /**
+     * @param bool $prependTOC
+     * @return false|string - Adapted from {@link tpl_content()} to return the HTML
+     */
+    static function tpl_content($prependTOC = true)
+    {
+        global $ACT;
+        global $INFO;
+        $INFO['prependTOC'] = $prependTOC;
+
+        ob_start();
+        Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
+        $html_output = ob_get_clean();
+
+        /**
+         * The action null does nothing.
+         * See {@link Event::trigger()}
+         */
+        Event::createAndTrigger('TPL_CONTENT_DISPLAY', $html_output, null);
+
+        return $html_output;
+    }
+
+
 }
 
 
