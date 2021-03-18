@@ -34,7 +34,7 @@ if (page_findnearest($footerPageName)) {
 $info = confToHash(__DIR__ . '/template.info.txt');
 
 echo '<div class="mx-auto" style="width: 300px;text-align: center;">';
-echo '  <small><i>Powered by <a href="https://combostrap.com/" title="ComboStrap v'.$info['date'].'">ComboStrap</a></i></small>';
+echo '  <small><i>Powered by <a href="https://combostrap.com/" title="ComboStrap v'.$info['version'].'">ComboStrap</a></i></small>';
 echo '</div>';
 ?>
 
