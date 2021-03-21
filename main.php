@@ -25,6 +25,14 @@ global $conf;
 global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
 
 /**
+ * The Content first because it contains
+ * also the front matter that may influence the other bars
+ *
+ * The content: Show, Edit, ....
+ */
+$mainHtml = TplUtility::tpl_content($prependTOC = false);
+
+/**
  * Sidebar
  */
 $hasSidebar = page_findnearest($conf['sidebar']);
@@ -43,10 +51,15 @@ if ($showSideKickBar) {
 }
 
 /**
- * Content
- * The content: Show, Edit, ....
+ * Headerbar
  */
-$mainHtml = TplUtility::tpl_content($prependTOC = false);
+$headerBar = TplUtility::getHeader();
+
+/**
+ * Footerbar
+ */
+$footerBar = TplUtility::getFooter();
+
 
 /**
  * Grid
@@ -64,7 +77,12 @@ if ($showSidebar) {
  * Bootstrap meta-headers
  */
 global $EVENT_HANDLER;
-$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders'));
+$method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
+/**
+ * A call to a method is via an array and the hook declare a string
+ * @noinspection PhpParamsInspection
+ */
+$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
 
 
 ?>
@@ -83,53 +101,48 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, array('\C
     <!-- Be sure to have only https call -->
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
-    <?php TplUtility::renderPageTitle() ?>
+    <title><?php TplUtility::renderPageTitle() ?></title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
+    <?php
+    /**
+     * In case of a fix bar
+     */
+    echo TplUtility::getHeadStyleNodeForFixedTopNavbar();
+    ?>
+
 </head>
+<?php
+// * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
+// * dokuwiki__top ID is needed for the "Back to top" utility
+// * used also by some plugins
+?>
 <body role="document" class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
 
 
 <?php
-/**
- * In case of fix top bar
- */
-$topHeaderStyle = TplUtility::getStyleForFixedTopNavbar();
-if ($topHeaderStyle !== "") {
-    ?>
-    <style>
-        main > h1, main > h2, main > h3, main > h4, main h5 {
-        <?php echo $topHeaderStyle ?>
-        }
-    </style>
-    <?php
-}
+echo $headerBar
 
-
-// The header (used also in detail.php)
-include('tpl_header.php')
+// Relative positioning is important for the positioning of the pagetools
 ?>
-<!--
-  * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
-  * dokuwiki__top ID is needed for the "Back to top" utility
-  * used also by some plugins
--->
-<!-- Relative positioning is important for the positioning of the pagetools -->
 <div class="container mb-3 <?php echo tpl_classes() ?> " style="position: relative">
 
 
-    <!-- To go at the top of the page, style is for the fix top page -->
-    <div id="dokuwiki__top" style="<?php echo $topHeaderStyle ?>"></div>
+    <?php // To go at the top of the page, style is for the fix top page --> ?>
+    <div id="dokuwiki__top"></div>
 
 
-    <!-- The global message array -->
-    <?php html_msgarea() ?>
-
-    <!-- A trigger to show content on the top part of the website -->
     <?php
+    // The global message array
+    html_msgarea()
+    ?>
+
+
+    <?php
+    //  A trigger to show content on the top part of the website
     $data = "";// Mandatory
     Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
     ?>
@@ -144,7 +157,7 @@ include('tpl_header.php')
         <?php
         // SIDE BAR
         if ($showSidebar): ?>
-            <nav role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
+            <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
@@ -153,12 +166,11 @@ include('tpl_header.php')
 
                 </nav>
 
-            </nav>
+            </div>
         <?php endif; ?>
 
 
-        <main role="main"
-              class="col-md-<?php echo($mainGridScale) ?> order-first">
+        <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
             <?php
             // Add a p around the content to enable the reader view in Mozilla
@@ -167,8 +179,6 @@ include('tpl_header.php')
             echo $mainHtml;
             ?>
 
-            <?php tpl_flush() ?>
-
         </main>
 
 
@@ -176,9 +186,8 @@ include('tpl_header.php')
         // SIDE BAR
         if ($showSideKickBar): ?>
 
-            <nav role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last">
+            <div role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last">
 
-                <!-- Below data-spy="affix" data-offset-top="230"-->
                 <nav class="bs-docs-sidebar hidden-prints">
 
                     <?php tpl_flush() ?>
@@ -198,7 +207,7 @@ include('tpl_header.php')
                 Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
                 ?>
 
-            </nav>
+            </div>
         <?php
             // end content
         endif;
@@ -226,8 +235,8 @@ include('tpl_header.php')
 
 
 <?php
-// Footer (used also in details.php
-include('tpl_footer.php')
+echo $footerBar;
+echo TplUtility::getPoweredBy();
 ?>
 
 

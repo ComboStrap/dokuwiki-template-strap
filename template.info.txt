@@ -6,3 +6,4 @@ date     2021-03-19
 name     Strap
 desc     The Bootstrap based template of ComboStrap
 url      https://combostrap.com
+strap    https://combostrap.com/strap

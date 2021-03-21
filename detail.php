@@ -6,8 +6,8 @@
 
 //Library of template function
 use ComboStrap\TplConstant;use ComboStrap\TplUtility;
-require_once(__DIR__.'/class/TplUtility.php');
-require_once(__DIR__.'/class/TplConstant.php');
+require_once(__DIR__ . '/class/TplUtility.php');
+require_once(__DIR__ . '/class/TplConstant.php');
 
 global $lang;
 
@@ -19,7 +19,8 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, '\Combost
 if (!defined('DOKU_INC')) die();
 header('X-UA-Compatible: IE=edge,chrome=1');
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="<?php echo $conf['lang'] ?>" dir="<?php echo $lang['direction'] ?>" class="no-js">
 <head>
     <meta charset="utf-8"/>
@@ -35,7 +36,6 @@ header('X-UA-Compatible: IE=edge,chrome=1');
     <?php TplUtility::renderFaviconMetaLinks() ?>
     <?php tpl_includeFile('meta.html') ?>
 
-
 </head>
 
 <body style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
@@ -45,62 +45,59 @@ header('X-UA-Compatible: IE=edge,chrome=1');
 <div id="dokuwiki__site">
     <div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?>">
 
-        <?php include('tpl_header.php') ?>
-        <!-- Bootstrap Container -->
+        <?php
+        echo TplUtility::getHeader();
+        // Bootstrap Container
+        ?>
         <div class="container">
 
-			<?php
-                $data="";// Mandatory for the below function
-                trigger_event('TPL_PAGE_TOP_OUTPUT',$data);
+            <?php
+            //  A trigger to show content on the top part of the website
+            $data = "";// Mandatory
+            Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
             ?>
 
             <!-- Must contain One row -->
             <div class="row">
 
-				<div role="main" class="col-md-<?php tpl_getConf(TplConstant::CONF_GRID_COLUMNS)?>">
+                <div role="main" class="col-md-<?php tpl_getConf(TplConstant::CONF_GRID_COLUMNS) ?>">
                     <!-- ********** CONTENT ********** -->
 
 
+                    <?php tpl_flush() ?>
+                    <?php tpl_includeFile('pageheader.html') ?>
+                    <!-- detail start -->
+                    <?php
+                    if ($ERROR):
+                        echo '<h1>' . $ERROR . '</h1>';
+                    else: ?>
+                        <?php if ($REV) echo p_locale_xhtml('showrev'); ?>
+                        <h1><?php echo nl2br(hsc(tpl_img_getTag('simple.title'))); ?></h1>
 
-<!--                            What is this ? Double with the h1 below -->
-<!--                            --><?php //if (!$ERROR): ?>
-<!--                                <div class="pageId">-->
-<!--                                    <span>IPTC.Headline: --><?php //echo hsc(tpl_img_getTag('IPTC.Headline', $IMG)); ?><!--</span></div>-->
-<!--                            --><?php //endif; ?>
+                        <p>
+                            <?php tpl_img(900, 700); /* parameters: maximum width, maximum height (and more) */ ?>
+                        </p>
 
+                        <div class="img_detail">
+                            <?php tpl_img_meta(); ?>
+                        </div>
+                        <?php //Comment in for Debug// dbg(tpl_img_getTag('Simple.Raw'));?>
+                    <?php endif; ?>
 
-					<?php tpl_flush() ?>
-					<?php tpl_includeFile('pageheader.html') ?>
-					<!-- detail start -->
-					<?php
-					if ($ERROR):
-						echo '<h1>' . $ERROR . '</h1>';
-					else: ?>
-						<?php if ($REV) echo p_locale_xhtml('showrev'); ?>
-						<h1><?php echo nl2br(hsc(tpl_img_getTag('simple.title'))); ?></h1>
+                    <!-- detail stop -->
+                    <?php tpl_includeFile('pagefooter.html') ?>
+                    <?php tpl_flush() ?>
 
-						<p>
-						<?php tpl_img(900, 700); /* parameters: maximum width, maximum height (and more) */ ?>
-						</p>
+                    <?php /* doesn't make sense like this; @todo: maybe add tpl_imginfo()? <div class="docInfo"><?php tpl_pageinfo(); ?></div> */ ?>
 
-						<div class="img_detail">
-							<?php tpl_img_meta(); ?>
-						</div>
-						<?php //Comment in for Debug// dbg(tpl_img_getTag('Simple.Raw'));?>
-					<?php endif; ?>
-
-					<!-- detail stop -->
-					<?php tpl_includeFile('pagefooter.html') ?>
-					<?php tpl_flush() ?>
-
-					<?php /* doesn't make sense like this; @todo: maybe add tpl_imginfo()? <div class="docInfo"><?php tpl_pageinfo(); ?></div> */ ?>
-
-				</div>
+                </div>
             </div>
         </div>
-        <?php include('tpl_footer.php') ?>
-        <!-- The stylesheet (before indexer work and script at the end) -->
+        <?php echo TplUtility::getFooter() ?>
+        <?php echo TplUtility::getPoweredBy() ?>
+
         <?php
+        // The stylesheet (before indexer work and script at the end)
         global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
         if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
             foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
@@ -115,7 +112,7 @@ header('X-UA-Compatible: IE=edge,chrome=1');
         }
         ?>
     </div>
-</div><!-- /site -->
+</div>
 
 
 </html>

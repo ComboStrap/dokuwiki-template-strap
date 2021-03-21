@@ -13,7 +13,6 @@
 namespace ComboStrap;
 
 use Doku_Event;
-use dokuwiki\Cache\CacheRenderer;
 use dokuwiki\Extension\Event;
 
 
@@ -37,6 +36,10 @@ class TplUtility
     const LVL_MSG_WARNING = 2;
     const LVL_MSG_DEBUG = 3;
     const TEMPLATE_NAME = 'strap';
+    /**
+     * @var array|null
+     */
+    private static $TEMPLATE_INFO = null;
 
 
     /**
@@ -119,16 +122,24 @@ class TplUtility
      * in order to get a correct navigation to the anchor
      * See http://stackoverflow.com/questions/17181355/boostrap-using-fixed-navbar-and-anchor-tags-to-jump-to-sections
      */
-    public static function getStyleForFixedTopNavbar()
+    public static function getHeadStyleNodeForFixedTopNavbar()
     {
-        $topHeaderStyle = "";
+        $headStyle = "";
         $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
         if ($heightTopBar !== 0) {
             $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
             $marginTop = -2 * $heightTopBar;
             $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
+
+            $headStyle = <<<EOF
+<style>
+    main > h1, main > h2, main > h3, main > h4, main h5, #dokuwiki__top {
+    $topHeaderStyle
+    }
+</style>
+EOF;
         }
-        return $topHeaderStyle;
+        return $headStyle;
     }
 
     /**
@@ -137,6 +148,29 @@ class TplUtility
     private static function addAsHtmlComment($text)
     {
         print_r('<!-- TplUtility Comment: ' . hsc($text) . '-->');
+    }
+
+    private static function getApexDomainUrl()
+    {
+        return self::getTemplateInfo()["url"];
+    }
+
+    private static function getTemplateInfo()
+    {
+        if (self::$TEMPLATE_INFO == null) {
+            self::$TEMPLATE_INFO = confToHash(__DIR__ . '/../template.info.txt');
+        }
+        return self::$TEMPLATE_INFO;
+    }
+
+    private static function getVersion()
+    {
+        return "v" . self::getTemplateInfo()['version'] . " (" . self::getTemplateInfo()['date'] . ")";
+    }
+
+    private static function getStrapUrl()
+    {
+        return self::getTemplateInfo()["strap"];
     }
 
 
@@ -675,7 +709,7 @@ class TplUtility
      */
     static function callBackPageTitle($title)
     {
-        echo "<title>$title</title>";
+        echo $title;
     }
 
     /**
@@ -747,7 +781,8 @@ class TplUtility
      */
     static function msg($message, $level = self::LVL_MSG_ERROR, $canonical = null)
     {
-        $prefix = '<a href="https://combostrap.com/strap">Strap</a>';
+        $strapUrl = self::getStrapUrl();
+        $prefix = "<a href=\"$strapUrl\">Strap</a>";
         if ($canonical != null) {
             $prefix = '<a href="https://combostrap.com/' . $canonical . '">' . ucfirst($canonical) . '</a>';
         }
@@ -791,6 +826,53 @@ class TplUtility
         Event::createAndTrigger('TPL_CONTENT_DISPLAY', $html_output, null);
 
         return $html_output;
+    }
+
+    static function getHeader()
+    {
+
+        $navBarPageName = tpl_getConf(TplConstant::CONF_HEADER);
+        if (page_findnearest($navBarPageName)) {
+
+            $header = tpl_include_page($navBarPageName, 0, 1);
+
+        } else {
+
+            $domain = self::getApexDomainUrl();
+            $header = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>.</br>
+            If you don\'t known the <a href="https://combostrap.com/strap">Strap template</a>, it\'s recommended to read the <a href="' . $domain . '/strap">introduction</a>.</br>
+            Otherwise, to create a navigation bar, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/navbar">navbar component</a>.
+            </div>';
+
+        }
+        return $header;
+
+    }
+
+    static function getFooter()
+    {
+        $domain = self::getApexDomainUrl();
+
+        $footerPageName = tpl_getConf(TplConstant::CONF_FOOTER);
+        if (page_findnearest($footerPageName)) {
+            $footer = tpl_include_page($footerPageName, 0, 1);
+        } else {
+            $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
+        }
+
+
+        return $footer;
+    }
+
+    static function getPoweredBy()
+    {
+
+        $domain = self::getApexDomainUrl();
+        $version = self::getVersion();
+        $poweredBy = "<div class=\"mx-auto\" style=\"width: 300px;text-align: center;\">";
+        $poweredBy .= "  <small><i>Powered by <a href=\"$domain\" title=\"ComboStrap " . $version . "\">ComboStrap</a></i></small>";
+        $poweredBy .= '</div>';
+        return $poweredBy;
     }
 
 
