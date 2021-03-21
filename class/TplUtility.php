@@ -173,6 +173,14 @@ EOF;
         return self::getTemplateInfo()["strap"];
     }
 
+    /**
+     * ???
+     */
+    public static function setHttpHeader()
+    {
+        header('X-UA-Compatible: IE=edge');
+    }
+
 
     /**
      * Hierarchical breadcrumbs
@@ -413,7 +421,7 @@ EOF;
                 $jsScripts[$key] =
                     array(
                         'src' => $src,
-                        'defer' => "true"
+                        'defer' => null
                     );
                 if (isset($script['integrity'])) {
                     $jsScripts[$key]['integrity'] = $script['integrity'];
@@ -600,8 +608,7 @@ EOF;
                     $newHeaderTypes[$headerType] = $newLinkData;
                     break;
 
-                case
-                "script":
+                case "script":
 
                     $newScriptData = array();
                     // A variable to hold the Jquery scripts
@@ -609,7 +616,24 @@ EOF;
                     // see https://www.dokuwiki.org/config:jquerycdn
                     $jqueryDokuScripts = array();
                     foreach ($headerData as $scriptData) {
-                        $scriptData['defer'] = "true";
+
+                        // defer is this is external resource
+                        // if this is not, this is illegal
+                        if (isset($scriptData["src"])) {
+                            $scriptData['defer'] = null;
+                        }
+
+                        if(isset($scriptData["type"])){
+                            $type = strtolower($scriptData["type"]);
+                            if($type=="text/javascript"){
+                                unset($scriptData["type"]);
+                            }
+                        }
+
+                        // The charset attribute on the script element is obsolete.
+                        if (isset($scriptData["charset"])) {
+                            unset($scriptData["charset"]);
+                        }
 
                         // Jquery ?
                         $jqueryFound = false;

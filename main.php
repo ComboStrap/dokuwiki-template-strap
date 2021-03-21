@@ -14,7 +14,9 @@ require_once(__DIR__ . '/class/TplUtility.php');
 require_once(__DIR__ . '/class/TplConstant.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
-header('X-UA-Compatible: IE=edge,chrome=1');
+
+
+TplUtility::setHttpHeader();
 
 global $ID;
 global $lang;
@@ -84,19 +86,20 @@ $method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
  */
 $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
 
+/**
+ * Default font size
+ */
+$htmlRem = tpl_getConf("rem","16px");
 
 ?>
 
 <!DOCTYPE html >
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>"
-      style="font-size:<?php echo tpl_getConf("rem") ?>">
+      style="font-size:<?php echo $htmlRem ?>">
 <head>
 
     <?php tpl_metaheaders() ?>
-
-    <meta charset="utf-8"/>
 
     <!-- Be sure to have only https call -->
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
@@ -120,7 +123,7 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
 // * dokuwiki__top ID is needed for the "Back to top" utility
 // * used also by some plugins
 ?>
-<body role="document" class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
+<body class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
 
 
 <?php

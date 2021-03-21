@@ -6,6 +6,8 @@
 
 //Library of template function
 use ComboStrap\TplConstant;use ComboStrap\TplUtility;
+use dokuwiki\Extension\Event;
+
 require_once(__DIR__ . '/class/TplUtility.php');
 require_once(__DIR__ . '/class/TplConstant.php');
 
@@ -17,7 +19,7 @@ $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, '\Combost
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();
-header('X-UA-Compatible: IE=edge,chrome=1');
+TplUtility::setHttpHeader();
 
 ?>
 <!DOCTYPE html>
