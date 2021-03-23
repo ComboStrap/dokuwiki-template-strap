@@ -623,9 +623,9 @@ EOF;
                             $scriptData['defer'] = null;
                         }
 
-                        if(isset($scriptData["type"])){
+                        if (isset($scriptData["type"])) {
                             $type = strtolower($scriptData["type"]);
-                            if($type=="text/javascript"){
+                            if ($type == "text/javascript") {
                                 unset($scriptData["type"]);
                             }
                         }
@@ -666,6 +666,20 @@ EOF;
                     break;
                 default:
                 case "meta":
+                    // Content should never be null
+                    // Name may change
+                    // https://www.w3.org/TR/html4/struct/global.html#edef-META
+                    if (!isset($headerData["content"])) {
+                        msg("The head meta (" . print_r($headerData, true) . ") does not have a content property", -1, "", "", MSG_ADMINS_ONLY);
+                    } else {
+                        $content = $headerData["content"];
+                        if (empty($content)) {
+                            msg("The head meta (" . print_r($headerData, true) . ") has an empty content property", -1, "", "", MSG_ADMINS_ONLY);
+                        } else {
+                            $newHeaderTypes[$headerType] = $headerData;
+                        }
+                    }
+                    break;
                 case "style":
                     // generator, color, robots, keywords
                     // nothing to do pick them all
