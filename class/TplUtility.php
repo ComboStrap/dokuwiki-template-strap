@@ -666,19 +666,33 @@ EOF;
                     break;
                 default:
                 case "meta":
-                    // Content should never be null
-                    // Name may change
-                    // https://www.w3.org/TR/html4/struct/global.html#edef-META
-                    if (!isset($headerData["content"])) {
-                        msg("The head meta (" . print_r($headerData, true) . ") does not have a content property", -1, "", "", MSG_ADMINS_ONLY);
-                    } else {
-                        $content = $headerData["content"];
-                        if (empty($content)) {
-                            msg("The head meta (" . print_r($headerData, true) . ") has an empty content property", -1, "", "", MSG_ADMINS_ONLY);
+                    $newHeaderData = array();
+                    foreach ($headerData as $metaData) {
+                        // Content should never be null
+                        // Name may change
+                        // https://www.w3.org/TR/html4/struct/global.html#edef-META
+                        if (!key_exists("content",$metaData)) {
+                            $message = "The head meta (" . print_r($metaData, true) . ") does not have a content property";
+                            msg($message, -1, "", "", MSG_ADMINS_ONLY);
+                            if (defined('DOKU_UNITTEST')
+                            ) {
+                                throw new \RuntimeException($message);
+                            }
                         } else {
-                            $newHeaderTypes[$headerType] = $headerData;
+                            $content = $metaData["content"];
+                            if (empty($content)) {
+                                $messageEmpty = "The below head meta has an empty content property (" . print_r($metaData, true) . ")";
+                                msg($messageEmpty, -1, "", "", MSG_ADMINS_ONLY);
+                                if (defined('DOKU_UNITTEST')
+                                ) {
+                                    throw new \RuntimeException($messageEmpty);
+                                }
+                            } else {
+                                $newHeaderData[] = $metaData;
+                            }
                         }
                     }
+                    $newHeaderTypes[$headerType] = $newHeaderData;
                     break;
                 case "style":
                     // generator, color, robots, keywords
