@@ -36,6 +36,24 @@ class TplUtility
     const LVL_MSG_WARNING = 2;
     const LVL_MSG_DEBUG = 3;
     const TEMPLATE_NAME = 'strap';
+    const CONF_HEADER = "headerbar";
+    /**
+     * The bar are also used to not add a {@link \action_plugin_combo_metacanonical}
+     *
+     */
+    const CONF_FOOTER = "footerbar";
+    const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
+    const CONF_BOOTSTRAP_STYLESHEET = "bootstrapStylesheet";
+    const DEFAULT_BOOTSTRAP_STYLESHEET = "bootstrap.min.css";
+    const CONF_BOOTSTRAP_VERSION = "bootstrapVersion";
+    /**
+     * Jquery UI
+     */
+    const CONF_JQUERY_DOKU = 'jQueryDoku';
+    const CONF_REM_SIZE = "remSize";
+    const CONF_GRID_COLUMNS = "gridColumns";
+    const CONF_USE_CDN = "useCDN";
+    const CONF_SIDEKICK = "sidekickbar";
     /**
      * @var array|null
      */
@@ -106,7 +124,7 @@ class TplUtility
     {
         // The padding top for the top fix bar
         $paddingTop = 0;
-        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
+        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
         if ($heightTopBar != 0) {
             $paddingTop = $heightTopBar + 10;
         }
@@ -125,7 +143,7 @@ class TplUtility
     public static function getHeadStyleNodeForFixedTopNavbar()
     {
         $headStyle = "";
-        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
+        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR);
         if ($heightTopBar !== 0) {
             $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
             $marginTop = -2 * $heightTopBar;
@@ -179,6 +197,17 @@ EOF;
     public static function setHttpHeader()
     {
         header('X-UA-Compatible: IE=edge');
+    }
+
+    public static function registerHeaderHandler()
+    {
+        global $EVENT_HANDLER;
+        $method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
+        /**
+         * A call to a method is via an array and the hook declare a string
+         * @noinspection PhpParamsInspection
+         */
+        $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
     }
 
 
@@ -387,7 +416,7 @@ EOF;
     {
 
         // The version
-        $bootstrapVersion = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+        $bootstrapVersion = tpl_getConf(self::CONF_BOOTSTRAP_VERSION);
         if ($bootstrapVersion === false) {
             /**
              * Strap may be called for test
@@ -395,7 +424,7 @@ EOF;
              * In this case, the conf may not be reloaded
              */
             self::reloadConf();
-            $bootstrapVersion = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+            $bootstrapVersion = tpl_getConf(self::CONF_BOOTSTRAP_VERSION);
             if ($bootstrapVersion === false) {
                 throw new Exception("Bootstrap version should not be false");
             }
@@ -403,7 +432,7 @@ EOF;
         $scriptsMeta = self::buildBootstrapMetas($bootstrapVersion);
 
         // if cdn
-        $useCdn = tpl_getConf(TplConstant::CONF_USE_CDN);
+        $useCdn = tpl_getConf(self::CONF_USE_CDN);
 
 
         // Build the returned Js script array
@@ -532,7 +561,7 @@ EOF;
 
 
         // Css
-        $bootstrapCssFile = tpl_getConf(TplConstant::CONF_BOOTSTRAP_STYLESHEET);
+        $bootstrapCssFile = tpl_getConf(self::CONF_BOOTSTRAP_STYLESHEET);
         if ($bootstrapCssFile != "bootstrap.min.css") {
 
             $bootstrapCustomMetas = self::getCustomCssMeta($version);
@@ -650,7 +679,7 @@ EOF;
                     }
 
                     // Add Jquery at the beginning
-                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplConstant::CONF_JQUERY_DOKU) == 0) {
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(self::CONF_JQUERY_DOKU) == 0) {
                         // We take the Jquery of Bootstrap
                         $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
                     } else {
@@ -745,7 +774,6 @@ EOF;
      *
      * @param $confName - the configuration name
      * @param $confValue - the configuration value
-     * @throws Exception
      */
     static function setConf($confName, $confValue)
     {
@@ -766,7 +794,7 @@ EOF;
 
             // Check that the conf was loaded
             if (tpl_getConf($confName) === false) {
-                throw new Exception("The configuration (" . $confName . ") returns no value");
+                throw new \RuntimeException("The configuration (" . $confName . ") returns no value");
             }
         }
 
@@ -855,7 +883,7 @@ EOF;
     static function getHeader()
     {
 
-        $navBarPageName = tpl_getConf(TplConstant::CONF_HEADER);
+        $navBarPageName = tpl_getConf(self::CONF_HEADER);
         if (page_findnearest($navBarPageName)) {
 
             $header = tpl_include_page($navBarPageName, 0, 1);
@@ -877,7 +905,7 @@ EOF;
     {
         $domain = self::getApexDomainUrl();
 
-        $footerPageName = tpl_getConf(TplConstant::CONF_FOOTER);
+        $footerPageName = tpl_getConf(self::CONF_FOOTER);
         if (page_findnearest($footerPageName)) {
             $footer = tpl_include_page($footerPageName, 0, 1);
         } else {

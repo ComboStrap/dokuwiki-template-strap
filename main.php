@@ -3,7 +3,6 @@
 
 //Library of template function
 
-use ComboStrap\TplConstant;
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 use dokuwiki\Menu\PageMenu;
@@ -11,7 +10,6 @@ use dokuwiki\Menu\SiteMenu;
 use dokuwiki\Menu\UserMenu;
 
 require_once(__DIR__ . '/class/TplUtility.php');
-require_once(__DIR__ . '/class/TplConstant.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
@@ -46,10 +44,10 @@ if ($showSidebar) {
 /**
  * Sidekickbar
  */
-$hasRightSidebar = page_findnearest(tpl_getConf(TplConstant::CONF_SIDEKICK));
+$hasRightSidebar = page_findnearest(tpl_getConf(TplUtility::CONF_SIDEKICK));
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
-    $sideKickBarHtml = tpl_include_page(tpl_getConf(TplConstant::CONF_SIDEKICK), 0, 1);
+    $sideKickBarHtml = tpl_include_page(tpl_getConf(TplUtility::CONF_SIDEKICK), 0, 1);
 }
 
 /**
@@ -66,7 +64,7 @@ $footerBar = TplUtility::getFooter();
 /**
  * Grid
  */
-$gridColumns = tpl_getConf(TplConstant::CONF_GRID_COLUMNS);
+$gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
 $sidebarScale = 3;
 $sideKickBarScale = 3;
 if ($showSidebar) {
@@ -78,13 +76,7 @@ if ($showSidebar) {
 /**
  * Bootstrap meta-headers
  */
-global $EVENT_HANDLER;
-$method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
-/**
- * A call to a method is via an array and the hook declare a string
- * @noinspection PhpParamsInspection
- */
-$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
+TplUtility::registerHeaderHandler();
 
 /**
  * Default font size

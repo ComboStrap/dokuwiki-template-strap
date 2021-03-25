@@ -5,11 +5,10 @@
  */
 
 //Library of template function
-use ComboStrap\TplConstant;use ComboStrap\TplUtility;
+use ComboStrap\TplUtility;
 use dokuwiki\Extension\Event;
 
 require_once(__DIR__ . '/class/TplUtility.php');
-require_once(__DIR__ . '/class/TplConstant.php');
 
 global $lang;
 
@@ -62,7 +61,7 @@ TplUtility::setHttpHeader();
             <!-- Must contain One row -->
             <div class="row">
 
-                <div role="main" class="col-md-<?php tpl_getConf(TplConstant::CONF_GRID_COLUMNS) ?>">
+                <div role="main" class="col-md-<?php tpl_getConf(TplUtility::CONF_GRID_COLUMNS) ?>">
                     <!-- ********** CONTENT ********** -->
 
 
