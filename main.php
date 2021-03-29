@@ -142,8 +142,13 @@ echo $headerBar
     Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
     ?>
 
+
     <?php
-    TplUtility::renderTrailBreadcrumb();
+    global $ID;
+    global $conf;
+    if($ID != $conf["start"]) {
+        TplUtility::renderTrailBreadcrumb();
+    }
     ?>
 
     <div class="row">
