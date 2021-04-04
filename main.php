@@ -243,6 +243,7 @@ echo TplUtility::getPoweredBy();
 
 <?php
 // The stylesheet (before indexer work and script at the end)
+// TODO: In an animationFrame ? such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
 if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
     foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
         $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
