@@ -24,8 +24,9 @@ flow:
                     {
                         "${parent}": {
                             "${logicalName}": {
-                                "file": "${name}",
-                                "integrity": "${sha384_integrity}"
+                                "file" : "${name}",
+                                "url" : "https://cdn.jsdelivr.net/npm/bootswatch@${parent}/dist/!!!!toImproveNameOfTheTheme!!!!/bootstrap.min.css",
+                                "integrity" : "${sha384_integrity}"
                             }
                         }
                     }

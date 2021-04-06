@@ -1,98 +1,119 @@
 {
-  "4.4.1": {
-    "bootstrap.16col": {
-      "file": "bootstrap.16col.min.css",
-      "integrity": "sha384-7/QJWEBUuqkcuwRA+9t03pPgZlWIijurW5dMHOroOhOnuvLJNs/+ia7CiFz7Sws2"
+    "4.4.1": {
+        "bootstrap.16col": {
+            "file": "bootstrap.16col.min.css",
+            "integrity": "sha384-7/QJWEBUuqkcuwRA+9t03pPgZlWIijurW5dMHOroOhOnuvLJNs/+ia7CiFz7Sws2"
+        }
+    },
+    "4.5.0": {
+        "bootstrap.16col": {
+            "file": "bootstrap.16col.min.css",
+            "integrity": "sha384-qHUrb/0aQsXITU+/99hyrzzX8Sq1M5nNhf1u/bUHJUR+2J6K3oYJ4qQnB/5kZnMY"
+        },
+        "bootstrap.cerulean": {
+            "file": "bootstrap.cerulean.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/cerulean/bootstrap.min.css",
+            "integrity": "sha384-b+jboW/YIpW2ZZYyYdXczKK6igHlnkPNfN9kYAbqYV7rNQ9PKTXlS2D6j1QZIATW"
+        },
+        "bootstrap.cosmo": {
+            "file": "bootstrap.cosmo.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/cosmo/bootstrap.min.css",
+            "integrity": "sha384-9/chHLTCcBULgxOFoUyZXSgEF0uFXs+NrQqzcy/DXqcR+Sk8C1l4EgmUXAEzTb92"
+        },
+        "bootstrap.cyborg": {
+            "file": "bootstrap.cyborg.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/cyborg/bootstrap.min.css",
+            "integrity": "sha384-GKugkVcT8wqoh3M8z1lqHbU+g6j498/ZT/zuXbepz7Dc09/otQZxTimkEMTkRWHP"
+        },
+        "bootstrap.darkly": {
+            "file": "bootstrap.darkly.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/darkly/bootstrap.min.css",
+            "integrity": "sha384-Bo21yfmmZuXwcN/9vKrA5jPUMhr7znVBBeLxT9MA4r2BchhusfJ6+n8TLGUcRAtL"
+        },
+        "bootstrap.flatly": {
+            "file": "bootstrap.flatly.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/flatly/bootstrap.min.css",
+            "integrity": "sha384-mhpbKVUOPCSocLzx2ElRISIORFRwr1ZbO9bAlowgM5kO7hnpRBe+brVj8NNPUiFs"
+        },
+        "bootstrap.journal": {
+            "file": "bootstrap.journal.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/journal/bootstrap.min.css",
+            "integrity": "sha384-vjBZc/DqIqR687k5rf6bUQ6IVSOxQUi9TcwtvULstA7+YGi//g3oT2qkh8W1Drx9"
+        },
+        "bootstrap.litera": {
+            "file": "bootstrap.litera.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/litera/bootstrap.min.css",
+            "integrity": "sha384-Gr51humlTz50RfCwdBYgT+XvbSZqkm8Loa5nWlNrvUqCinoe6C6WUZKHS2WIRx5o"
+        },
+        "bootstrap.lumen": {
+            "file": "bootstrap.lumen.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/lumen/bootstrap.min.css",
+            "integrity": "sha384-VMuWne6iwiifi8iEWNZMw8sDatgb6ntBpBIr67q0rZAyOQwfu/VKpnFntQrjxB5W"
+        },
+        "bootstrap.lux": {
+            "file": "bootstrap.lux.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/lux/bootstrap.min.css",
+            "integrity": "sha384-smnSwzHqW1zKbeuSMsAM/fMQpkk7HY11LuHiwT8snL/W2QBoZtVCT4H5x1CEcJCs"
+        },
+        "bootstrap.materia": {
+            "file": "bootstrap.materia.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/materia/bootstrap.min.css",
+            "integrity": "sha384-uKLgCN8wZ+yo4RygxUNFhjywpL/l065dVTzvLuxys7LAIMmhZoLWb/1yP6+mF925"
+        },
+        "bootstrap.minty": {
+            "file": "bootstrap.minty.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/minty/bootstrap.min.css",
+            "integrity": "sha384-HqaYdAE26lgFCJsUF9TBdbZf7ygr9yPHtxtg37JshqVQi6CCAo6Qvwmgc5xclIiV"
+        },
+        "bootstrap.pulse": {
+            "file": "bootstrap.pulse.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/pulse/bootstrap.min.css",
+            "integrity": "sha384-t87SWLASAVDfD3SOypT7WDQZv9X6r0mq1lMEc6m1/+tAVfCXosegm1BvaIiQm3zB"
+        },
+        "bootstrap.sandstone": {
+            "file": "bootstrap.sandstone.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/sandstone/bootstrap.min.css",
+            "integrity": "sha384-ztQCCdmKhYHBDMV3AyR4QGZ2/z6veowJBbsmvDJW/sTuMpB9lpoubJuD0ODGSbjh"
+        },
+        "bootstrap.simplex": {
+            "file": "bootstrap.simplex.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/simplex/bootstrap.min.css",
+            "integrity": "sha384-6ge4b1Lr1zrvyGvm5pdAkc3NMa97XYhFPBWsZsT6O3eOU+hqURR1bQEMm11Grf3a"
+        },
+        "bootstrap.sketchy": {
+            "file": "bootstrap.sketchy.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/sketchy/bootstrap.min.css",
+            "integrity": "sha384-NkI/Nlr1DZ5rUXWWdnuZb97FQRgCCcwC66DC+HUCY0oVx6BgBHUfPcwL1vwp93JZ"
+        },
+        "bootstrap.slate": {
+            "file": "bootstrap.slate.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/slate/bootstrap.min.css",
+            "integrity": "sha384-idNH3UIOiZbCf8jxqu4iExnH34y5UovfW/Mg8T5WfNvoJolDvknoNqR69V2OexgF"
+        },
+        "bootstrap.solar": {
+            "file": "bootstrap.solar.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/solar/bootstrap.min.css",
+            "integrity": "sha384-iDw+DjLp94cdk+ODAgTY4IZ6d9aaRpG9KHr168TPxrfQ9wv/DTVC+cWyojoxjHBT"
+        },
+        "bootstrap.spacelab": {
+            "file": "bootstrap.spacelab.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/spacelab/bootstrap.min.css",
+            "integrity": "sha384-sIQOcNYer0kt7oTyFe/YrGzKMFP/qxsJbXTxq0/uiZQgpwXwEu41sVz2M61lWbai"
+        },
+        "bootstrap.superhero": {
+            "file": "bootstrap.superhero.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/superhero/bootstrap.min.css",
+            "integrity": "sha384-rvwYMW9Z/bbxZfgxHQEKx6D91KwffWAG+XnsoYNCGWi/qL1P9dIVYm1HBiHFqQEt"
+        },
+        "bootstrap.united": {
+            "file": "bootstrap.united.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/united/bootstrap.min.css",
+            "integrity": "sha384-Uga2yStKRHUWCS7ORqIZhJ9LIAv4i7gZuEdoR1QAmw6H+ffhcf7yCOd0CvSoNwoz"
+        },
+        "bootstrap.yeti": {
+            "file": "bootstrap.yeti.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/yeti/bootstrap.min.css",
+            "integrity": "sha384-chJtTd1EMa6hQI40eyJWF6829eEk4oIe7b3nNtUni7VxA3uHc/uIM/8ppyjrggfV"
+        }
     }
-  },
-  "4.5.0": {
-    "bootstrap.16col": {
-      "file": "bootstrap.16col.min.css",
-      "integrity": "sha384-qHUrb/0aQsXITU+/99hyrzzX8Sq1M5nNhf1u/bUHJUR+2J6K3oYJ4qQnB/5kZnMY"
-    },
-    "bootstrap.cerulean": {
-      "file": "bootstrap.cerulean.min.css",
-      "integrity": "sha384-b+jboW/YIpW2ZZYyYdXczKK6igHlnkPNfN9kYAbqYV7rNQ9PKTXlS2D6j1QZIATW"
-    },
-    "bootstrap.cosmo": {
-      "file": "bootstrap.cosmo.min.css",
-      "integrity": "sha384-9/chHLTCcBULgxOFoUyZXSgEF0uFXs+NrQqzcy/DXqcR+Sk8C1l4EgmUXAEzTb92"
-    },
-    "bootstrap.cyborg": {
-      "file": "bootstrap.cyborg.min.css",
-      "integrity": "sha384-GKugkVcT8wqoh3M8z1lqHbU+g6j498/ZT/zuXbepz7Dc09/otQZxTimkEMTkRWHP"
-    },
-    "bootstrap.darkly": {
-      "file": "bootstrap.darkly.min.css",
-      "integrity": "sha384-Bo21yfmmZuXwcN/9vKrA5jPUMhr7znVBBeLxT9MA4r2BchhusfJ6+n8TLGUcRAtL"
-    },
-    "bootstrap.flatly": {
-      "file": "bootstrap.flatly.min.css",
-      "integrity": "sha384-mhpbKVUOPCSocLzx2ElRISIORFRwr1ZbO9bAlowgM5kO7hnpRBe+brVj8NNPUiFs"
-    },
-    "bootstrap.journal": {
-      "file": "bootstrap.journal.min.css",
-      "integrity": "sha384-vjBZc/DqIqR687k5rf6bUQ6IVSOxQUi9TcwtvULstA7+YGi//g3oT2qkh8W1Drx9"
-    },
-    "bootstrap.litera": {
-      "file": "bootstrap.litera.min.css",
-      "integrity": "sha384-Gr51humlTz50RfCwdBYgT+XvbSZqkm8Loa5nWlNrvUqCinoe6C6WUZKHS2WIRx5o"
-    },
-    "bootstrap.lumen": {
-      "file": "bootstrap.lumen.min.css",
-      "integrity": "sha384-VMuWne6iwiifi8iEWNZMw8sDatgb6ntBpBIr67q0rZAyOQwfu/VKpnFntQrjxB5W"
-    },
-    "bootstrap.lux": {
-      "file": "bootstrap.lux.min.css",
-      "integrity": "sha384-smnSwzHqW1zKbeuSMsAM/fMQpkk7HY11LuHiwT8snL/W2QBoZtVCT4H5x1CEcJCs"
-    },
-    "bootstrap.materia": {
-      "file": "bootstrap.materia.min.css",
-      "integrity": "sha384-uKLgCN8wZ+yo4RygxUNFhjywpL/l065dVTzvLuxys7LAIMmhZoLWb/1yP6+mF925"
-    },
-    "bootstrap.minty": {
-      "file": "bootstrap.minty.min.css",
-      "integrity": "sha384-HqaYdAE26lgFCJsUF9TBdbZf7ygr9yPHtxtg37JshqVQi6CCAo6Qvwmgc5xclIiV"
-    },
-    "bootstrap.pulse": {
-      "file": "bootstrap.pulse.min.css",
-      "integrity": "sha384-t87SWLASAVDfD3SOypT7WDQZv9X6r0mq1lMEc6m1/+tAVfCXosegm1BvaIiQm3zB"
-    },
-    "bootstrap.sandstone": {
-      "file": "bootstrap.sandstone.min.css",
-      "integrity": "sha384-ztQCCdmKhYHBDMV3AyR4QGZ2/z6veowJBbsmvDJW/sTuMpB9lpoubJuD0ODGSbjh"
-    },
-    "bootstrap.simplex": {
-      "file": "bootstrap.simplex.min.css",
-      "integrity": "sha384-6ge4b1Lr1zrvyGvm5pdAkc3NMa97XYhFPBWsZsT6O3eOU+hqURR1bQEMm11Grf3a"
-    },
-    "bootstrap.sketchy": {
-      "file": "bootstrap.sketchy.min.css",
-      "integrity": "sha384-NkI/Nlr1DZ5rUXWWdnuZb97FQRgCCcwC66DC+HUCY0oVx6BgBHUfPcwL1vwp93JZ"
-    },
-    "bootstrap.slate": {
-      "file": "bootstrap.slate.min.css",
-      "integrity": "sha384-idNH3UIOiZbCf8jxqu4iExnH34y5UovfW/Mg8T5WfNvoJolDvknoNqR69V2OexgF"
-    },
-    "bootstrap.solar": {
-      "file": "bootstrap.solar.min.css",
-      "integrity": "sha384-iDw+DjLp94cdk+ODAgTY4IZ6d9aaRpG9KHr168TPxrfQ9wv/DTVC+cWyojoxjHBT"
-    },
-    "bootstrap.spacelab": {
-      "file": "bootstrap.spacelab.min.css",
-      "integrity": "sha384-sIQOcNYer0kt7oTyFe/YrGzKMFP/qxsJbXTxq0/uiZQgpwXwEu41sVz2M61lWbai"
-    },
-    "bootstrap.superhero": {
-      "file": "bootstrap.superhero.min.css",
-      "integrity": "sha384-rvwYMW9Z/bbxZfgxHQEKx6D91KwffWAG+XnsoYNCGWi/qL1P9dIVYm1HBiHFqQEt"
-    },
-    "bootstrap.united": {
-      "file": "bootstrap.united.min.css",
-      "integrity": "sha384-Uga2yStKRHUWCS7ORqIZhJ9LIAv4i7gZuEdoR1QAmw6H+ffhcf7yCOd0CvSoNwoz"
-    },
-    "bootstrap.yeti": {
-      "file": "bootstrap.yeti.min.css",
-      "integrity": "sha384-chJtTd1EMa6hQI40eyJWF6829eEk4oIe7b3nNtUni7VxA3uHc/uIM/8ppyjrggfV"
-    }
-  }
 }
