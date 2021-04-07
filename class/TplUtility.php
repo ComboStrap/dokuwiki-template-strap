@@ -54,6 +54,7 @@ class TplUtility
     const CONF_GRID_COLUMNS = "gridColumns";
     const CONF_USE_CDN = "useCDN";
     const CONF_SIDEKICK = "sidekickbar";
+    const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
     /**
      * @var array|null
      */
@@ -208,6 +209,45 @@ EOF;
          * @noinspection PhpParamsInspection
          */
         $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
+    }
+
+    public static function addPreloadedResources()
+    {
+        // For the preload if any
+        global $preloadCss;
+        // TODO: In an animationFrame ? such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
+        if (isset($preloadCss)) {
+            foreach ($preloadCss as $link) {
+                $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
+                if ($link['crossorigin'] != "") {
+                    $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
+                }
+                // No integrity here
+                $htmlLink .= '>';
+                ptln($htmlLink);
+            }
+        }
+    }
+
+    /**
+     * @param $linkData - an array of link style sheet data
+     * @return array - the array with the preload attributes
+     */
+    private static function toPreloadCss($linkData)
+    {
+        /**
+         * Save the stylesheet to load it at the end
+         */
+        global $preloadedCss;
+        $preloadedCss[] = $linkData;
+
+        /**
+         * Modify the actual tag data
+         * Change the loading mechanism to preload
+         */
+        $linkData['rel'] = 'preload';
+        $linkData['as'] = 'style';
+        return $linkData;
     }
 
 
@@ -606,34 +646,43 @@ EOF;
                     // delete edit
                     $bootstrapCss = $bootstrapHeaders[$headerType]['css'];
                     $headerData[] = $bootstrapCss;
-                    $cssPreload = tpl_getConf("preloadCss");
+
+                    // preload all CSS is an heresy as it creates a FOUC (Flash of non-styled element)
+                    // but we known it now and this is
+                    $cssPreloadConf = tpl_getConf(self::CONF_PRELOAD_CSS);
                     $newLinkData = array();
-                    if ($cssPreload) {
-
-                        foreach ($headerData as $linkData) {
-                            switch ($linkData['rel']) {
-                                case 'edit':
-                                    break;
-                                case 'stylesheet':
-
-                                    // Take the stylesheet to load them at the end
-                                    global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
-                                    $DOKU_TPL_BOOTIE_PRELOAD_CSS[] = $linkData;
-
-                                    // Change the loading mechanism to preload
-                                    $linkData['rel'] = 'preload';
-                                    $linkData['as'] = 'style';
+                    foreach ($headerData as $linkData) {
+                        switch ($linkData['rel']) {
+                            case 'edit':
+                                break;
+                            case 'stylesheet':
+                                /**
+                                 * Preloading default to the configuration
+                                 */
+                                $preload = $cssPreloadConf;
+                                /**
+                                 * Preload can be set at the array level with the critical attribute
+                                 * If the preload attribute is present
+                                 * We get that for instance for css animation style sheet
+                                 * that are not needed for rendering
+                                 */
+                                $critical = &$linkData["critical"];
+                                if (isset($critical)) {
+                                    $preload = filter_var($critical, FILTER_VALIDATE_BOOLEAN);
+                                    unset($critical);
+                                }
+                                if ($preload) {
+                                    $newLinkData[] = TplUtility::toPreloadCss($linkData);
+                                } else {
                                     $newLinkData[] = $linkData;
-
-                                    break;
-                                default:
-                                    $newLinkData[] = $linkData;
-                                    break;
-                            }
+                                }
+                                break;
+                            default:
+                                $newLinkData[] = $linkData;
+                                break;
                         }
-                    } else {
-                        $newLinkData = $headerData;
                     }
+
                     $newHeaderTypes[$headerType] = $newLinkData;
                     break;
 
@@ -652,9 +701,9 @@ EOF;
                             $scriptData['defer'] = null;
                         }
 
-                        if(isset($scriptData["type"])){
+                        if (isset($scriptData["type"])) {
                             $type = strtolower($scriptData["type"]);
-                            if($type=="text/javascript"){
+                            if ($type == "text/javascript") {
                                 unset($scriptData["type"]);
                             }
                         }

@@ -21,8 +21,7 @@ global $lang;
 global $ACT;
 global $conf;
 
-// For the preload if any
-global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
+
 
 /**
  * The Content first because it contains
@@ -65,12 +64,13 @@ $footerBar = TplUtility::getFooter();
  * Grid
  */
 $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
+$maximalWidthMain = 9;
 $sidebarScale = 3;
 $sideKickBarScale = 3;
 if ($showSidebar) {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
 } else {
-    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $gridColumns;
+    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
 }
 
 /**
@@ -151,7 +151,7 @@ echo $headerBar
     }
     ?>
 
-    <div class="row">
+    <div class="row justify-content-md-center" >
 
 
         <?php
@@ -235,30 +235,16 @@ echo $headerBar
 
 
 <?php
+// Footer
 echo $footerBar;
+// Powered By
 echo TplUtility::getPoweredBy();
-?>
-
-
-
-<?php
 // The stylesheet (before indexer work and script at the end)
-// TODO: In an animationFrame ? such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
-if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
-    foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
-        $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
-        if ($link['crossorigin'] != "") {
-            $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
-        }
-        // No integrity here
-        $htmlLink .= '>';
-        ptln($htmlLink);
-    }
-}
+TplUtility::addPreloadedResources();
 ?>
 
 
-<div class="no">
+<div class="d-none">
     <?php
     // Indexer (Background tasks)
     tpl_indexerWebBug()

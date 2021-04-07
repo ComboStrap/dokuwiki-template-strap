@@ -99,18 +99,7 @@ TplUtility::setHttpHeader();
 
         <?php
         // The stylesheet (before indexer work and script at the end)
-        global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
-        if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
-            foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
-                $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
-                if ($link['crossorigin'] != "") {
-                    $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
-                }
-                // No integrity here
-                $htmlLink .= '>';
-                ptln($htmlLink);
-            }
-        }
+        TplUtility::addPreloadedResources();
         ?>
     </div>
 </div>
