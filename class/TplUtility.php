@@ -211,16 +211,26 @@ EOF;
         $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
     }
 
+    /**
+     * Add the preloaded CSS resources
+     * at the end
+     */
     public static function addPreloadedResources()
     {
         // For the preload if any
-        global $preloadCss;
-        // TODO: In an animationFrame ? such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
-        if (isset($preloadCss)) {
-            foreach ($preloadCss as $link) {
+        global $preloadedCss;
+        //
+        // Note: Adding this css in an animationFrame
+        // such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
+        // would be difficult to test
+        if (isset($preloadedCss)) {
+            foreach ($preloadedCss as $link) {
                 $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
                 if ($link['crossorigin'] != "") {
                     $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
+                }
+                if (!empty($link['class'])) {
+                    $htmlLink .= ' class="' . $link['class'] . '" ';
                 }
                 // No integrity here
                 $htmlLink .= '>';
@@ -668,7 +678,7 @@ EOF;
                                  */
                                 $critical = &$linkData["critical"];
                                 if (isset($critical)) {
-                                    $preload = filter_var($critical, FILTER_VALIDATE_BOOLEAN);
+                                    $preload = !(filter_var($critical, FILTER_VALIDATE_BOOLEAN));
                                     unset($critical);
                                 }
                                 if ($preload) {
