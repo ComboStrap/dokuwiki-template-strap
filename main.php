@@ -85,21 +85,30 @@ $htmlRem = tpl_getConf("rem","16px");
 
 ?>
 
+<?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>"
       style="font-size:<?php echo $htmlRem ?>">
 <head>
 
+    <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
+    <meta charset="utf-8">
+
+    <?php // Responsive meta tag ?>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <?php // Headers ?>
     <?php tpl_metaheaders() ?>
 
-    <!-- Be sure to have only https call -->
+    <?php // Be sure to have only https call  ?>
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
     <title><?php TplUtility::renderPageTitle() ?></title>
 
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
+
+    <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
     <?php
