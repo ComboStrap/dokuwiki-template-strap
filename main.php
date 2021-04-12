@@ -22,7 +22,6 @@ global $ACT;
 global $conf;
 
 
-
 /**
  * The Content first because it contains
  * also the front matter that may influence the other bars
@@ -64,7 +63,12 @@ $footerBar = TplUtility::getFooter();
  * Grid
  */
 $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
-$maximalWidthMain = 9;
+$layout = p_get_metadata($ID, "layout");
+if ($layout === "median") {
+    $maximalWidthMain = 8;
+} else {
+    $maximalWidthMain = $gridColumns;
+}
 $sidebarScale = 3;
 $sideKickBarScale = 3;
 if ($showSidebar) {
@@ -81,7 +85,7 @@ TplUtility::registerHeaderHandler();
 /**
  * Default font size
  */
-$htmlRem = tpl_getConf("rem","16px");
+$htmlRem = tpl_getConf("rem", "16px");
 
 ?>
 
@@ -105,7 +109,6 @@ $htmlRem = tpl_getConf("rem","16px");
     <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
 
     <title><?php TplUtility::renderPageTitle() ?></title>
-
 
 
     <?php // Favicon ?>
@@ -155,12 +158,12 @@ echo $headerBar
     <?php
     global $ID;
     global $conf;
-    if($ID != $conf["start"]) {
+    if ($ID != $conf["start"]) {
         TplUtility::renderTrailBreadcrumb();
     }
     ?>
 
-    <div class="row justify-content-md-center" >
+    <div class="row justify-content-md-center">
 
 
         <?php
