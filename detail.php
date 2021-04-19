@@ -11,10 +11,15 @@ use dokuwiki\Extension\Event;
 require_once(__DIR__ . '/class/TplUtility.php');
 
 global $lang;
+global $conf;
+global $IMG;
+global $ERROR;
+global $REV;
 
-// Fot the header
-global $EVENT_HANDLER;
-$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, '\Combostrap\TplUtility::handleBootstrapMetaHeaders');
+/**
+ * Bootstrap meta-headers
+ */
+TplUtility::registerHeaderHandler();
 
 // must be run from within DokuWiki
 if (!defined('DOKU_INC')) die();
@@ -40,9 +45,7 @@ TplUtility::setHttpHeader();
 </head>
 
 <body style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
-<!--[if lte IE 7 ]>
-<div id="IE7"><![endif]--><!--[if IE 8 ]>
-<div id="IE8"><![endif]-->
+
 <div id="dokuwiki__site">
     <div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?>">
 
@@ -59,7 +62,7 @@ TplUtility::setHttpHeader();
             ?>
 
             <!-- Must contain One row -->
-            <div class="row">
+            <div class="row  p-4">
 
                 <div role="main" class="col-md-<?php tpl_getConf(TplUtility::CONF_GRID_COLUMNS) ?>">
                     <!-- ********** CONTENT ********** -->
