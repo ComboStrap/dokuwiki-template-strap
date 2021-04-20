@@ -7,6 +7,7 @@ require_once(__DIR__.'/class/TplUtility.php');
 if (!defined('DOKU_INC')) die();
 header('X-UA-Compatible: IE=edge,chrome=1');
 global $lang;
+global $conf;
 
 ?><!DOCTYPE html>
 <html lang="<?php echo $conf['lang']?>" dir="<?php echo $lang['direction'] ?>" class="popup no-js">

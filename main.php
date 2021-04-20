@@ -105,9 +105,6 @@ $htmlRem = tpl_getConf("rem", "16px");
     <?php // Headers ?>
     <?php tpl_metaheaders() ?>
 
-    <?php // Be sure to have only https call  ?>
-    <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
-
     <title><?php TplUtility::renderPageTitle() ?></title>
 
 
