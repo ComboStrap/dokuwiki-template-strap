@@ -14,7 +14,7 @@ We have just disable this function in script.js because it was moving element ar
 /* Main (in the render page, preview, the preview page)
  */
 main > h1, main > h2, main > h3, main > h4, main > h5, main > h6,
-.preview > .pad h1, .preview > .pad h2, .preview > .pad h3, .preview > .pad h4, .preview > .pad h5, .preview > .pad h6 {
+.preview > .pad > h1, .preview > .pad > h2, .preview > .pad > h3, .preview > .pad > h4, .preview > .pad > h5, .preview > .pad > h6 {
     background-color: inherit;
     /* The content will go outside of the parent
      The border will stop to the end of the content */
@@ -30,7 +30,7 @@ main > h1, main > h2, main > h3, main > h4, main > h5, main > h6,
 }
 
 
-main > h1, .preview > .pad h1 {
+main > h1, .preview > .pad > h1 {
     font-size: 160%;
     font-weight: bold;
     margin-left: 0;
@@ -40,7 +40,7 @@ main > div.level1, .preview > .pad div.level1 {
     margin-left: 0px;
 }
 
-main > h2, .preview > .pad h2 {
+main > h2, .preview > .pad > h2 {
     font-size: 150%;
     margin-left: 0px;
     margin-bottom: 1rem !important;
@@ -50,7 +50,7 @@ main > div.level2, .preview > .pad div.level2 {
     margin-left: 0px;
 }
 
-main > h3, .preview > .pad h3 {
+main > h3, .preview > .pad > h3 {
     font-size: 140%;
     font-weight: bold;
     margin-left: 15px;
@@ -60,7 +60,7 @@ main > div.level3, .preview > .pad div.level3 {
     margin-left: 15px;
 }
 
-main > h4, .preview > .pad h4 {
+main > h4, .preview > .pad > h4 {
     font-size: 120%;
     font-weight: bold;
     margin-left: 30px;
@@ -70,7 +70,7 @@ main > div.level4, .preview > .pad div.level4 {
     margin-left: 30px;
 }
 
-main > h5, .preview > .pad h5 {
+main > h5, .preview > .pad > h5 {
     font-size: 100%;
     font-weight: bold;
     margin-left: 45px;
@@ -85,48 +85,48 @@ main > div.level5, .preview > .pad div.level5 {
 @media (min-width: 0px) and (max-width: 576px) {
 
     #dw__toc h3 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
 
     main > h2 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > div.level2 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > h3 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > div.level3 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > h4 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > div.level4 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > h5 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > div.level5 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > h6 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     main > div.level6 {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
 }
