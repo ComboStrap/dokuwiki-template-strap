@@ -1,7 +1,0 @@
-/*Just to override the wrap plugin */
-
-.dokuwiki .wrap_warning {
-    background: #fcf8e3 linear-gradient(to bottom, #fcf8e3 0px, #f8efc0 100%) repeat-x;
-    border-color: #faebcc;
-    color: #8a6d3b;
-}
