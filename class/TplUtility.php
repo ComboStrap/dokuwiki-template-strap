@@ -676,10 +676,10 @@ EOF;
                                  * We get that for instance for css animation style sheet
                                  * that are not needed for rendering
                                  */
-                                $critical = &$linkData["critical"];
-                                if (isset($critical)) {
+                                if (isset($linkData["critical"])) {
+                                    $critical = $linkData["critical"];
                                     $preload = !(filter_var($critical, FILTER_VALIDATE_BOOLEAN));
-                                    unset($critical);
+                                    unset($linkData["critical"]);
                                 }
                                 if ($preload) {
                                     $newLinkData[] = TplUtility::toPreloadCss($linkData);
@@ -705,10 +705,18 @@ EOF;
                     $jqueryDokuScripts = array();
                     foreach ($headerData as $scriptData) {
 
-                        // defer is this is external resource
+                        $critical = false;
+                        if (isset($scriptData["critical"])) {
+                            $critical = $scriptData["critical"];
+                            unset($scriptData["critical"]);
+                        }
+
+                        // defer is only for external resource
                         // if this is not, this is illegal
                         if (isset($scriptData["src"])) {
-                            $scriptData['defer'] = null;
+                            if (!$critical) {
+                                $scriptData['defer'] = "true";
+                            }
                         }
 
                         if (isset($scriptData["type"])) {
