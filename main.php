@@ -87,6 +87,19 @@ TplUtility::registerHeaderHandler();
  */
 $htmlRem = tpl_getConf("rem", "16px");
 
+/**
+ * Ob checks
+ * It should be null, otherwise
+ * you may get a text before the HTML header
+ * and it mess up the whole page
+ */
+$length = ob_get_length();
+if ($length > 0) {
+    $ob = ob_get_contents();
+    ob_clean();
+    TplUtility::msg("A plugin has send text in the output. Because it will mess the HTML page, we have deleted it. The content was: ".$ob, TplUtility::LVL_MSG_ERROR, "strap");
+}
+
 ?>
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
