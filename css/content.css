@@ -17,8 +17,10 @@
 
 /* The edit button */
 div.secedit button {
-    float: right;
-    font-size: 10px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.6rem;
 }
 
 
