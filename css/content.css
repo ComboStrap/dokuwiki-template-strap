@@ -15,12 +15,5 @@
 
 }
 
-/* The edit button */
-div.secedit button {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    font-size: 0.6rem;
-}
 
 

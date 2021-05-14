@@ -131,4 +131,16 @@ main > div.level5, .preview > .pad div.level5 {
 
 }
 
+/* The edit button float because it's not inside */
+div.secedit {
+    float: right;
+    font-size: 0.6rem;
+}
+
+.card div.secedit {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    float: unset;
+}
 
