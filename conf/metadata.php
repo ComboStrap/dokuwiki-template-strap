@@ -49,11 +49,11 @@ $meta['preloadCss'] = array('onoff');
 $meta['privateToolbar'] = array('onoff');
 
 
-$meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.1'));
+// $meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.1'));
 
-$cssFiles = array(TplUtility::DEFAULT_BOOTSTRAP_STYLESHEET);
-$cssFiles = array_merge($cssFiles, TplUtility::getCustomStylesheet());
-$meta[TplUtility::CONF_BOOTSTRAP_STYLESHEET] = array('multichoice', '_choices' => $cssFiles);
+
+$cssFiles = TplUtility::getStylesheetsForMetadataConfiguration();
+$meta[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = array('multichoice', '_choices' => $cssFiles);
 
 $meta[TplUtility::CONF_JQUERY_DOKU] = array('onoff');
 

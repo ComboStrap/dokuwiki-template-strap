@@ -43,9 +43,29 @@ class TplUtility
      */
     const CONF_FOOTER = "footerbar";
     const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
-    const CONF_BOOTSTRAP_STYLESHEET = "bootstrapStylesheet";
-    const DEFAULT_BOOTSTRAP_STYLESHEET = "bootstrap.min.css";
+
+    /**
+     * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     */
     const CONF_BOOTSTRAP_VERSION = "bootstrapVersion";
+    /**
+     * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     */
+    const CONF_BOOTSTRAP_STYLESHEET = "bootstrapStylesheet";
+
+    /**
+     * Stylesheet and Boostrap should have the same version
+     * This conf is a mix between the version and the stylesheet
+     *
+     * majorVersion.0.0 - stylesheetname
+     */
+    const CONF_BOOTSTRAP_VERSION_STYLESHEET = "bootstrapVersionStylesheet";
+
+    /**
+     * The separator in {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     */
+    const BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR = " - ";
+
     /**
      * Jquery UI
      */
@@ -55,6 +75,7 @@ class TplUtility
     const CONF_USE_CDN = "useCDN";
     const CONF_SIDEKICK = "sidekickbar";
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
+
     /**
      * @var array|null
      */
@@ -258,6 +279,20 @@ EOF;
         $linkData['rel'] = 'preload';
         $linkData['as'] = 'style';
         return $linkData;
+    }
+
+    public static function getBootStrapVersion()
+    {
+        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET);
+        $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
+        return $bootstrapStyleSheetArray[0];
+    }
+
+    public static function getStyleSheetConf()
+    {
+        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET);
+        $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
+        return $bootstrapStyleSheetArray[1];
     }
 
 
@@ -466,7 +501,7 @@ EOF;
     {
 
         // The version
-        $bootstrapVersion = tpl_getConf(self::CONF_BOOTSTRAP_VERSION);
+        $bootstrapVersion = TplUtility::getBootStrapVersion();
         if ($bootstrapVersion === false) {
             /**
              * Strap may be called for test
@@ -474,7 +509,7 @@ EOF;
              * In this case, the conf may not be reloaded
              */
             self::reloadConf();
-            $bootstrapVersion = tpl_getConf(self::CONF_BOOTSTRAP_VERSION);
+            $bootstrapVersion = TplUtility::getBootStrapVersion();
             if ($bootstrapVersion === false) {
                 throw new Exception("Bootstrap version should not be false");
             }
@@ -537,52 +572,57 @@ EOF;
     }
 
     /**
-     * @return array - A list of the file name in the custom JSON file
+     * @return array - A list of all available stylesheets
      * This function is used to build the configuration as a list of files
      */
-    static function getCustomStylesheet()
+    static function getStylesheetsForMetadataConfiguration()
     {
-        $cssVersionsMetas = self::getCustomCssMeta();
-        $cssFiles = array();
-        foreach ($cssVersionsMetas as $cssVersionMeta) {
+        $cssVersionsMetas = self::getStyleSheetsFromJsonFile();
+        $listVersionStylesheetMeta = array();
+        foreach ($cssVersionsMetas as $bootstrapVersion => $cssVersionMeta) {
             foreach ($cssVersionMeta as $fileName => $values) {
-                $cssFiles[$fileName] = $fileName;
+                $listVersionStylesheetMeta[] = $bootstrapVersion . TplUtility::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR. $fileName;
             }
         }
-        return $cssFiles;
+        return $listVersionStylesheetMeta;
     }
 
     /**
      *
      * @param $version - return only the selected version if set
-     * @return void - an array of the meta JSON custom files
+     * @return array - an array of the meta JSON custom files
      */
-    static function getCustomCssMeta($version = null)
+    static function getStyleSheetsFromJsonFile($version = null)
     {
 
         $jsonAsArray = true;
-        $bootstrapCustomJsonFile = __DIR__ . '/../bootstrap/bootstrapCustom.json';
-        $bootstrapCustomMetas = json_decode(file_get_contents($bootstrapCustomJsonFile), $jsonAsArray);
-        if ($bootstrapCustomMetas == null) {
-            self::msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
+        $stylesheetsFile = __DIR__ . '/../bootstrap/bootstrapStylesheet.json';
+        $styleSheets = json_decode(file_get_contents($stylesheetsFile), $jsonAsArray);
+        if ($styleSheets == null) {
+            self::msg("Unable to read the file {$stylesheetsFile} as json");
         }
-        $bootstrapLocalJsonFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
-        if (file_exists($bootstrapLocalJsonFile)) {
-            $bootstrapLocalMetas = json_decode(file_get_contents($bootstrapLocalJsonFile), $jsonAsArray);
-            if ($bootstrapLocalMetas == null) {
-                self::msg("Unable to read the file {$bootstrapLocalMetas} as json");
+        $localStyleSheetsFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
+        if (file_exists($localStyleSheetsFile)) {
+            $localStyleSheets = json_decode(file_get_contents($localStyleSheetsFile), $jsonAsArray);
+            if ($localStyleSheets == null) {
+                self::msg("Unable to read the file {$localStyleSheets} as json");
             }
-            $bootstrapCustomMetas = array_merge($bootstrapCustomMetas, $bootstrapLocalMetas);
+            foreach($styleSheets as $bootstrapVersion => &$stylesheetsFiles){
+                if (isset($localStyleSheets[$bootstrapVersion])) {
+                    $stylesheetsFiles = array_merge($stylesheetsFiles, $localStyleSheets[$bootstrapVersion]);
+                }
+            }
+
         }
 
         if (isset($version)) {
-            if (!isset($bootstrapCustomMetas[$version])) {
-                self::msg("The bootstrap version ($version) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile)");
+            if (!isset($styleSheets[$version])) {
+                self::msg("The bootstrap version ($version) could not be found in the custom CSS file ($stylesheetsFile, or $localStyleSheetsFile)");
             } else {
-                $bootstrapCustomMetas = $bootstrapCustomMetas[$version];
+                $styleSheets = $styleSheets[$version];
             }
         }
-        return $bootstrapCustomMetas;
+        return $styleSheets;
     }
 
     /**
@@ -596,7 +636,7 @@ EOF;
     {
 
         $jsonAsArray = true;
-        $bootstrapJsonFile = __DIR__ . '/../bootstrap/bootstrap.json';
+        $bootstrapJsonFile = __DIR__ . '/../bootstrap/bootstrapJavascript.json';
         $bootstrapMetas = json_decode(file_get_contents($bootstrapJsonFile), $jsonAsArray);
         // Decodage problem
         if ($bootstrapMetas == null) {
@@ -611,10 +651,10 @@ EOF;
 
 
         // Css
-        $bootstrapCssFile = tpl_getConf(self::CONF_BOOTSTRAP_STYLESHEET);
+        $bootstrapCssFile = TplUtility::getStyleSheetConf();
         if ($bootstrapCssFile != "bootstrap.min.css") {
 
-            $bootstrapCustomMetas = self::getCustomCssMeta($version);
+            $bootstrapCustomMetas = self::getStyleSheetsFromJsonFile($version);
 
             if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
                 self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
@@ -851,6 +891,10 @@ EOF;
         global $conf;
         $template = $conf['template'];
 
+        if ($template != "strap") {
+            throw new \RuntimeException("This is not the strap template, in test, active it in setup");
+        }
+
         /**
          *  Make sure to load the configuration first by calling getConf
          */
@@ -861,7 +905,7 @@ EOF;
 
             // Check that the conf was loaded
             if (tpl_getConf($confName) === false) {
-                throw new \RuntimeException("The configuration (" . $confName . ") returns no value");
+                throw new \RuntimeException("The configuration (" . $confName . ") returns no value or has no default");
             }
         }
 

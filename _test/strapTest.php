@@ -90,7 +90,7 @@ class template_strap_script_test extends DokuWikiTest
          *
          * js.php is needed for custom script such as a consent box
          */
-        $version = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION);
+        $version = TplUtility::getBootStrapVersion();
         $scriptsSignature = ["jquery.com\/jquery-(.*).js", "cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
         $this->checkMeta($response, 'script', "src", $scriptsSignature, "Anonymous");
 
@@ -136,7 +136,7 @@ class template_strap_script_test extends DokuWikiTest
          *
          * js.php is needed for custom script such as a consent box
          */
-        $version = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION);
+        $version = TplUtility::getBootStrapVersion();
         $scriptsSignature = ["jquery.php", "cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
         $this->checkMeta($response, 'script', "src", $scriptsSignature, "Anonymous");
 
@@ -259,7 +259,7 @@ class template_strap_script_test extends DokuWikiTest
 
         $this->assertEquals(2, sizeof($node), "The stylesheet count should be 2");
 
-        $version = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION);
+        $version = TplUtility::getBootStrapVersion();
         $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
         $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, "Anonymous");
 
@@ -267,29 +267,6 @@ class template_strap_script_test extends DokuWikiTest
     }
 
 
-    /**
-     * Test the {@link \Combostrap\TplUtility::buildBootstrapMetas()} function
-     * that returns the needed bootstrap resources
-     * @throws Exception
-     */
-    public function test_buildBootstrapMetas()
-    {
-        $metas = TplUtility::buildBootstrapMetas("4.5.0");
-        $this->assertEquals(4, sizeof($metas));
-        $this->assertEquals("bootstrap.min.css", $metas["css"]["file"]);
-
-        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_STYLESHEET, "bootstrap.16col");
-        $metas = TplUtility::buildBootstrapMetas("4.5.0");
-        $this->assertEquals(4, sizeof($metas));
-        $this->assertEquals("bootstrap.16col.min.css", $metas["css"]["file"]);
-
-        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_STYLESHEET, "bootstrap.simplex");
-        $metas = TplUtility::buildBootstrapMetas("4.5.0");
-        $this->assertEquals(4, sizeof($metas));
-        $this->assertEquals("bootstrap.simplex.min.css", $metas["css"]["file"]);
-        $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/simplex/bootstrap.min.css", $metas["css"]["url"]);
-
-    }
 
 
     /**
@@ -325,25 +302,7 @@ class template_strap_script_test extends DokuWikiTest
     }
 
 
-    /**
-     * Test the {@link \Combostrap\TplUtility::getCustomStylesheet()} function
-     */
-    public function test_getCustomCssFiles()
-    {
 
-        // Default
-        $files = TplUtility::getCustomStylesheet();
-        $this->assertEquals(22, sizeof($files), "There is one css script");
-
-        // With a custom file
-        $destination = __DIR__ . '/../bootstrap/bootstrapLocal.json';
-        copy(__DIR__ . '/resources/bootstrapLocal.json', $destination);
-        $files = TplUtility::getCustomStylesheet();
-        $this->assertEquals(2, sizeof($files), "There is two css script");
-        unlink($destination);
-
-
-    }
 
 
     /**

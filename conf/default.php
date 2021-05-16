@@ -44,10 +44,14 @@ $conf['useCDN'] = 1;
 // Print Debug statement
 $conf['debug'] = 1;
 
-$conf['remSize']= "16";
+$conf['remSize'] = "16";
 
-$conf['bootstrapVersion'] = '4.5.0';
-$conf['bootstrapStylesheet']="bootstrap.min.css";
+/**
+ * {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+ */
+$conf["bootstrapVersionStylesheet"] = "5.0.1 - bootstrap";
+
+$conf['gridColumns'] = 12;
 
 $conf['gridColumns'] = 12;
 
@@ -68,9 +72,6 @@ $conf['privateToolbar'] = 0;
  * @see {@link TplUtility::CONF_JQUERY_DOKU}
  */
 $conf['jQueryDoku'] = 0;
-
-
-
 
 
 ?>

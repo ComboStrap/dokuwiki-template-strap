@@ -35,8 +35,7 @@ $lang[TplUtility::CONF_HEIGHT_FIXED_TOP_NAVBAR] = '<a href="https://combostrap.c
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
 $lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
 
-$lang[TplUtility::CONF_BOOTSTRAP_VERSION] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version';
-$lang[TplUtility::CONF_BOOTSTRAP_STYLESHEET] = '<a href="https://combostrap.com/stylesheet">Stylesheet</a> - The Bootstrap Stylesheet';
+$lang[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version and a corresponding stylesheet';
 
 $lang[TplUtility::CONF_JQUERY_DOKU] = '<a href="https://combostrap.com/jquery">Jquery</a> - Use the DokuWiki Jquery';
 
