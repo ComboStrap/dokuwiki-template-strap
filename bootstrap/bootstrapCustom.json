@@ -115,5 +115,132 @@
             "url": "https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/yeti/bootstrap.min.css",
             "integrity": "sha384-chJtTd1EMa6hQI40eyJWF6829eEk4oIe7b3nNtUni7VxA3uHc/uIM/8ppyjrggfV"
         }
+    },
+    "5.0.1": {
+        "bootstrap.cerulean": {
+            "file": "bootstrap.cerulean.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/cerulean/bootstrap.min.css",
+            "integrity": "sha256-0UiGxiZByjUhEbxgTFZnqkriiq55ZRLx34PeJPtFjAs="
+        },
+        "bootstrap.cosmo": {
+            "file": "bootstrap.cosmo.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/cosmo/bootstrap.min.css",
+            "integrity": "sha256-CjOpcFhetoHeTA2VCtN0lCBjsuUBTyprt/3d5GmM+mQ="
+        },
+        "bootstrap.cyborg": {
+            "file": "bootstrap.cyborg.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/cyborg/bootstrap.min.css",
+            "integrity": "sha256-RziKHdPoFcHLxIWUxd0Q0NvyUygxoiybAm9HGOLFAvA="
+        },
+        "bootstrap.darkly": {
+            "file": "bootstrap.darkly.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/darkly/bootstrap.min.css",
+            "integrity": "sha256-wXSrJQPGca0WuqBL6/G912FEJLNfYHnOATmLHLJZ4iY="
+        },
+        "bootstrap.flatly": {
+            "file": "bootstrap.flatly.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/flatly/bootstrap.min.css",
+            "integrity": "sha256-n/rdSlkUha+pkgKSz9eM/yAE3jGWaOPpS+BN1Jfm/iA="
+        },
+        "bootstrap.journal": {
+            "file": "bootstrap.journal.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/journal/bootstrap.min.css",
+            "integrity": "sha256-e3E7R/yS7IqjhNaSVykFWZ+gRCf4xU0bRpuxSnerfr0="
+        },
+        "bootstrap.litera": {
+            "file": "bootstrap.litera.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/litera/bootstrap.min.css",
+            "integrity": "sha256-42ZuSmBHRnvUPztoivDb63B+cnETA18lljSgDbaGmgw="
+        },
+        "bootstrap.lumen": {
+            "file": "bootstrap.lumen.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/lumen/bootstrap.min.css",
+            "integrity": "sha256-LOLY9Af1FkbhTeQiVwC1FKgLmuGFkkwEEFjo5XUszoQ="
+        },
+        "bootstrap.lux": {
+            "file": "bootstrap.lux.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/lux/bootstrap.min.css",
+            "integrity": "sha256-+2PtINQogZGUj4x/AVFdU8otX9r6XE37zSe47gnAA44="
+        },
+        "bootstrap.materia": {
+            "file": "bootstrap.materia.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/materia/bootstrap.min.css",
+            "integrity": "sha256-XzMWu4y5SDJTV0i9/sSTlK//tnE/b5zEf3XlhPWje34="
+        },
+        "bootstrap.minty": {
+            "file": "bootstrap.minty.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/minty/bootstrap.min.css",
+            "integrity": "sha256-cgt3hF1c3FZ6WVory/sZ9YX5EH/xvfIh3QXJ8EjHMqE="
+        },
+        "bootstrap.morph": {
+            "file": "bootstrap.morph.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/morph/bootstrap.min.css",
+            "integrity": "sha256-QgvJ9KtLcx4/jL95Gf4NoSt1hlffaWhV1ul6hB7mVNs="
+        },
+        "bootstrap.pulse": {
+            "file": "bootstrap.pulse.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/pulse/bootstrap.min.css",
+            "integrity": "sha256-5o3+qSihWSBxLSSb1waeSMsyt0zkdEXh/Jcp+yobJIM="
+        },
+        "bootstrap.quartz": {
+            "file": "bootstrap.quartz.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/quartz/bootstrap.min.css",
+            "integrity": "sha256-KKEtRu5lSEhizjZZR5zORaQxMioso3wyCf8FFX0oJUc="
+        },
+        "bootstrap.sandstone": {
+            "file": "bootstrap.sandstone.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/sandstone/bootstrap.min.css",
+            "integrity": "sha256-enpRpLm7OnOZvSVW+MKda+qrzEYUWoPQhJTuMZxoWJo="
+        },
+        "bootstrap.simplex": {
+            "file": "bootstrap.simplex.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/simplex/bootstrap.min.css",
+            "integrity": "sha256-Y+N5snZHUX1QdgESPspRouCDRG/QGPtC6Mu4aAyKCLg="
+        },
+        "bootstrap.sketchy": {
+            "file": "bootstrap.sketchy.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/sketchy/bootstrap.min.css",
+            "integrity": "sha256-ueQ7TqnaDTN6toWLJdnMggIMiovm+il9Y8pz7TP7Svc="
+        },
+        "bootstrap.slate": {
+            "file": "bootstrap.slate.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/slate/bootstrap.min.css",
+            "integrity": "sha256-rBlHYicmhsrnaFpdJbNyms9vAdwG0ioPY/Gsi6UX3e0="
+        },
+        "bootstrap.solar": {
+            "file": "bootstrap.solar.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/solar/bootstrap.min.css",
+            "integrity": "sha256-Q8IE+88qPg9bY8idmhocXF72ER+tdnnJhyPGPankmMY="
+        },
+        "bootstrap.spacelab": {
+            "file": "bootstrap.spacelab.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/spacelab/bootstrap.min.css",
+            "integrity": "sha256-XcKSq/qvJOq8UbDyys4dOtHgZn/khsIUxT1qdyACezs="
+        },
+        "bootstrap.superhero": {
+            "file": "bootstrap.superhero.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/superhero/bootstrap.min.css",
+            "integrity": "sha256-0qOsQ5s7hckSaVdKCD3pHB/fy9DihEH07i7MoXBTkj0="
+        },
+        "bootstrap.united": {
+            "file": "bootstrap.united.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/united/bootstrap.min.css",
+            "integrity": "sha256-Pp/rxYRCPT8wybOrrXY473F/52St7JY2hJ1+evKC64U="
+        },
+        "bootstrap.vapor": {
+            "file": "bootstrap.vapor.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/vapor/bootstrap.min.css",
+            "integrity": "sha256-tB2plOq7Ach/7WVixE/v11uJElAydaPR3cKhyENBwiw="
+        },
+        "bootstrap.yeti": {
+            "file": "bootstrap.yeti.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/yeti/bootstrap.min.css",
+            "integrity": "sha256-h/OLSjArGk4sn7VEUXkRS4jKaeOQcSyLJc+mdcH7gPs="
+        },
+        "bootstrap.zephyr": {
+            "file": "bootstrap.zephyr.min.css",
+            "url": "https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/zephyr/bootstrap.min.css",
+            "integrity": "sha256-TA5FYvBIkNpWKvSX+3o2q5lDkbtET+wHCli+bPm+ct4="
+        }
     }
 }

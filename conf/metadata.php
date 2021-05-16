@@ -49,7 +49,7 @@ $meta['preloadCss'] = array('onoff');
 $meta['privateToolbar'] = array('onoff');
 
 
-$meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.0-beta3'));
+$meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.1'));
 
 $cssFiles = array(TplUtility::DEFAULT_BOOTSTRAP_STYLESHEET);
 $cssFiles = array_merge($cssFiles, TplUtility::getCustomStylesheet());
