@@ -60,11 +60,11 @@ class TplUtility
      * majorVersion.0.0 - stylesheetname
      */
     const CONF_BOOTSTRAP_VERSION_STYLESHEET = "bootstrapVersionStylesheet";
-
     /**
      * The separator in {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
      */
     const BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR = " - ";
+    const DEFAULT_BOOTSTRAP_VERSION_STYLESHEET = "5.0.1" . self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . "bootstrap";
 
     /**
      * Jquery UI
@@ -75,6 +75,7 @@ class TplUtility
     const CONF_USE_CDN = "useCDN";
     const CONF_SIDEKICK = "sidekickbar";
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
+
 
     /**
      * @var array|null
@@ -283,14 +284,14 @@ EOF;
 
     public static function getBootStrapVersion()
     {
-        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET);
+        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
         $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
         return $bootstrapStyleSheetArray[0];
     }
 
     public static function getStyleSheetConf()
     {
-        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET);
+        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
         $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
         return $bootstrapStyleSheetArray[1];
     }
@@ -581,7 +582,7 @@ EOF;
         $listVersionStylesheetMeta = array();
         foreach ($cssVersionsMetas as $bootstrapVersion => $cssVersionMeta) {
             foreach ($cssVersionMeta as $fileName => $values) {
-                $listVersionStylesheetMeta[] = $bootstrapVersion . TplUtility::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR. $fileName;
+                $listVersionStylesheetMeta[] = $bootstrapVersion . TplUtility::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . $fileName;
             }
         }
         return $listVersionStylesheetMeta;
@@ -607,7 +608,7 @@ EOF;
             if ($localStyleSheets == null) {
                 self::msg("Unable to read the file {$localStyleSheets} as json");
             }
-            foreach($styleSheets as $bootstrapVersion => &$stylesheetsFiles){
+            foreach ($styleSheets as $bootstrapVersion => &$stylesheetsFiles) {
                 if (isset($localStyleSheets[$bootstrapVersion])) {
                     $stylesheetsFiles = array_merge($stylesheetsFiles, $localStyleSheets[$bootstrapVersion]);
                 }
@@ -652,16 +653,12 @@ EOF;
 
         // Css
         $bootstrapCssFile = TplUtility::getStyleSheetConf();
-        if ($bootstrapCssFile != "bootstrap.min.css") {
+        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFile($version);
 
-            $bootstrapCustomMetas = self::getStyleSheetsFromJsonFile($version);
-
-            if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
-                self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
-            } else {
-                $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCssFile];
-            }
-
+        if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
+            self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
+        } else {
+            $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCssFile];
         }
 
 
