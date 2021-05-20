@@ -16,6 +16,7 @@ use Doku_Event;
 use dokuwiki\Cache\CacheRenderer;
 use dokuwiki\Extension\Event;
 
+require(__DIR__."/BarCache.php");
 
 use Exception;
 
@@ -314,7 +315,7 @@ EOF;
         $useAcl = true;
         $rev = '';
         $physicalBarId = page_findnearest($barName, $useAcl);
-        if($physicalBarId===false){
+        if ($physicalBarId === false) {
             return null;
         }
         $physicalBarFile = wikiFN($physicalBarId, $rev);
@@ -326,7 +327,7 @@ EOF;
         global $ID;
         $actualNamespace = getNS($ID);
         $logicalBarId = $barName;
-        resolve_pageid($actualNamespace,$logicalBarId, $exists);
+        resolve_pageid($actualNamespace, $logicalBarId, $exists);
         /**
          * When running a bar rendering
          * The global ID should become the id of bar
@@ -340,23 +341,35 @@ EOF;
         /**
          * The code below is adapted from {@link p_cached_output()}
          * $ret = p_cached_output($file, 'xhtml', $pageid);
+         *
+         * We don't use {@link CacheRenderer}
+         * because the cache key is the physical file
          */
-
         global $conf;
-
         $format = 'xhtml';
 
-        $cache = new CacheRenderer($logicalBarId, $physicalBarFile, $format);
-        if ($cache->useCache()) {
+        $cache = new BarCache($logicalBarId, $physicalBarFile,$format);
+        $files = [
+            $physicalBarFile,
+            DOKU_INC . 'inc/parser/Parser.php',                // ... parser
+            DOKU_INC . 'inc/parser/handler.php',               // ... handler
+            DOKU_INC . 'inc/parser/' . $format . '.php'       // ... the renderer
+        ];
+        $configFiles = getConfigFiles('main');
+        $files = array_merge($files, $configFiles);    // ... wiki settings
+        $dependencies = ["files" => $files];
+        if ($cache->useCache($dependencies)) {
             $parsed = $cache->retrieveCache(false);
             if ($conf['allowdebug'] && $format == 'xhtml') {
                 $parsed .= "\n<!-- cachefile {$cache->cache} used -->\n";
             }
         } else {
+            /**
+             * Adapted from {@link p_cached_instructions()}
+             */
             $instructions = p_cached_instructions($physicalBarFile, false, $logicalBarId);
             $parsed = p_render($format, $instructions, $info);
-
-            if ($info['cache'] && $cache->storeCache($parsed)) {              // storeCache() attempts to save cachefile
+            if ($info['cache'] && $cache->storeCache($parsed)) {
                 if ($conf['allowdebug'] && $format == 'xhtml') {
                     $parsed .= "\n<!-- no cachefile used, but created {$cache->cache} -->\n";
                 }
@@ -367,7 +380,6 @@ EOF;
                 }
             }
         }
-
 
         // restore ID
         $ID = $keep;
