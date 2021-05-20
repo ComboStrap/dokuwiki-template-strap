@@ -107,7 +107,11 @@ class TplUtilityTest extends DokuWikiTest
         global $ID;
         $ID = ":namespace:whatever";
         $data = TplUtility::renderBar($sidebarName);
-        $this->assertEquals("",$data);
+        $this->assertNotEmpty($data);
+        /**
+         * TODO:  We should test that the file are not the same with bar plugin that shows the files of a namespace
+         * The test was done manually
+         */
 
     }
 

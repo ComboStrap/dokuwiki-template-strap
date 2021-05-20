@@ -300,10 +300,13 @@ EOF;
 
     /**
      * Return the XHMTL for the bar or null if not found
+     *
+     * An adaptation from {@link tpl_include_page()}
+     * to make the cache namespace
+     *
      * @param $barName
      * @return string|null
-     * An adaptation from {@link tpl_include_page()}
-     * to make the scope of the page, the namespace of the page id asked
+     *
      */
     public static function renderBar($barName)
     {
@@ -348,20 +351,11 @@ EOF;
         global $conf;
         $format = 'xhtml';
 
-        $cache = new BarCache($logicalBarId, $physicalBarFile,$format);
-        $files = [
-            $physicalBarFile,
-            DOKU_INC . 'inc/parser/Parser.php',                // ... parser
-            DOKU_INC . 'inc/parser/handler.php',               // ... handler
-            DOKU_INC . 'inc/parser/' . $format . '.php'       // ... the renderer
-        ];
-        $configFiles = getConfigFiles('main');
-        $files = array_merge($files, $configFiles);    // ... wiki settings
-        $dependencies = ["files" => $files];
-        if ($cache->useCache($dependencies)) {
+        $cache = new BarCache($logicalBarId, $physicalBarFile, $format);
+        if ($cache->useCache()) {
             $parsed = $cache->retrieveCache(false);
             if ($conf['allowdebug'] && $format == 'xhtml') {
-                $parsed .= "\n<!-- cachefile {$cache->cache} used -->\n";
+                $parsed .= "\n<!-- bar cachefile {$cache->cache} used -->\n";
             }
         } else {
             /**
@@ -371,12 +365,12 @@ EOF;
             $parsed = p_render($format, $instructions, $info);
             if ($info['cache'] && $cache->storeCache($parsed)) {
                 if ($conf['allowdebug'] && $format == 'xhtml') {
-                    $parsed .= "\n<!-- no cachefile used, but created {$cache->cache} -->\n";
+                    $parsed .= "\n<!-- no bar cachefile used, but created {$cache->cache} -->\n";
                 }
             } else {
                 $cache->removeCache();                     //try to delete cachefile
                 if ($conf['allowdebug'] && $format == 'xhtml') {
-                    $parsed .= "\n<!-- no cachefile used, caching forbidden -->\n";
+                    $parsed .= "\n<!-- no bar cachefile used, caching forbidden -->\n";
                 }
             }
         }
