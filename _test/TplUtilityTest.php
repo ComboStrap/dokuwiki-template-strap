@@ -19,6 +19,7 @@ class TplUtilityTest extends DokuWikiTest
         global $conf;
         parent::setUp();
         $conf ['template'] = 'strap';
+
         /**
          * static variable bug in the {@link tpl_getConf()}
          * that does not load the configuration twice
@@ -91,5 +92,24 @@ class TplUtilityTest extends DokuWikiTest
         $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/simplex/bootstrap.min.css", $metas["css"]["url"]);
 
     }
+
+    /**
+     * Testing the {@link TplUtility::renderBar()}
+     */
+    public function testBarCache()
+    {
+
+        $sidebarName = "sidebar";
+        $sidebarId = ":".$sidebarName;
+        saveWikiText($sidebarId, "=== title ===", "");
+        $metadata = p_read_metadata($sidebarId);
+        p_save_metadata($sidebarName, $metadata);
+        global $ID;
+        $ID = ":namespace:whatever";
+        $data = TplUtility::renderBar($sidebarName);
+        $this->assertEquals("",$data);
+
+    }
+
 
 }

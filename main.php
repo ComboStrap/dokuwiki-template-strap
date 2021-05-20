@@ -33,19 +33,21 @@ $mainHtml = TplUtility::tpl_content($prependTOC = false);
 /**
  * Sidebar
  */
-$hasSidebar = page_findnearest($conf['sidebar']);
-$showSidebar = $hasSidebar && ($ACT == 'show');
-if ($showSidebar) {
-    $sidebarHtml = tpl_include_page($conf['sidebar'], 0, 1);
+$sidebarName = $conf['sidebar'];
+$sidebarHtml = null;
+if ($ACT == 'show') {
+    $sidebarHtml = TplUtility::renderBar($sidebarName);
 }
+
 
 /**
  * Sidekickbar
  */
-$hasRightSidebar = page_findnearest(tpl_getConf(TplUtility::CONF_SIDEKICK));
+$sideKickPageName = tpl_getConf(TplUtility::CONF_SIDEKICK);
+$hasRightSidebar = page_findnearest($sideKickPageName);
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
-    $sideKickBarHtml = tpl_include_page(tpl_getConf(TplUtility::CONF_SIDEKICK), 0, 1);
+    $sideKickBarHtml = TplUtility::renderBar($sideKickPageName);
 }
 
 /**
@@ -71,7 +73,7 @@ if ($layout === "median") {
 }
 $sidebarScale = 3;
 $sideKickBarScale = 3;
-if ($showSidebar) {
+if ($sidebarHtml != null) {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
 } else {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
@@ -97,7 +99,7 @@ $length = ob_get_length();
 if ($length > 0) {
     $ob = ob_get_contents();
     ob_clean();
-    TplUtility::msg("A plugin has send text in the output. Because it will mess the HTML page, we have deleted it. The content was: ".$ob, TplUtility::LVL_MSG_ERROR, "strap");
+    TplUtility::msg("A plugin has send text in the output. Because it will mess the HTML page, we have deleted it. The content was: " . $ob, TplUtility::LVL_MSG_ERROR, "strap");
 }
 
 ?>
@@ -178,7 +180,7 @@ echo $headerBar
 
         <?php
         // SIDE BAR
-        if ($showSidebar): ?>
+        if ($sidebarHtml != null): ?>
             <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
 
                 <nav class="bs-docs-sidebar hidden-prints">
