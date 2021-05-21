@@ -15,6 +15,21 @@ require_once(__DIR__ . '/../class/DomUtility.php');
 class template_strap_script_test extends DokuWikiTest
 {
 
+    public function setUp()
+    {
+
+        global $conf;
+        parent::setUp();
+        $conf ['template'] = 'strap';
+
+        /**
+         * static variable bug in the {@link tpl_getConf()}
+         * that does not load the configuration twice
+         */
+        TplUtility::reloadConf();
+
+    }
+
     /**
      * An utilit function that test if the headers meta are still
      * on the page (ie response)
@@ -49,20 +64,6 @@ class template_strap_script_test extends DokuWikiTest
 
     }
 
-    public function setUp()
-    {
-
-        global $conf;
-        parent::setUp();
-        $conf ['template'] = 'strap';
-        /**
-         * static variable bug in the {@link tpl_getConf()}
-         * that does not load the configuration twice
-         */
-        TplUtility::reloadConf();
-
-
-    }
 
 
     /**
