@@ -13,12 +13,9 @@
 namespace ComboStrap;
 
 use Doku_Event;
-use dokuwiki\Cache\CacheRenderer;
 use dokuwiki\Extension\Event;
-
-require(__DIR__."/BarCache.php");
-
 use Exception;
+
 
 /**
  * Class TplUtility
@@ -311,74 +308,8 @@ EOF;
     public static function renderBar($barName)
     {
 
-        /**
-         * Find the first file with the same name
-         * in the tree
-         */
-        $useAcl = true;
-        $rev = '';
-        $physicalBarId = page_findnearest($barName, $useAcl);
-        if ($physicalBarId === false) {
-            return null;
-        }
-        $physicalBarFile = wikiFN($physicalBarId, $rev);
-
-
-        /**
-         * Id of the bar
-         */
-        global $ID;
-        $actualNamespace = getNS($ID);
-        $logicalBarId = $barName;
-        resolve_pageid($actualNamespace, $logicalBarId, $exists);
-        /**
-         * When running a bar rendering
-         * The global ID should become the id of bar
-         * (needed for parsing)
-         * The $ID is restored at the end of the function
-         */
-        $keep = $ID;
-        $ID = $logicalBarId;
-
-
-        /**
-         * The code below is adapted from {@link p_cached_output()}
-         * $ret = p_cached_output($file, 'xhtml', $pageid);
-         *
-         * We don't use {@link CacheRenderer}
-         * because the cache key is the physical file
-         */
-        global $conf;
-        $format = 'xhtml';
-
-        $cache = new BarCache($logicalBarId, $physicalBarFile, $format);
-        if ($cache->useCache()) {
-            $parsed = $cache->retrieveCache(false);
-            if ($conf['allowdebug'] && $format == 'xhtml') {
-                $parsed .= "\n<!-- bar cachefile {$cache->cache} used -->\n";
-            }
-        } else {
-            /**
-             * Adapted from {@link p_cached_instructions()}
-             */
-            $instructions = p_cached_instructions($physicalBarFile, false, $logicalBarId);
-            $parsed = p_render($format, $instructions, $info);
-            if ($info['cache'] && $cache->storeCache($parsed)) {
-                if ($conf['allowdebug'] && $format == 'xhtml') {
-                    $parsed .= "\n<!-- no bar cachefile used, but created {$cache->cache} -->\n";
-                }
-            } else {
-                $cache->removeCache();                     //try to delete cachefile
-                if ($conf['allowdebug'] && $format == 'xhtml') {
-                    $parsed .= "\n<!-- no bar cachefile used, caching forbidden -->\n";
-                }
-            }
-        }
-
-        // restore ID
-        $ID = $keep;
-
-        return $parsed;
+        $page = new Page($barName);
+        return $page->render();
 
     }
 
