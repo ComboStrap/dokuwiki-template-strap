@@ -304,12 +304,22 @@ EOF;
      * @param $barName
      * @return string|null
      *
+     *
+     * Note: Even if there is no sidebar
+     * the rendering may output
+     * debug information in the form of
+     * an HTML comment
      */
     public static function renderBar($barName)
     {
 
-        $page = new Page($barName);
-        return $page->render();
+        if (class_exists("ComboStrap\Page")) {
+            $page = new Page($barName);
+            return $page->render();
+        } else {
+            TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work",self::LVL_MSG_INFO,"sidebars");
+            return tpl_include_page($barName, 0, 1);
+        }
 
     }
 

@@ -34,8 +34,16 @@ $mainHtml = TplUtility::tpl_content($prependTOC = false);
  * Sidebar
  */
 $sidebarName = $conf['sidebar'];
-$sidebarHtml = null;
-if ($ACT == 'show') {
+
+$hasSidebar = page_findnearest($sidebarName);
+$showSideBar = $hasSidebar && ($ACT == 'show');
+if ($showSideBar) {
+    /**
+     * Even if there is no sidebar
+     * the rendering may output
+     * debug information in the form of
+     * an HTML comment
+     */
     $sidebarHtml = TplUtility::renderBar($sidebarName);
 }
 
@@ -180,7 +188,7 @@ echo $headerBar
 
         <?php
         // SIDE BAR
-        if ($sidebarHtml != null): ?>
+        if ($showSideBar): ?>
             <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
 
                 <nav class="bs-docs-sidebar hidden-prints">
