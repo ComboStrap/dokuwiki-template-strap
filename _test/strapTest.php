@@ -261,27 +261,74 @@ class template_strap_script_test extends DokuWikiTest
          */
         TplUtility::setConf(TplUtility::CONF_USE_CDN, 0);
 
-        // Anonymous
-        $pageId = 'start';
-        saveWikiText($pageId, "Content", 'Script Test base');
-        idx_addPage($pageId);
-
-        $request = new TestRequest();
-        $response = $request->get(array('id' => $pageId, '/doku.php'));
-
         /**
-         * Script signature
+         * For 4 and 5
          */
-        $version = tpl_getConf('bootstrapVersion');
-        $localDirPattern = '\/lib\/tpl\/strap\/bootstrap\/' . $version;
-        $scriptsSignature = ["$localDirPattern\/jquery-(.*).js", "$localDirPattern\/popper.min.js", "$localDirPattern\/bootstrap.min.js", 'JSINFO', 'js.php'];
-        $this->checkMeta($response, 'script', "src", $scriptsSignature, "Anonymous");
+        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
 
-        /**
-         * Stylesheet signature (href)
-         */
-        $stylsheetSignature = ["$localDirPattern\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
-        $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, "Anonymous");
+        foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
+
+            $testDescription = "Anonymous no cdn for $bootstrapStylesheetVersion";
+
+            TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
+
+            $version = TplUtility::getBootStrapVersion();
+            $localDirPattern = '\/lib\/tpl\/strap\/bootstrap\/' . $version;
+            if ($version == "4.5.0") {
+
+                $scriptsSignature = [
+
+                    "$localDirPattern\/jquery-(.*).js",
+                    "$localDirPattern\/popper.min.js",
+                    "$localDirPattern\/bootstrap.min.js",
+                    'JSINFO', 'js.php'];
+
+                $stylsheetSignature = [
+                    "$localDirPattern\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+
+            } else {
+
+                /**
+                 * 5
+                 */
+                $scriptsSignature = [
+                    // "jquery.php", no jquery
+                    "$localDirPattern\/bootstrap.bundle.min.js",
+                    'JSINFO',
+                    'js.php'
+                ];
+
+                $stylsheetSignature = [
+                    "$localDirPattern\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+
+            }
+
+            // Anonymous
+            $pageId = 'start';
+            saveWikiText($pageId, "Content", 'Script Test base');
+            idx_addPage($pageId);
+
+            $request = new TestRequest();
+            $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+            /**
+             * Script signature
+             */
+
+
+            $this->checkMeta($response, 'script', "src", $scriptsSignature, $testDescription);
+
+            /**
+             * Stylesheet signature (href)
+             */
+            $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+        }
 
     }
 
@@ -300,30 +347,74 @@ class template_strap_script_test extends DokuWikiTest
         $conf['useacl'] = 1;
         $user = 'admin';
         $conf['superuser'] = $user;
-        $request = new TestRequest();
-        $request->setServer('REMOTE_USER', $user);
-        $response = $request->get(array('id' => $pageId, '/doku.php'));
 
         /**
-         * No Css preloading
+         * For 4 and 5
          */
-        $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
-        $this->assertEquals(0, sizeof($stylesheets));
+        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
 
-        /**
-         * Script signature
-         */
-        $version = tpl_getConf('bootstrapVersion');
+        foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
 
-        $scriptsSignature = ["jquery.php", "cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
-        $this->checkMeta($response, 'script', "src", $scriptsSignature, "Logged in");
+            $testDescription = "Logged in for $bootstrapStylesheetVersion";
 
-        /**
-         * Stylesheet signature (href)
-         */
-        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
-        $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, "Logged in");
+            TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
 
+            $version = TplUtility::getBootStrapVersion();
+            if ($version == "4.5.0") {
+
+                $scriptsSignature = [
+                    "jquery.php",
+                    "cdn.jsdelivr.net\/npm\/popper.js",
+                    "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js",
+                    'JSINFO',
+                    'js.php'];
+
+                $stylsheetSignature = [
+                    "stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+
+            } else {
+
+                /**
+                 * 5
+                 */
+                $scriptsSignature = [
+                    "jquery.php",
+                    //"cdn.jsdelivr.net\/npm\/popper.js", popper is in the bundle
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    'JSINFO',
+                    'js.php'];
+
+                $stylsheetSignature = [
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/css\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+            }
+
+
+            $request = new TestRequest();
+            $request->setServer('REMOTE_USER', $user);
+            $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+            /**
+             * No Css preloading
+             */
+            $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
+            $this->assertEquals(0, sizeof($stylesheets));
+
+            /**
+             * Script signature
+             */
+            $this->checkMeta($response, 'script', "src", $scriptsSignature, $testDescription);
+
+            /**
+             * Stylesheet signature (href)
+             */
+            $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+        }
 
     }
 
@@ -341,28 +432,64 @@ class template_strap_script_test extends DokuWikiTest
         saveWikiText($pageId, "Content", 'Script Test base');
         idx_addPage($pageId);
 
-        $request = new TestRequest();
-        $response = $request->get(array('id' => $pageId, '/doku.php'));
+        /**
+         * For 4 and 5
+         */
+        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
 
-        $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
+        foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
+
+            $testDescription = "CSS preload in for $bootstrapStylesheetVersion";
+
+            TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
+
+            $version = TplUtility::getBootStrapVersion();
+            if ($version == "4.5.0") {
+
+                $stylsheetSignature = [
+                    "stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
 
 
-        $node = array();
-        foreach ($stylesheets as $key => $stylesheet) {
-            if ($stylesheet->hasAttributes()) {
-                foreach ($stylesheet->attributes as $attr) {
-                    $name = $attr->name;
-                    $value = $attr->value;
-                    $node[$key][$name] = $value;
+            } else {
+
+                /**
+                 * 5
+                 */
+                $stylsheetSignature = [
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/css\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+            }
+
+            $request = new TestRequest();
+            $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+
+            /**
+             * preload object
+             */
+            $stylesheets = $response->queryHTML('link[rel="preload"]')->get();
+
+
+            $node = array();
+            foreach ($stylesheets as $key => $stylesheet) {
+                if ($stylesheet->hasAttributes()) {
+                    foreach ($stylesheet->attributes as $attr) {
+                        $name = $attr->name;
+                        $value = $attr->value;
+                        $node[$key][$name] = $value;
+                    }
                 }
             }
+
+            $this->assertEquals(2, sizeof($node), "The stylesheet count should be 2");
+
+            $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+
         }
-
-        $this->assertEquals(2, sizeof($node), "The stylesheet count should be 2");
-
-        $version = TplUtility::getBootStrapVersion();
-        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
-        $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, "Anonymous");
 
 
     }

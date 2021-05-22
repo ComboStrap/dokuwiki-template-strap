@@ -268,7 +268,13 @@ EOF;
                 $htmlLink .= '>';
                 ptln($htmlLink);
             }
+            /**
+             * Reset
+             * Needed in test when we start two requests
+             */
+            $preloadedCss=[];
         }
+
     }
 
     /**
