@@ -180,32 +180,74 @@ class template_strap_script_test extends DokuWikiTest
         $jqueryUI = tpl_getConf(TplUtility::CONF_JQUERY_DOKU);
         $this->assertEquals(1, $jqueryUI, "jquery is on");
 
-        // Anonymous
-        $pageId = 'start';
-        saveWikiText($pageId, "Content", 'Script Test base');
-        idx_addPage($pageId);
-
-        $request = new TestRequest();
-        $response = $request->get(array('id' => $pageId, '/doku.php'));
-
-
         /**
-         * Script signature
-         * CDN is on by default
-         *
-         * js.php is needed for custom script such as a consent box
+         * For 4 and 5
          */
-        $version = TplUtility::getBootStrapVersion();
-        $scriptsSignature = ["jquery.php", "cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
-        $this->checkMeta($response, 'script', "src", $scriptsSignature, "Anonymous");
+        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
 
-        /**
-         * Stylesheet signature (href)
-         */
-        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
-        $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, "Anonymous");
+        foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
+
+            $testDescription = "Anonymous for $bootstrapStylesheetVersion";
+
+            TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
+
+            $version = TplUtility::getBootStrapVersion();
+            if ($version == "4.5.0") {
+
+                $scriptsSignature = [
+                    "jquery.php",
+                    "cdn.jsdelivr.net\/npm\/popper.js",
+                    "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js",
+                    'JSINFO',
+                    'js.php'
+                ];
+
+                $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
 
 
+            } else {
+
+                /**
+                 * 5
+                 */
+                $scriptsSignature = [
+                    "jquery.php",
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    'JSINFO',
+                    'js.php'
+                ];
+
+                $stylsheetSignature = [
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/css\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+
+            }
+            // Anonymous
+            $pageId = 'start';
+            saveWikiText($pageId, "Content", 'Script Test base');
+            idx_addPage($pageId);
+
+            $request = new TestRequest();
+            $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+
+            /**
+             * Script signature
+             * CDN is on by default
+             *
+             * js.php is needed for custom script such as a consent box
+             */
+
+            $this->checkMeta($response, 'script', "src", $scriptsSignature, $testDescription);
+
+            /**
+             * Stylesheet signature (href)
+             */
+            $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+
+        }
     }
 
     /**
