@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpComposerExtensionStubsInspection */
 
 use ComboStrap\TplUtility;
 
@@ -31,15 +31,15 @@ class template_strap_script_test extends DokuWikiTest
     }
 
     /**
-     * An utilit function that test if the headers meta are still
+     * An utility function that test if the headers meta are still
      * on the page (ie response)
      * @param TestResponse $response
      * @param $selector - the DOM elementselector
      * @param $attr - the attribute to check
      * @param $scriptSignatures - the pattern signature to find
-     * @param string $loginType - the login type (anonymous, logged in, ...)
+     * @param string $testDescription - the login type (anonymous, logged in, ...)
      */
-    private function checkMeta(TestResponse $response, $selector, $attr, $scriptSignatures, $loginType)
+    private function checkMeta(TestResponse $response, $selector, $attr, $scriptSignatures, $testDescription)
     {
 
 
@@ -48,22 +48,39 @@ class template_strap_script_test extends DokuWikiTest
          */
         $domElements = $response->queryHTML($selector)->get();
 
+        $domValueToChecks = [];
+        foreach ($domElements as $domElement) {
+            /**
+             * @var DOMElement $domElement
+             */
+            $value = $domElement->getAttribute($attr);
+            if (empty($value)) {
+                $value = $domElement->textContent;
+            }
+            $domValueToChecks[] = $value;
+        }
+        $domValueNotFounds = $domValueToChecks;
         foreach ($scriptSignatures as $signatureToFind) {
             $patternFound = 0;
-            foreach ($domElements as $domElement) {
-                $haystack = $domElement->getAttribute($attr) . $domElement->textContent;
-                $patternFound = preg_match("/$signatureToFind/i", $haystack);
+            foreach ($domValueToChecks as $domValueToCheck) {
+                $patternFound = preg_match("/$signatureToFind/i", $domValueToCheck);
                 if ($patternFound === 1) {
+                    if (($key = array_search($domValueToCheck, $domValueNotFounds)) !== false) {
+                        unset($domValueNotFounds[$key]);
+                    }
                     break;
                 }
             }
-            $this->assertTrue($patternFound !== 0, "Unable to find ($signatureToFind) for ${loginType}");
+            $this->assertTrue($patternFound !== 0, "Unable to find ($signatureToFind) for ${testDescription}");
         }
 
-        $this->assertEquals(sizeof($scriptSignatures), sizeof($domElements), "The number of signatures should be the same for ($selector)");
+
+        foreach ($domValueNotFounds as $domValueNotFound) {
+            $this->assertNull($domValueNotFound, "All selected element have been found by a signature, for ($selector) on ${testDescription}");
+        }
+
 
     }
-
 
 
     /**
@@ -74,32 +91,73 @@ class template_strap_script_test extends DokuWikiTest
     public function test_handleBootStrapMetaHeaders_anonymous_default()
     {
 
-        // Anonymous
-        $pageId = 'start';
-        saveWikiText($pageId, "Content", 'Script Test base');
-        idx_addPage($pageId);
+        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
 
-        $request = new TestRequest();
-        $response = $request->get(array('id' => $pageId, '/doku.php'));
+        foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
+            TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
 
-        $cdn = tpl_getConf(TplUtility::CONF_USE_CDN);
-        $this->assertEquals(1, $cdn, "The CDN is by default on");
+            $version = TplUtility::getBootStrapVersion();
+            if ($version == "4.5.0") {
+                /**
+                 * Script signature
+                 * CDN is on by default
+                 *
+                 * js.php is needed for custom script such as a consent box
+                 */
+                $scriptsSignature = [
+                    "jquery.com\/jquery-(.*).js",
+                    "cdn.jsdelivr.net\/npm\/popper.js",
+                    "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js",
+                    'JSINFO',
+                    'js.php'
+                ];
 
-        /**
-         * Script signature
-         * CDN is on by default
-         *
-         * js.php is needed for custom script such as a consent box
-         */
-        $version = TplUtility::getBootStrapVersion();
-        $scriptsSignature = ["jquery.com\/jquery-(.*).js", "cdn.jsdelivr.net\/npm\/popper.js", "stackpath.bootstrapcdn.com\/bootstrap\/$version\/js\/bootstrap.min.js", 'JSINFO', 'js.php'];
-        $this->checkMeta($response, 'script', "src", $scriptsSignature, "Anonymous");
+                /**
+                 * Stylesheet signature (href)
+                 */
+                $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
 
-        /**
-         * Stylesheet signature (href)
-         */
-        $stylsheetSignature = ["stackpath.bootstrapcdn.com\/bootstrap\/$version\/css\/bootstrap.min.css", '\/lib\/exe\/css.php\?t\=strap'];
-        $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, "Anonymous");
+            } else {
+
+                $scriptsSignature = [
+                    //    "jquery.com\/jquery-(.*).js", no more need in Bootstrap 5
+                    // "cdn.jsdelivr.net\/npm\/popper.js", in the bundle below
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    'JSINFO',
+                    'js.php'
+                ];
+
+                /**
+                 * Stylesheet signature (href)
+                 */
+                $stylsheetSignature = [
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/css\/bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+            }
+
+            // Anonymous
+            $pageId = 'start';
+            saveWikiText($pageId, "Content", 'Script Test base');
+            idx_addPage($pageId);
+
+            $request = new TestRequest();
+            $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+            $cdn = tpl_getConf(TplUtility::CONF_USE_CDN);
+            $this->assertEquals(1, $cdn, "The CDN is by default on on version $bootstrapStylesheetVersion");
+
+            /**
+             * Meta script test
+             */
+            $testDescription = "Anonymous on version ($bootstrapStylesheetVersion)";
+            $this->checkMeta($response, 'script', "src", $scriptsSignature, $testDescription);
+            /**
+             * Meta stylesheet test
+             */
+            $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+        }
 
 
     }
@@ -268,8 +326,6 @@ class template_strap_script_test extends DokuWikiTest
     }
 
 
-
-
     /**
      * Test the {@link \Combostrap\TplUtility::getBootstrapMetaHeaders()} function
      * with default conf
@@ -301,9 +357,6 @@ class template_strap_script_test extends DokuWikiTest
         $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/simplex/bootstrap.min.css", $metas['link']['css']['href'], "The href is the cdn");
 
     }
-
-
-
 
 
     /**

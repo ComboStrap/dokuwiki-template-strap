@@ -223,13 +223,24 @@ EOF;
 
     public static function registerHeaderHandler()
     {
-        global $EVENT_HANDLER;
-        $method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
         /**
-         * A call to a method is via an array and the hook declare a string
-         * @noinspection PhpParamsInspection
+         * In test, we may test for 4 and for 5
+         * on the same test, making two request
+         * This two requests will register the event two times
+         * To avoid that we use a global variable
          */
-        $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
+        global $COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED;
+        if ($COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED !== true) {
+            global $EVENT_HANDLER;
+            $method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
+            /**
+             * A call to a method is via an array and the hook declare a string
+             * @noinspection PhpParamsInspection
+             */
+            $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
+            $COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED = true;
+        }
+
     }
 
     /**
@@ -317,7 +328,7 @@ EOF;
             $page = new Page($barName);
             return $page->render();
         } else {
-            TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work",self::LVL_MSG_INFO,"sidebars");
+            TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
             return tpl_include_page($barName, 0, 1);
         }
 
@@ -779,7 +790,7 @@ EOF;
                         // if this is not, this is illegal
                         if (isset($scriptData["src"])) {
                             if (!$critical) {
-                                $scriptData['defer'] = "true";
+                                $scriptData['defer'] = null;
                             }
                         }
 
