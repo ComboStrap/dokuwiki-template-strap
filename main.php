@@ -44,7 +44,7 @@ if ($showSideBar) {
      * debug information in the form of
      * an HTML comment
      */
-    $sidebarHtml = TplUtility::renderBar($sidebarName);
+    $sideBarHtml = TplUtility::renderBar($sidebarName);
 }
 
 
@@ -81,7 +81,7 @@ if ($layout === "median") {
 }
 $sidebarScale = 3;
 $sideKickBarScale = 3;
-if ($sidebarHtml != null) {
+if ($showSideBar) {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
 } else {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
@@ -107,7 +107,8 @@ $length = ob_get_length();
 if ($length > 0) {
     $ob = ob_get_contents();
     ob_clean();
-    TplUtility::msg("A plugin has send text in the output. Because it will mess the HTML page, we have deleted it. The content was: " . $ob, TplUtility::LVL_MSG_ERROR, "strap");
+    // If you got this problem check that this is not a character before a  `<?php` declaration
+    TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob.")", TplUtility::LVL_MSG_ERROR, "strap");
 }
 
 ?>
@@ -194,7 +195,7 @@ echo $headerBar
                 <nav class="bs-docs-sidebar hidden-prints">
 
 
-                    <?php echo $sidebarHtml ?>
+                    <?php echo $sideBarHtml ?>
 
                 </nav>
 

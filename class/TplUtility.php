@@ -272,7 +272,7 @@ EOF;
              * Reset
              * Needed in test when we start two requests
              */
-            $preloadedCss=[];
+            $preloadedCss = [];
         }
 
     }
@@ -992,7 +992,7 @@ EOF;
         }
         $htmlMsg = $prefix . " - " . $message;
         if ($level != self::LVL_MSG_DEBUG) {
-            msg($htmlMsg, $level, $allow = MSG_MANAGERS_ONLY);
+            msg($htmlMsg, $level, '', '', MSG_MANAGERS_ONLY);
         }
         /**
          * Print to a log file
