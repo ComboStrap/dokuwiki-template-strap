@@ -502,11 +502,19 @@ class template_strap_script_test extends DokuWikiTest
      */
     public function test_getBootstrapMetaHeaders()
     {
+
+        // Default
         $metas = TplUtility::getBootstrapMetaHeaders();
         $this->assertEquals(2, sizeof($metas));
+        $this->assertEquals(1, sizeof($metas['script']), "There is three js script");
+        $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
 
+        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, "4.5.0 - bootstrap");
+        $metas = TplUtility::getBootstrapMetaHeaders();
+        $this->assertEquals(2, sizeof($metas));
         $this->assertEquals(3, sizeof($metas['script']), "There is three js script");
         $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
+
 
     }
 
@@ -517,13 +525,22 @@ class template_strap_script_test extends DokuWikiTest
      */
     public function test_getBootstrapMetaHeadersWithCustomStyleSheet()
     {
-        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_STYLESHEET, "bootstrap.simplex");
+        $template = "simplex";
+        $version = "5.0.1";
+        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, "$version - $template");
         $metas = TplUtility::getBootstrapMetaHeaders();
         $this->assertEquals(2, sizeof($metas));
+        $this->assertEquals(1, sizeof($metas['script']), "There is three js script");
+        $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
+        $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@{$version}/dist/$template/bootstrap.min.css", $metas['link']['css']['href'], "The href is the cdn");
 
+        $version = "4.5.0";
+        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, "$version - {$template}");
+        $metas = TplUtility::getBootstrapMetaHeaders();
+        $this->assertEquals(2, sizeof($metas));
         $this->assertEquals(3, sizeof($metas['script']), "There is three js script");
         $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
-        $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@4.5.0/dist/simplex/bootstrap.min.css", $metas['link']['css']['href'], "The href is the cdn");
+        $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@$version/dist/$template/bootstrap.min.css", $metas['link']['css']['href'], "The href is the cdn");
 
     }
 
