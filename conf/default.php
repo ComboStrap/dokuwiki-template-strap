@@ -10,6 +10,8 @@
  *
  */
 
+use ComboStrap\TplUtility;
+
 /**
  * The default value don't use false but 1
  * if you want to use an on/off
@@ -19,33 +21,37 @@
 
 /**
  * The name of the footer page to search
- * See {@link TplConstant::CONF_FOOTER}
+ * See {@link TplUtility::CONF_FOOTER}
  */
 $conf['footerbar'] = 'footerbar';
 /**
  * The name of the header page to search
- * See {@link TplConstant::CONF_HEADER}
+ * See {@link TplUtility::CONF_HEADER}
  */
 $conf['headerbar'] = 'headerbar';
 /**
  * The name of the header page to search
- * See {@link TplConstant::CONF_SIDEKICK}
+ * See {@link TplUtility::CONF_SIDEKICK}
  */
 $conf['sidekickbar'] = 'sidekickbar';
 
 /**
  * CDN for anonymous
- * See {@link TplConstant::CONF_USE_CDN}
+ * See {@link TplUtility::CONF_USE_CDN}
  */
 $conf['useCDN'] = 1;
 
 // Print Debug statement
 $conf['debug'] = 1;
 
-$conf['remSize']= "16";
+$conf['remSize'] = "16";
 
-$conf['bootstrapVersion'] = '4.5.0';
-$conf['bootstrapStylesheet']="bootstrap.min.css";
+/**
+ * {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+ */
+$conf["bootstrapVersionStylesheet"] = "5.0.1 - bootstrap";
+
+$conf['gridColumns'] = 12;
 
 $conf['gridColumns'] = 12;
 
@@ -63,12 +69,9 @@ $conf['preloadCss'] = 0;
 $conf['privateToolbar'] = 0;
 
 /**
- * @see {@link TplConstant::CONF_JQUERY_DOKU}
+ * @see {@link TplUtility::CONF_JQUERY_DOKU}
  */
 $conf['jQueryDoku'] = 0;
-
-
-
 
 
 ?>

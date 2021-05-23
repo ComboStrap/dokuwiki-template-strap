@@ -14,9 +14,8 @@ namespace ComboStrap;
 
 use Doku_Event;
 use dokuwiki\Extension\Event;
-
-
 use Exception;
+
 
 /**
  * Class TplUtility
@@ -36,6 +35,47 @@ class TplUtility
     const LVL_MSG_WARNING = 2;
     const LVL_MSG_DEBUG = 3;
     const TEMPLATE_NAME = 'strap';
+    const CONF_HEADER = "headerbar";
+    /**
+     * The bar are also used to not add a {@link \action_plugin_combo_metacanonical}
+     *
+     */
+    const CONF_FOOTER = "footerbar";
+    const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
+
+    /**
+     * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     */
+    const CONF_BOOTSTRAP_VERSION = "bootstrapVersion";
+    /**
+     * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     */
+    const CONF_BOOTSTRAP_STYLESHEET = "bootstrapStylesheet";
+
+    /**
+     * Stylesheet and Boostrap should have the same version
+     * This conf is a mix between the version and the stylesheet
+     *
+     * majorVersion.0.0 - stylesheetname
+     */
+    const CONF_BOOTSTRAP_VERSION_STYLESHEET = "bootstrapVersionStylesheet";
+    /**
+     * The separator in {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     */
+    const BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR = " - ";
+    const DEFAULT_BOOTSTRAP_VERSION_STYLESHEET = "5.0.1" . self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . "bootstrap";
+
+    /**
+     * Jquery UI
+     */
+    const CONF_JQUERY_DOKU = 'jQueryDoku';
+    const CONF_REM_SIZE = "remSize";
+    const CONF_GRID_COLUMNS = "gridColumns";
+    const CONF_USE_CDN = "useCDN";
+    const CONF_SIDEKICK = "sidekickbar";
+    const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
+
+
     /**
      * @var array|null
      */
@@ -106,7 +146,7 @@ class TplUtility
     {
         // The padding top for the top fix bar
         $paddingTop = 0;
-        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
+        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
         if ($heightTopBar != 0) {
             $paddingTop = $heightTopBar + 10;
         }
@@ -125,7 +165,7 @@ class TplUtility
     public static function getHeadStyleNodeForFixedTopNavbar()
     {
         $headStyle = "";
-        $heightTopBar = tpl_getConf(TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR);
+        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR);
         if ($heightTopBar !== 0) {
             $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
             $marginTop = -2 * $heightTopBar;
@@ -179,6 +219,125 @@ EOF;
     public static function setHttpHeader()
     {
         header('X-UA-Compatible: IE=edge');
+    }
+
+    public static function registerHeaderHandler()
+    {
+        /**
+         * In test, we may test for 4 and for 5
+         * on the same test, making two request
+         * This two requests will register the event two times
+         * To avoid that we use a global variable
+         */
+        global $COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED;
+        if ($COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED !== true) {
+            global $EVENT_HANDLER;
+            $method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
+            /**
+             * A call to a method is via an array and the hook declare a string
+             * @noinspection PhpParamsInspection
+             */
+            $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
+            $COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED = true;
+        }
+
+    }
+
+    /**
+     * Add the preloaded CSS resources
+     * at the end
+     */
+    public static function addPreloadedResources()
+    {
+        // For the preload if any
+        global $preloadedCss;
+        //
+        // Note: Adding this css in an animationFrame
+        // such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
+        // would be difficult to test
+        if (isset($preloadedCss)) {
+            foreach ($preloadedCss as $link) {
+                $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
+                if ($link['crossorigin'] != "") {
+                    $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
+                }
+                if (!empty($link['class'])) {
+                    $htmlLink .= ' class="' . $link['class'] . '" ';
+                }
+                // No integrity here
+                $htmlLink .= '>';
+                ptln($htmlLink);
+            }
+            /**
+             * Reset
+             * Needed in test when we start two requests
+             */
+            $preloadedCss = [];
+        }
+
+    }
+
+    /**
+     * @param $linkData - an array of link style sheet data
+     * @return array - the array with the preload attributes
+     */
+    private static function toPreloadCss($linkData)
+    {
+        /**
+         * Save the stylesheet to load it at the end
+         */
+        global $preloadedCss;
+        $preloadedCss[] = $linkData;
+
+        /**
+         * Modify the actual tag data
+         * Change the loading mechanism to preload
+         */
+        $linkData['rel'] = 'preload';
+        $linkData['as'] = 'style';
+        return $linkData;
+    }
+
+    public static function getBootStrapVersion()
+    {
+        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
+        $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
+        return $bootstrapStyleSheetArray[0];
+    }
+
+    public static function getStyleSheetConf()
+    {
+        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
+        $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
+        return $bootstrapStyleSheetArray[1];
+    }
+
+    /**
+     * Return the XHMTL for the bar or null if not found
+     *
+     * An adaptation from {@link tpl_include_page()}
+     * to make the cache namespace
+     *
+     * @param $barName
+     * @return string|null
+     *
+     *
+     * Note: Even if there is no sidebar
+     * the rendering may output
+     * debug information in the form of
+     * an HTML comment
+     */
+    public static function renderBar($barName)
+    {
+
+        if (class_exists("ComboStrap\Page")) {
+            $page = new Page($barName);
+            return $page->render();
+        } else {
+            TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
+            return tpl_include_page($barName, 0, 1);
+        }
+
     }
 
 
@@ -387,7 +546,7 @@ EOF;
     {
 
         // The version
-        $bootstrapVersion = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+        $bootstrapVersion = TplUtility::getBootStrapVersion();
         if ($bootstrapVersion === false) {
             /**
              * Strap may be called for test
@@ -395,7 +554,7 @@ EOF;
              * In this case, the conf may not be reloaded
              */
             self::reloadConf();
-            $bootstrapVersion = tpl_getConf(TplConstant::CONF_BOOTSTRAP_VERSION);
+            $bootstrapVersion = TplUtility::getBootStrapVersion();
             if ($bootstrapVersion === false) {
                 throw new Exception("Bootstrap version should not be false");
             }
@@ -403,7 +562,7 @@ EOF;
         $scriptsMeta = self::buildBootstrapMetas($bootstrapVersion);
 
         // if cdn
-        $useCdn = tpl_getConf(TplConstant::CONF_USE_CDN);
+        $useCdn = tpl_getConf(self::CONF_USE_CDN);
 
 
         // Build the returned Js script array
@@ -458,52 +617,57 @@ EOF;
     }
 
     /**
-     * @return array - A list of the file name in the custom JSON file
+     * @return array - A list of all available stylesheets
      * This function is used to build the configuration as a list of files
      */
-    static function getCustomStylesheet()
+    static function getStylesheetsForMetadataConfiguration()
     {
-        $cssVersionsMetas = self::getCustomCssMeta();
-        $cssFiles = array();
-        foreach ($cssVersionsMetas as $cssVersionMeta) {
+        $cssVersionsMetas = self::getStyleSheetsFromJsonFile();
+        $listVersionStylesheetMeta = array();
+        foreach ($cssVersionsMetas as $bootstrapVersion => $cssVersionMeta) {
             foreach ($cssVersionMeta as $fileName => $values) {
-                $cssFiles[$fileName] = $fileName;
+                $listVersionStylesheetMeta[] = $bootstrapVersion . TplUtility::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . $fileName;
             }
         }
-        return $cssFiles;
+        return $listVersionStylesheetMeta;
     }
 
     /**
      *
      * @param $version - return only the selected version if set
-     * @return void - an array of the meta JSON custom files
+     * @return array - an array of the meta JSON custom files
      */
-    static function getCustomCssMeta($version = null)
+    static function getStyleSheetsFromJsonFile($version = null)
     {
 
         $jsonAsArray = true;
-        $bootstrapCustomJsonFile = __DIR__ . '/../bootstrap/bootstrapCustom.json';
-        $bootstrapCustomMetas = json_decode(file_get_contents($bootstrapCustomJsonFile), $jsonAsArray);
-        if ($bootstrapCustomMetas == null) {
-            self::msg("Unable to read the file {$bootstrapCustomJsonFile} as json");
+        $stylesheetsFile = __DIR__ . '/../bootstrap/bootstrapStylesheet.json';
+        $styleSheets = json_decode(file_get_contents($stylesheetsFile), $jsonAsArray);
+        if ($styleSheets == null) {
+            self::msg("Unable to read the file {$stylesheetsFile} as json");
         }
-        $bootstrapLocalJsonFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
-        if (file_exists($bootstrapLocalJsonFile)) {
-            $bootstrapLocalMetas = json_decode(file_get_contents($bootstrapLocalJsonFile), $jsonAsArray);
-            if ($bootstrapLocalMetas == null) {
-                self::msg("Unable to read the file {$bootstrapLocalMetas} as json");
+        $localStyleSheetsFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
+        if (file_exists($localStyleSheetsFile)) {
+            $localStyleSheets = json_decode(file_get_contents($localStyleSheetsFile), $jsonAsArray);
+            if ($localStyleSheets == null) {
+                self::msg("Unable to read the file {$localStyleSheets} as json");
             }
-            $bootstrapCustomMetas = array_merge($bootstrapCustomMetas, $bootstrapLocalMetas);
+            foreach ($styleSheets as $bootstrapVersion => &$stylesheetsFiles) {
+                if (isset($localStyleSheets[$bootstrapVersion])) {
+                    $stylesheetsFiles = array_merge($stylesheetsFiles, $localStyleSheets[$bootstrapVersion]);
+                }
+            }
+
         }
 
         if (isset($version)) {
-            if (!isset($bootstrapCustomMetas[$version])) {
-                self::msg("The bootstrap version ($version) could not be found in the custom CSS file ($bootstrapCustomJsonFile, or $bootstrapLocalJsonFile)");
+            if (!isset($styleSheets[$version])) {
+                self::msg("The bootstrap version ($version) could not be found in the custom CSS file ($stylesheetsFile, or $localStyleSheetsFile)");
             } else {
-                $bootstrapCustomMetas = $bootstrapCustomMetas[$version];
+                $styleSheets = $styleSheets[$version];
             }
         }
-        return $bootstrapCustomMetas;
+        return $styleSheets;
     }
 
     /**
@@ -517,7 +681,7 @@ EOF;
     {
 
         $jsonAsArray = true;
-        $bootstrapJsonFile = __DIR__ . '/../bootstrap/bootstrap.json';
+        $bootstrapJsonFile = __DIR__ . '/../bootstrap/bootstrapJavascript.json';
         $bootstrapMetas = json_decode(file_get_contents($bootstrapJsonFile), $jsonAsArray);
         // Decodage problem
         if ($bootstrapMetas == null) {
@@ -532,17 +696,13 @@ EOF;
 
 
         // Css
-        $bootstrapCssFile = tpl_getConf(TplConstant::CONF_BOOTSTRAP_STYLESHEET);
-        if ($bootstrapCssFile != "bootstrap.min.css") {
+        $bootstrapCssFile = TplUtility::getStyleSheetConf();
+        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFile($version);
 
-            $bootstrapCustomMetas = self::getCustomCssMeta($version);
-
-            if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
-                self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
-            } else {
-                $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCssFile];
-            }
-
+        if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
+            self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
+        } else {
+            $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCssFile];
         }
 
 
@@ -577,34 +737,43 @@ EOF;
                     // delete edit
                     $bootstrapCss = $bootstrapHeaders[$headerType]['css'];
                     $headerData[] = $bootstrapCss;
-                    $cssPreload = tpl_getConf("preloadCss");
+
+                    // preload all CSS is an heresy as it creates a FOUC (Flash of non-styled element)
+                    // but we known it now and this is
+                    $cssPreloadConf = tpl_getConf(self::CONF_PRELOAD_CSS);
                     $newLinkData = array();
-                    if ($cssPreload) {
-
-                        foreach ($headerData as $linkData) {
-                            switch ($linkData['rel']) {
-                                case 'edit':
-                                    break;
-                                case 'stylesheet':
-
-                                    // Take the stylesheet to load them at the end
-                                    global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
-                                    $DOKU_TPL_BOOTIE_PRELOAD_CSS[] = $linkData;
-
-                                    // Change the loading mechanism to preload
-                                    $linkData['rel'] = 'preload';
-                                    $linkData['as'] = 'style';
+                    foreach ($headerData as $linkData) {
+                        switch ($linkData['rel']) {
+                            case 'edit':
+                                break;
+                            case 'stylesheet':
+                                /**
+                                 * Preloading default to the configuration
+                                 */
+                                $preload = $cssPreloadConf;
+                                /**
+                                 * Preload can be set at the array level with the critical attribute
+                                 * If the preload attribute is present
+                                 * We get that for instance for css animation style sheet
+                                 * that are not needed for rendering
+                                 */
+                                if (isset($linkData["critical"])) {
+                                    $critical = $linkData["critical"];
+                                    $preload = !(filter_var($critical, FILTER_VALIDATE_BOOLEAN));
+                                    unset($linkData["critical"]);
+                                }
+                                if ($preload) {
+                                    $newLinkData[] = TplUtility::toPreloadCss($linkData);
+                                } else {
                                     $newLinkData[] = $linkData;
-
-                                    break;
-                                default:
-                                    $newLinkData[] = $linkData;
-                                    break;
-                            }
+                                }
+                                break;
+                            default:
+                                $newLinkData[] = $linkData;
+                                break;
                         }
-                    } else {
-                        $newLinkData = $headerData;
                     }
+
                     $newHeaderTypes[$headerType] = $newLinkData;
                     break;
 
@@ -617,10 +786,18 @@ EOF;
                     $jqueryDokuScripts = array();
                     foreach ($headerData as $scriptData) {
 
-                        // defer is this is external resource
+                        $critical = false;
+                        if (isset($scriptData["critical"])) {
+                            $critical = $scriptData["critical"];
+                            unset($scriptData["critical"]);
+                        }
+
+                        // defer is only for external resource
                         // if this is not, this is illegal
                         if (isset($scriptData["src"])) {
-                            $scriptData['defer'] = null;
+                            if (!$critical) {
+                                $scriptData['defer'] = null;
+                            }
                         }
 
                         if (isset($scriptData["type"])) {
@@ -650,7 +827,7 @@ EOF;
                     }
 
                     // Add Jquery at the beginning
-                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplConstant::CONF_JQUERY_DOKU) == 0) {
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(self::CONF_JQUERY_DOKU) == 0) {
                         // We take the Jquery of Bootstrap
                         $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
                     } else {
@@ -773,7 +950,6 @@ EOF;
      *
      * @param $confName - the configuration name
      * @param $confValue - the configuration value
-     * @throws Exception
      */
     static function setConf($confName, $confValue)
     {
@@ -783,6 +959,10 @@ EOF;
          */
         global $conf;
         $template = $conf['template'];
+
+        if ($template != "strap") {
+            throw new \RuntimeException("This is not the strap template, in test, active it in setup");
+        }
 
         /**
          *  Make sure to load the configuration first by calling getConf
@@ -794,7 +974,7 @@ EOF;
 
             // Check that the conf was loaded
             if (tpl_getConf($confName) === false) {
-                throw new Exception("The configuration (" . $confName . ") returns no value");
+                throw new \RuntimeException("The configuration (" . $confName . ") returns no value or has no default");
             }
         }
 
@@ -840,7 +1020,7 @@ EOF;
         }
         $htmlMsg = $prefix . " - " . $message;
         if ($level != self::LVL_MSG_DEBUG) {
-            msg($htmlMsg, $level, $allow = MSG_MANAGERS_ONLY);
+            msg($htmlMsg, $level, '', '', MSG_MANAGERS_ONLY);
         }
         /**
          * Print to a log file
@@ -883,7 +1063,7 @@ EOF;
     static function getHeader()
     {
 
-        $navBarPageName = tpl_getConf(TplConstant::CONF_HEADER);
+        $navBarPageName = tpl_getConf(self::CONF_HEADER);
         if (page_findnearest($navBarPageName)) {
 
             $header = tpl_include_page($navBarPageName, 0, 1);
@@ -891,8 +1071,8 @@ EOF;
         } else {
 
             $domain = self::getApexDomainUrl();
-            $header = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>.</br>
-            If you don\'t known the <a href="https://combostrap.com/strap">Strap template</a>, it\'s recommended to read the <a href="' . $domain . '/strap">introduction</a>.</br>
+            $header = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>.<br/>
+            If you don\'t known the <a href="https://combostrap.com/strap">Strap template</a>, it\'s recommended to read the <a href="' . $domain . '/strap">introduction</a>.<br/>
             Otherwise, to create a navigation bar, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/navbar">navbar component</a>.
             </div>';
 
@@ -905,7 +1085,7 @@ EOF;
     {
         $domain = self::getApexDomainUrl();
 
-        $footerPageName = tpl_getConf(TplConstant::CONF_FOOTER);
+        $footerPageName = tpl_getConf(self::CONF_FOOTER);
         if (page_findnearest($footerPageName)) {
             $footer = tpl_include_page($footerPageName, 0, 1);
         } else {

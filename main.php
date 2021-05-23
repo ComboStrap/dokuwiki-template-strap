@@ -3,7 +3,6 @@
 
 //Library of template function
 
-use ComboStrap\TplConstant;
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 use dokuwiki\Menu\PageMenu;
@@ -11,7 +10,6 @@ use dokuwiki\Menu\SiteMenu;
 use dokuwiki\Menu\UserMenu;
 
 require_once(__DIR__ . '/class/TplUtility.php');
-require_once(__DIR__ . '/class/TplConstant.php');
 
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
@@ -23,8 +21,6 @@ global $lang;
 global $ACT;
 global $conf;
 
-// For the preload if any
-global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
 
 /**
  * The Content first because it contains
@@ -37,19 +33,29 @@ $mainHtml = TplUtility::tpl_content($prependTOC = false);
 /**
  * Sidebar
  */
-$hasSidebar = page_findnearest($conf['sidebar']);
-$showSidebar = $hasSidebar && ($ACT == 'show');
-if ($showSidebar) {
-    $sidebarHtml = tpl_include_page($conf['sidebar'], 0, 1);
+$sidebarName = $conf['sidebar'];
+
+$hasSidebar = page_findnearest($sidebarName);
+$showSideBar = $hasSidebar && ($ACT == 'show');
+if ($showSideBar) {
+    /**
+     * Even if there is no sidebar
+     * the rendering may output
+     * debug information in the form of
+     * an HTML comment
+     */
+    $sideBarHtml = TplUtility::renderBar($sidebarName);
 }
+
 
 /**
  * Sidekickbar
  */
-$hasRightSidebar = page_findnearest(tpl_getConf(TplConstant::CONF_SIDEKICK));
+$sideKickPageName = tpl_getConf(TplUtility::CONF_SIDEKICK);
+$hasRightSidebar = page_findnearest($sideKickPageName);
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
-    $sideKickBarHtml = tpl_include_page(tpl_getConf(TplConstant::CONF_SIDEKICK), 0, 1);
+    $sideKickBarHtml = TplUtility::renderBar($sideKickPageName);
 }
 
 /**
@@ -66,48 +72,67 @@ $footerBar = TplUtility::getFooter();
 /**
  * Grid
  */
-$gridColumns = tpl_getConf(TplConstant::CONF_GRID_COLUMNS);
+$gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
+$layout = p_get_metadata($ID, "layout");
+if ($layout === "median") {
+    $maximalWidthMain = 8;
+} else {
+    $maximalWidthMain = $gridColumns;
+}
 $sidebarScale = 3;
 $sideKickBarScale = 3;
-if ($showSidebar) {
+if ($showSideBar) {
     $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
 } else {
-    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $gridColumns;
+    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
 }
 
 /**
  * Bootstrap meta-headers
  */
-global $EVENT_HANDLER;
-$method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
-/**
- * A call to a method is via an array and the hook declare a string
- * @noinspection PhpParamsInspection
- */
-$EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
+TplUtility::registerHeaderHandler();
 
 /**
  * Default font size
  */
-$htmlRem = tpl_getConf("rem","16px");
+$htmlRem = tpl_getConf("rem", "16px");
+
+/**
+ * Ob checks
+ * It should be null, otherwise
+ * you may get a text before the HTML header
+ * and it mess up the whole page
+ */
+$length = ob_get_length();
+if ($length > 0) {
+    $ob = ob_get_contents();
+    ob_clean();
+    // If you got this problem check that this is not a character before a  `<?php` declaration
+    TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob.")", TplUtility::LVL_MSG_ERROR, "strap");
+}
 
 ?>
 
+<?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>"
       style="font-size:<?php echo $htmlRem ?>">
 <head>
 
-    <?php tpl_metaheaders() ?>
+    <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
+    <meta charset="utf-8">
 
-    <!-- Be sure to have only https call -->
-    <meta http-equiv="Content-Security-Policy" content="block-all-mixed-content"/>
+    <?php // Responsive meta tag ?>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <?php // Headers ?>
+    <?php tpl_metaheaders() ?>
 
     <title><?php TplUtility::renderPageTitle() ?></title>
 
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
 
+    <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
     <?php
@@ -150,22 +175,27 @@ echo $headerBar
     Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
     ?>
 
+
     <?php
-    TplUtility::renderTrailBreadcrumb();
+    global $ID;
+    global $conf;
+    if ($ID != $conf["start"]) {
+        TplUtility::renderTrailBreadcrumb();
+    }
     ?>
 
-    <div class="row">
+    <div class="row justify-content-md-center">
 
 
         <?php
         // SIDE BAR
-        if ($showSidebar): ?>
+        if ($showSideBar): ?>
             <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
 
-                    <?php echo $sidebarHtml ?>
+                    <?php echo $sideBarHtml ?>
 
                 </nav>
 
@@ -238,29 +268,16 @@ echo $headerBar
 
 
 <?php
+// Footer
 echo $footerBar;
+// Powered By
 echo TplUtility::getPoweredBy();
-?>
-
-
-
-<?php
 // The stylesheet (before indexer work and script at the end)
-if (isset($DOKU_TPL_BOOTIE_PRELOAD_CSS)) {
-    foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
-        $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
-        if ($link['crossorigin'] != "") {
-            $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
-        }
-        // No integrity here
-        $htmlLink .= '>';
-        ptln($htmlLink);
-    }
-}
+TplUtility::addPreloadedResources();
 ?>
 
 
-<div class="no">
+<div class="d-none">
     <?php
     // Indexer (Background tasks)
     tpl_indexerWebBug()

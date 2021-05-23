@@ -20,6 +20,11 @@ install:
 script:
   - cd _test && ./phpunit.phar --stderr --group template_strap --verbose --debug
 
+branches:
+    only:
+        - master
+        - stable
+
 notifications:
   email:
     - support@combostrap.com

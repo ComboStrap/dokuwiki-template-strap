@@ -21,20 +21,3 @@ From https://realfavicongenerator.net/
 ```
 
 
-## CSS
-
-There is a preload going on for the CSS in [main](/main.php) and [detail](/detail.php)
-
-```php
-global $DOKU_TPL_BOOTIE_PRELOAD_CSS;
-
-foreach ($DOKU_TPL_BOOTIE_PRELOAD_CSS as $link) {
-    $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
-    if ($link['crossorigin'] != "") {
-        $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
-    }
-    // No integrity here
-    $htmlLink .= '>';
-    ptln($htmlLink);
-}
-```

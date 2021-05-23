@@ -1,6 +1,6 @@
 # Strap Web Template
 
-[![Build Status](https://travis-ci.org/ComboStrap/dokuwiki-template-strap.svg?branch=master)](https://travis-ci.org/ComboStrap/dokuwiki-template-strap)
+[![Build Status](https://travis-ci.com/ComboStrap/dokuwiki-template-strap.svg?branch=master)](https://travis-ci.org/ComboStrap/dokuwiki-template-strap)
 
 ## About
 
