@@ -4,7 +4,7 @@
 
 ![ComboStrap - Easy Markup WebSite Generator](./images/banner-combostrap.png "combostrap website bootstrap dokuwiki")
 
-[![Build Status](https://travis-ci.com/ComboStrap/dokuwiki-template-strap.svg?branch=main)](https://travis-ci.org/ComboStrap/dokuwiki-template-strap)
+[![Build Status](https://travis-ci.com/ComboStrap/dokuwiki-template-strap.svg?branch=main)](https://travis-ci.com/ComboStrap/dokuwiki-template-strap)
 
 ## About
 
