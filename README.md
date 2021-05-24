@@ -1,10 +1,14 @@
 # Strap Web Template
 
-[![Build Status](https://travis-ci.com/ComboStrap/dokuwiki-template-strap.svg?branch=master)](https://travis-ci.org/ComboStrap/dokuwiki-template-strap)
+> Volatile WebSite Generator based on Easy Markup File, Bootstrap Styled, and the power of a Wiki Platform
+
+![ComboStrap - Easy Markup WebSite Generator](./images/banner-combostrap.png "combostrap website bootstrap dokuwiki")
+
+[![Build Status](https://travis-ci.com/ComboStrap/dokuwiki-template-strap.svg?branch=main)](https://travis-ci.org/ComboStrap/dokuwiki-template-strap)
 
 ## About
 
-`Strap` is the template of [ComboStrap](https://combostrap.com/strap)
+`Strap` is the template of [ComboStrap](https://combostrap.com/)
 
 
 ## Features
@@ -18,31 +22,16 @@
   * Performance: All Javascript and CSS stylesheet are served asynchronously (defer for js and at the end for css)
   * Resources (Javascript or Stylesheet) served from CDN or locally
   * Load the third library via CDN or locally
+  * Dynamic Layout and more
 
-Options:
 
-  * `Menu in sidebar` via [Panel](http://getbootstrap.com/components/#panels-heading) with the [mini-map plugin](https://gerardnico.com/dokuwiki/minimap). It will add a list of page of the current namespace.
-  * `Headers numbering` and [Toc](https://www.dokuwiki.org/toc) below the first header with the [Rplus rendering](https://www.dokuwiki.org/plugin:rplus) plugin
+
 
 ## Version
 
   * Support php version 5.6, 7.0, 7.1, 7.2, 7.3
-  * Bootstrap 4. For the exact version, see the [js directory](./js/)
+  * Bootstrap 4, 5.
 
-## Configuration
-
-The configuration can be change with the [Configuration Manager Plugin](https://www.dokuwiki.org/plugin:config)
-
-  * `footer` : the footer name page to search. Default to `footerbar`
-  * `header` : the header name page to search. Default to `headerbar`
-  * `sidekick` : the name page if the right side bar. Default to `sidekickbar`
-  * `cdn` : if this configuration switch is on, you'll get the Javascript whenever possible from a CDN
-
-
-
-## Support
-
-  * The [styling plugin](https://www.dokuwiki.org/plugin:styling) will complain that it doesn't found some Javascript. You can disable it
 
 ## Dev
 
