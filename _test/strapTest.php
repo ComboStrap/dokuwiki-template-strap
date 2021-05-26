@@ -15,6 +15,9 @@ require_once(__DIR__ . '/../class/DomUtility.php');
 class template_strap_script_test extends DokuWikiTest
 {
 
+    const DEFAULT_BOOTSTRAP_4 = "4.5.0 - bootstrap";
+    const DEFAULT_BOOTSTRAP_5 = "5.0.1 - bootstrap";
+
     public function setUp()
     {
 
@@ -91,7 +94,7 @@ class template_strap_script_test extends DokuWikiTest
     public function test_handleBootStrapMetaHeaders_anonymous_default()
     {
 
-        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
+        $bootstrapStylesheetVersions = [self::DEFAULT_BOOTSTRAP_5, self::DEFAULT_BOOTSTRAP_4];
 
         foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
             TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
@@ -172,10 +175,36 @@ class template_strap_script_test extends DokuWikiTest
     {
 
         /**
-         * Jquery is off by default, enable
+         * Jquery Doku is off by default
+         * Because on Bootstrap 5, there is no Jquery
+         * There should be a Jquery even if off
          */
         $jqueryUI = tpl_getConf(TplUtility::CONF_JQUERY_DOKU);
         $this->assertEquals(0, $jqueryUI, "jquery is off");
+        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, self::DEFAULT_BOOTSTRAP_5);
+        $testDescription ="Jquery on Boostrap 5 should be present";
+        $version = TplUtility::getBootStrapVersion();
+        $scriptsSignature = [
+            "jquery.php",
+            "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+            'JSINFO',
+            'js.php'
+        ];
+        $stylsheetSignature = [
+            "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/css\/bootstrap.min.css",
+            '\/lib\/exe\/css.php\?t\=strap'
+        ];
+        $pageId = 'start';
+        saveWikiText($pageId, "Content", 'Script Test base');
+        idx_addPage($pageId);
+        $request = new TestRequest();
+        $response = $request->get(array('id' => $pageId, '/doku.php'));
+        $this->checkMeta($response, 'script', "src", $scriptsSignature, $testDescription);
+        $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+
+        /**
+         * Jquery is on
+         */
         TplUtility::setConf(TplUtility::CONF_JQUERY_DOKU, 1);
         $jqueryUI = tpl_getConf(TplUtility::CONF_JQUERY_DOKU);
         $this->assertEquals(1, $jqueryUI, "jquery is on");
@@ -183,7 +212,7 @@ class template_strap_script_test extends DokuWikiTest
         /**
          * For 4 and 5
          */
-        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
+        $bootstrapStylesheetVersions = [self::DEFAULT_BOOTSTRAP_5, self::DEFAULT_BOOTSTRAP_4];
 
         foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
 
@@ -264,7 +293,7 @@ class template_strap_script_test extends DokuWikiTest
         /**
          * For 4 and 5
          */
-        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
+        $bootstrapStylesheetVersions = [self::DEFAULT_BOOTSTRAP_5, self::DEFAULT_BOOTSTRAP_4];
 
         foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
 
@@ -351,7 +380,7 @@ class template_strap_script_test extends DokuWikiTest
         /**
          * For 4 and 5
          */
-        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
+        $bootstrapStylesheetVersions = [self::DEFAULT_BOOTSTRAP_5, self::DEFAULT_BOOTSTRAP_4];
 
         foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
 
@@ -435,7 +464,7 @@ class template_strap_script_test extends DokuWikiTest
         /**
          * For 4 and 5
          */
-        $bootstrapStylesheetVersions = ["5.0.1 - bootstrap", "4.5.0 - bootstrap"];
+        $bootstrapStylesheetVersions = [self::DEFAULT_BOOTSTRAP_5, self::DEFAULT_BOOTSTRAP_4];
 
         foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
 
@@ -509,7 +538,7 @@ class template_strap_script_test extends DokuWikiTest
         $this->assertEquals(1, sizeof($metas['script']), "There is three js script");
         $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
 
-        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, "4.5.0 - bootstrap");
+        TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, self::DEFAULT_BOOTSTRAP_4);
         $metas = TplUtility::getBootstrapMetaHeaders();
         $this->assertEquals(2, sizeof($metas));
         $this->assertEquals(3, sizeof($metas['script']), "There is three js script");

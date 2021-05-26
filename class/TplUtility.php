@@ -340,6 +340,11 @@ EOF;
 
     }
 
+    private static function getBootStrapMajorVersion()
+    {
+        return self::getBootStrapVersion()[0];
+    }
+
 
     /**
      * Hierarchical breadcrumbs
@@ -827,14 +832,28 @@ EOF;
                     }
 
                     // Add Jquery at the beginning
-                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(self::CONF_JQUERY_DOKU) == 0) {
-                        // We take the Jquery of Bootstrap
-                        $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
+                    $boostrapMajorVersion = TplUtility::getBootStrapMajorVersion();
+                    if ($boostrapMajorVersion=="4") {
+                        if (
+                            empty($_SERVER['REMOTE_USER'])
+                            && tpl_getConf(self::CONF_JQUERY_DOKU) == 0
+                        ) {
+                            // We take the Jquery of Bootstrap
+                            $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
+                        } else {
+                            // Logged in
+                            // We take the Jqueries of doku and we add Bootstrap
+                            $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
+                            // We had popper of Bootstrap
+                            $newScriptData[] = $bootstrapHeaders[$headerType]['popper'];
+                            // We had the js of Bootstrap
+                            $newScriptData[] = $bootstrapHeaders[$headerType]['js'];
+                        }
                     } else {
-                        // Logged in
-                        // We take the Jqueries of doku and we add Bootstrap
+                        // We take the Jqueries of doku
+                        // There is no JQuery in 5
                         $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
-                        $newScriptData[] = $bootstrapHeaders[$headerType]['popper'];
+                        // We had the js of Bootstrap (bundle with popper)
                         $newScriptData[] = $bootstrapHeaders[$headerType]['js'];
                     }
 
