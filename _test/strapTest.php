@@ -126,6 +126,7 @@ class template_strap_script_test extends DokuWikiTest
                     //    "jquery.com\/jquery-(.*).js", no more need in Bootstrap 5
                     // "cdn.jsdelivr.net\/npm\/popper.js", in the bundle below
                     "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    "jquery.php", // jquery of Dokuwiki (Bootstrap 5 does not have its own)
                     'JSINFO',
                     'js.php'
                 ];
@@ -326,6 +327,7 @@ class template_strap_script_test extends DokuWikiTest
                 $scriptsSignature = [
                     // "jquery.php", no jquery
                     "$localDirPattern\/bootstrap.bundle.min.js",
+                    "jquery.php", // jquery of Dokuwiki (Bootstrap 5 does not have its own)
                     'JSINFO',
                     'js.php'
                 ];
