@@ -44,7 +44,6 @@ $conf['useCDN'] = 1;
 // Print Debug statement
 $conf['debug'] = 1;
 
-$conf['remSize'] = "16";
 
 /**
  * {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}

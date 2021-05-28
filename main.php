@@ -93,9 +93,13 @@ if ($showSideBar) {
 TplUtility::registerHeaderHandler();
 
 /**
- * Default font size
+ * Default rem font size
  */
-$htmlRem = tpl_getConf("rem", "16px");
+$rootStyle = "";
+$htmlRem = tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+if ($htmlRem != null) {
+    $rootStyle = "style=\"font-size:{$htmlRem}px\"";
+}
 
 /**
  * Ob checks
@@ -108,16 +112,14 @@ if ($length > 0) {
     $ob = ob_get_contents();
     ob_clean();
     // If you got this problem check that this is not a character before a  `<?php` declaration
-    TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob.")", TplUtility::LVL_MSG_ERROR, "strap");
+    TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
 }
 
 ?>
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
-      dir="<?php echo $lang['direction'] ?>"
-      style="font-size:<?php echo $htmlRem ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>" dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
 <head>
 
     <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
