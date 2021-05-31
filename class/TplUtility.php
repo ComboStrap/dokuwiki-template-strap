@@ -173,7 +173,7 @@ class TplUtility
 
             $headStyle = <<<EOF
 <style>
-    main > h1, main > h2, main > h3, main > h4, main h5, #dokuwiki__top {
+    main > h1, main > h2, main > h3, main > h4, main > h5, #dokuwiki__top {
     $topHeaderStyle
     }
 </style>
