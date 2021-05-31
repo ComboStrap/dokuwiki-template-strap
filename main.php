@@ -88,6 +88,21 @@ if ($showSideBar) {
 }
 
 /**
+ * Landing page
+ */
+$mainIsContained = true;
+if ($ACT != "show") {
+    $mainIsContained = true;
+} else {
+    if ($layout == "landing") {
+        $mainIsContained = false;
+    }
+}
+if ($mainIsContained) {
+    $mainContainedClasses = "container mb-3";
+}
+
+/**
  * Bootstrap meta-headers
  */
 TplUtility::registerHeaderHandler();
@@ -115,11 +130,13 @@ if ($length > 0) {
     TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
 }
 
+
 ?>
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>" dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
+      dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
 <head>
 
     <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
@@ -158,7 +175,7 @@ echo $headerBar
 
 // Relative positioning is important for the positioning of the pagetools
 ?>
-<div class="container mb-3 <?php echo tpl_classes() ?> " style="position: relative">
+<div class="<?php echo $mainContainedClasses ?> <?php echo tpl_classes() ?> " style="position: relative">
 
 
     <?php // To go at the top of the page, style is for the fix top page --> ?>
