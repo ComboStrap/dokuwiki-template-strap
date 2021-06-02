@@ -130,13 +130,23 @@ if ($length > 0) {
     TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
 }
 
-/**
- * Lang
- */
+
 ?>
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
+<?php
+/**
+ * Lang for a page
+ *
+ * https://www.w3.org/International/questions/qa-html-language-declarations
+ *   * Always use a language attribute on the html element.
+ *   * When serving XHTML 1.x (ie. using a MIME type such as application/xhtml+xml),
+ * use both the lang attribute and the xml:lang attribute together
+ *
+ * See also {@link \ComboStrap\Lang::processLangAttribute()} for the localization of an element
+ */
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
 <head>

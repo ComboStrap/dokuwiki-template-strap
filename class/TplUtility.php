@@ -679,6 +679,9 @@ EOF;
          * Select Rtl or Ltr
          * Stylesheet name may have another level
          * with direction property of the language
+         *
+         * Bootstrap needs another stylesheet
+         * See https://getbootstrap.com/docs/5.0/getting-started/rtl/
          */
         global $lang;
         $direction = $lang["direction"];
