@@ -627,7 +627,7 @@ EOF;
      */
     static function getStylesheetsForMetadataConfiguration()
     {
-        $cssVersionsMetas = self::getStyleSheetsFromJsonFile();
+        $cssVersionsMetas = self::getStyleSheetsFromJsonFileAsArray();
         $listVersionStylesheetMeta = array();
         foreach ($cssVersionsMetas as $bootstrapVersion => $cssVersionMeta) {
             foreach ($cssVersionMeta as $fileName => $values) {
@@ -642,7 +642,7 @@ EOF;
      * @param $version - return only the selected version if set
      * @return array - an array of the meta JSON custom files
      */
-    static function getStyleSheetsFromJsonFile($version = null)
+    static function getStyleSheetsFromJsonFileAsArray($version = null)
     {
 
         $jsonAsArray = true;
@@ -651,6 +651,9 @@ EOF;
         if ($styleSheets == null) {
             self::msg("Unable to read the file {$stylesheetsFile} as json");
         }
+
+
+
         $localStyleSheetsFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
         if (file_exists($localStyleSheetsFile)) {
             $localStyleSheets = json_decode(file_get_contents($localStyleSheetsFile), $jsonAsArray);
@@ -662,7 +665,6 @@ EOF;
                     $stylesheetsFiles = array_merge($stylesheetsFiles, $localStyleSheets[$bootstrapVersion]);
                 }
             }
-
         }
 
         if (isset($version)) {
@@ -672,7 +674,27 @@ EOF;
                 $styleSheets = $styleSheets[$version];
             }
         }
-        return $styleSheets;
+
+        /**
+         * Select Rtl or Ltr
+         * Stylesheet name may have another level
+         * with direction property of the language
+         */
+        global $lang;
+        $direction = $lang["direction"];
+        if (empty($direction)){
+            $direction = "ltr";
+        }
+        $directedStyleSheets = [];
+        foreach($styleSheets as $name => $styleSheetDefinition){
+            if(isset($styleSheetDefinition[$direction])){
+                $directedStyleSheets[$name]=$styleSheetDefinition[$direction];
+            } else {
+                $directedStyleSheets[$name]=$styleSheetDefinition;
+            }
+        }
+
+        return $directedStyleSheets;
     }
 
     /**
@@ -702,7 +724,7 @@ EOF;
 
         // Css
         $bootstrapCssFile = TplUtility::getStyleSheetConf();
-        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFile($version);
+        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFileAsArray($version);
 
         if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
             self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
