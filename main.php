@@ -145,7 +145,21 @@ if ($length > 0) {
  * use both the lang attribute and the xml:lang attribute together
  *
  * See also {@link \ComboStrap\Lang::processLangAttribute()} for the localization of an element
+ *
+ * @var $javascriptRTL - put the button to the end when the page has a language direction of rtl
  */
+$javascriptRTL = "";
+if ($lang['direction']=="rtl"){
+    $javascriptRTL = <<<EOF
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    Array.from(document.getElementsByClassName("secedit")).forEach(e=>e.classList.add('float-end'));
+    }
+);
+</script>
+EOF;
+
+}
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
@@ -171,6 +185,14 @@ if ($length > 0) {
      * In case of a fix bar
      */
     echo TplUtility::getHeadStyleNodeForFixedTopNavbar();
+    ?>
+
+    <?php
+    /**
+     * In case of a RTL lang,
+     * we put the secedit button to the left
+     */
+    echo $javascriptRTL;
     ?>
 
 </head>
