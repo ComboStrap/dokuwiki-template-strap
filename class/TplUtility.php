@@ -74,6 +74,7 @@ class TplUtility
     const CONF_USE_CDN = "useCDN";
     const CONF_SIDEKICK = "sidekickbar";
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
+    const BS_4_BOOTSTRAP_VERSION_STYLESHEET = "4.5.0 - bootstrap";
 
 
     /**
