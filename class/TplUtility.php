@@ -103,7 +103,7 @@ class TplUtility
 
         $crumbs = breadcrumbs(); //setup crumb trace
 
-        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3">' . PHP_EOL;
+        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3 d-print-none">' . PHP_EOL;
 
         $i = 0;
         // Try to get the template custom breadcrumb
@@ -1122,7 +1122,8 @@ EOF;
             </div>';
 
         }
-        return $header;
+        // No header on print
+        return "<div class=\"d-print-none\">$header</div>";
 
     }
 
@@ -1137,8 +1138,8 @@ EOF;
             $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
         }
 
-
-        return $footer;
+        // No footer on print
+        return "<div class=\"d-print-none\">$footer</div>";
     }
 
     static function getPoweredBy()

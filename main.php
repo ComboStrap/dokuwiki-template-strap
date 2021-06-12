@@ -243,7 +243,7 @@ echo $headerBar
         <?php
         // SIDE BAR
         if ($showSideBar): ?>
-            <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
+            <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
@@ -272,7 +272,7 @@ echo $headerBar
         // SIDE BAR
         if ($showSideKickBar): ?>
 
-            <div role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last">
+            <div role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
