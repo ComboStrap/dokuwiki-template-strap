@@ -149,7 +149,7 @@ if ($length > 0) {
  * @var $javascriptRTL - put the button to the end when the page has a language direction of rtl
  */
 $javascriptRTL = "";
-if ($lang['direction']=="rtl"){
+if ($lang['direction'] == "rtl") {
     $javascriptRTL = <<<EOF
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -194,6 +194,21 @@ EOF;
      */
     echo $javascriptRTL;
     ?>
+
+    <?php
+    /**
+     * When we have a landing page, the page tools bar
+     * which is by default on the right side is not visible
+     * This setting will set up inside and make it visible alongside the page
+     */
+    if ($layout == "landing") { ?>
+        <style>
+            #dokuwiki__pagetools {
+                right: 44px!important;
+            }
+        </style>
+    <?php } ?>
+
 
 </head>
 <?php
@@ -243,7 +258,8 @@ echo $headerBar
         <?php
         // SIDE BAR
         if ($showSideBar): ?>
-            <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
+            <div role="complementary"
+                 class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
@@ -272,7 +288,8 @@ echo $headerBar
         // SIDE BAR
         if ($showSideKickBar): ?>
 
-            <div role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
+            <div role="complementary"
+                 class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
