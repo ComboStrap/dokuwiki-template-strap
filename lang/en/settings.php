@@ -30,7 +30,7 @@ $lang[TplUtility::CONF_REM_SIZE] = '<a href="https://combostrap.com/length/scale
 $lang[TplUtility::CONF_GRID_COLUMNS] = '<a href="https://combostrap.com/dynamic/grid">Dynamic Grid</a> - The number of columns in the grid';
 
 
-$lang[TplUtility::CONF_HEIGHT_FIXED_TOP_NAVBAR] = '<a href="https://combostrap.com/top/navbar">Fixed-top Navbar</a> - The height of the top bar in pixel (40px normally)';
+$lang[TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR] = '<a href="https://combostrap.com/top/navbar">Fixed-top Menubar</a> - The height of the top menu bar in pixel (40px normally)';
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
 $lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';

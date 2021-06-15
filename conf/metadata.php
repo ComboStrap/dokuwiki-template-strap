@@ -42,7 +42,7 @@ $meta[TplUtility::CONF_REM_SIZE] = array('string');
 
 $meta[TplUtility::CONF_GRID_COLUMNS] = array('multichoice', '_choices' => array('12', '16'));
 
-$meta[TplUtility::CONF_HEIGHT_FIXED_TOP_NAVBAR] = array('string');
+$meta[TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR] = array('string');
 
 $meta['preloadCss'] = array('onoff');
 

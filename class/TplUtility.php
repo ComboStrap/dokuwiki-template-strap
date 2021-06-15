@@ -41,7 +41,9 @@ class TplUtility
      *
      */
     const CONF_FOOTER = "footerbar";
-    const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
+
+    const CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD = 'heightFixedTopNavbar';
+    const CONF_HEIGHT_FIXED_TOP_MENUBAR = 'heightFixedTopMenuBar';
 
     /**
      * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
@@ -155,7 +157,7 @@ class TplUtility
     {
         // The padding top for the top fix bar
         $paddingTop = 0;
-        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
+        $heightTopBar = self::getTopFixedHeightForMenuBar();
         if ($heightTopBar != 0) {
             $paddingTop = $heightTopBar + 10;
         }
@@ -174,7 +176,7 @@ class TplUtility
     public static function getHeadStyleNodeForFixedTopNavbar()
     {
         $headStyle = "";
-        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR);
+        $heightTopBar = self::getTopFixedHeightForMenuBar();
         if ($heightTopBar !== 0) {
             $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
             $marginTop = -2 * $heightTopBar;
@@ -352,6 +354,15 @@ EOF;
     private static function getBootStrapMajorVersion()
     {
         return self::getBootStrapVersion()[0];
+    }
+
+    public static function getTopFixedHeightForMenuBar()
+    {
+        $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_MENUBAR, null);
+        if ($height == null) {
+            $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD, 0);
+        }
+        return $height;
     }
 
 
@@ -662,7 +673,6 @@ EOF;
         }
 
 
-
         $localStyleSheetsFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
         if (file_exists($localStyleSheetsFile)) {
             $localStyleSheets = json_decode(file_get_contents($localStyleSheetsFile), $jsonAsArray);
@@ -694,15 +704,15 @@ EOF;
          */
         global $lang;
         $direction = $lang["direction"];
-        if (empty($direction)){
+        if (empty($direction)) {
             $direction = "ltr";
         }
         $directedStyleSheets = [];
-        foreach($styleSheets as $name => $styleSheetDefinition){
-            if(isset($styleSheetDefinition[$direction])){
-                $directedStyleSheets[$name]=$styleSheetDefinition[$direction];
+        foreach ($styleSheets as $name => $styleSheetDefinition) {
+            if (isset($styleSheetDefinition[$direction])) {
+                $directedStyleSheets[$name] = $styleSheetDefinition[$direction];
             } else {
-                $directedStyleSheets[$name]=$styleSheetDefinition;
+                $directedStyleSheets[$name] = $styleSheetDefinition;
             }
         }
 
@@ -867,7 +877,7 @@ EOF;
 
                     // Add Jquery at the beginning
                     $boostrapMajorVersion = TplUtility::getBootStrapMajorVersion();
-                    if ($boostrapMajorVersion=="4") {
+                    if ($boostrapMajorVersion == "4") {
                         if (
                             empty($_SERVER['REMOTE_USER'])
                             && tpl_getConf(self::CONF_JQUERY_DOKU) == 0
@@ -901,7 +911,7 @@ EOF;
                         // Content should never be null
                         // Name may change
                         // https://www.w3.org/TR/html4/struct/global.html#edef-META
-                        if (!key_exists("content",$metaData)) {
+                        if (!key_exists("content", $metaData)) {
                             $message = "The head meta (" . print_r($metaData, true) . ") does not have a content property";
                             msg($message, -1, "", "", MSG_ADMINS_ONLY);
                             if (defined('DOKU_UNITTEST')

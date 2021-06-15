@@ -1,5 +1,7 @@
-/* In the config page, the label are no wrap with bootstrap */
-/* Very hugely */
+#config__manager td {
+    position: relative;
+}
+
 #config__manager td.label label {
     clear: left;
     display: block;
@@ -15,16 +17,9 @@
 }
 
 #config__manager td.label {
-    padding-bottom: 0.6em;
-    padding-left: 1em;
-    padding-right: 0;
-    padding-top: 0.8em;
+    padding: 1rem 0 1rem 1rem;
     vertical-align: top;
-    border-bottom-left-radius: 0.25em;
-    border-bottom-right-radius: 0.25em;
-    border-top-left-radius: 0.25em;
-    border-top-right-radius: 0.25em;
-    display: inline;
+    border-radius: 0.25rem;
     font-size: 100%;
     font-weight: normal;
     line-height: 1;
@@ -38,16 +33,9 @@
 #config__manager td.label span.outkey {
     background-color: #fff;
     color: #666;
-    display: block;
-    float: left;
     font-size: 70%;
-    margin-left: -1em;
-    margin-top: 0em;
-    padding-bottom: 0;
-    padding-left: 0.1em;
-    padding-right: 0.1em;
-    padding-top: 0;
-    position: relative;
+    position: absolute;
+    top: 0.75rem;
     z-index: 1;
 }
 
@@ -64,7 +52,7 @@
     background-color: unset;
 }
 
-#config__manager tr.default textarea  {
+#config__manager tr.default textarea {
     background-color: unset;
 }
 

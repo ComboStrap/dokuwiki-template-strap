@@ -55,11 +55,11 @@ $conf['gridColumns'] = 12;
 $conf['gridColumns'] = 12;
 
 /**
- * The height of the navbar when
+ * The height of the menu bar when
  * it's fixed in order to calculate the needed style
- * @see {@link \ComboStrap\TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR
+ * @see {@link \ComboStrap\TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR}
  */
-$conf['heightFixedTopNavbar'] = 0;
+$conf['heightFixedTopMenuBar'] = 0;
 
 $conf['preloadCss'] = 0;
 
