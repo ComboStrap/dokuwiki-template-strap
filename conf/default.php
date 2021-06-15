@@ -29,11 +29,7 @@ $conf['footerbar'] = 'footerbar';
  * See {@link TplUtility::CONF_HEADER}
  */
 $conf['headerbar'] = 'headerbar';
-/**
- * The name of the header page to search
- * See {@link TplUtility::CONF_SIDEKICK}
- */
-$conf['sidekickbar'] = 'sidekickbar';
+
 
 /**
  * CDN for anonymous

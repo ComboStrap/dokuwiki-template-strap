@@ -51,7 +51,7 @@ if ($showSideBar) {
 /**
  * Sidekickbar
  */
-$sideKickPageName = tpl_getConf(TplUtility::CONF_SIDEKICK);
+$sideKickPageName = TplUtility::getSideKickSlotPageName();
 $hasRightSidebar = page_findnearest($sideKickPageName);
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {

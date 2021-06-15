@@ -18,7 +18,7 @@ $meta[TplUtility::CONF_HEADER] = array('string',
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );
 
-$meta[TplUtility::CONF_SIDEKICK] = array('string',
+$meta[TplUtility::CONF_SIDEKICK_SLOT] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );

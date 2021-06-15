@@ -74,7 +74,8 @@ class TplUtility
     const CONF_REM_SIZE = "remSize";
     const CONF_GRID_COLUMNS = "gridColumns";
     const CONF_USE_CDN = "useCDN";
-    const CONF_SIDEKICK = "sidekickbar";
+    const CONF_SIDEKICK_OLD = "sidekickbar";
+    const CONF_SIDEKICK_SLOT = "sidekickslot";
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
     const BS_4_BOOTSTRAP_VERSION_STYLESHEET = "4.5.0 - bootstrap";
 
@@ -363,6 +364,15 @@ EOF;
             $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD, 0);
         }
         return $height;
+    }
+
+    public static function getSideKickSlotPageName()
+    {
+        $name = tpl_getConf(TplUtility::CONF_SIDEKICK_SLOT, null);
+        if ($name == null) {
+            $name = tpl_getConf(self::CONF_SIDEKICK_OLD, "sidekickslot");
+        }
+        return $name;
     }
 
 
