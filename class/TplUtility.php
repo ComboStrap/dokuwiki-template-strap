@@ -103,6 +103,14 @@ class TplUtility
 
         $crumbs = breadcrumbs(); //setup crumb trace
 
+        /**
+         * To be above the first h1 heading
+         * Otherwise when using a fix top bar,
+         * you can;t click on them
+         */
+        echo '<style>#breadcrumb li { z-index: 100 }</style>';
+
+
         echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3 d-print-none">' . PHP_EOL;
 
         $i = 0;
@@ -128,7 +136,7 @@ class TplUtility
             if ($name == "start") {
                 $name = "Home";
             }
-            tpl_link(wl($id), hsc($name), 'title="' . $name . '" style="width: 100%;z-index:10"');
+            tpl_link(wl($id), hsc($name), 'title="' . $name . '"');
 
             print '</li>' . PHP_EOL;
 
