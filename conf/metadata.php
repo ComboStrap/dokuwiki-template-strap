@@ -8,17 +8,17 @@ require_once(__DIR__ . '/../class/TplUtility.php');
 
 use ComboStrap\TplUtility;
 
-$meta[TplUtility::CONF_FOOTER] = array('string',
+$meta[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );
 
-$meta[TplUtility::CONF_HEADER] = array('string',
+$meta[TplUtility::CONF_HEADER_SLOT_PAGE_NAME] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );
 
-$meta[TplUtility::CONF_SIDEKICK_SLOT] = array('string',
+$meta[TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );

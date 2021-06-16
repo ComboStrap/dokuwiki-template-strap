@@ -11,6 +11,7 @@ use dokuwiki\Menu\UserMenu;
 
 require_once(__DIR__ . '/class/TplUtility.php');
 
+
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
 
@@ -201,10 +202,10 @@ EOF;
      * which is by default on the right side is not visible
      * This setting will set up inside and make it visible alongside the page
      */
-    if ($layout == "landing") { ?>
+    if ($layout == "landing" & $ACT == "show") { ?>
         <style>
             #dokuwiki__pagetools {
-                right: 44px!important;
+                right: 44px !important;
             }
         </style>
     <?php } ?>

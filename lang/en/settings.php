@@ -17,8 +17,8 @@ use ComboStrap\TplUtility;
 $lang['debug'] = 'Enable the rendering / processing of debug information';
 
 // for the configuration manager
-$lang[TplUtility::CONF_FOOTER] = '<a href="https://combostrap.com/footer_slot">Footer bar</a> - The name of the page to search for the footer page slot';
-$lang[TplUtility::CONF_HEADER] = '<a href="https://combostrap.com/header_slot">Header bar</a> - The name of the page to search for the header page slot';
+$lang[TplUtility::CONF_FOOTER_OLD] = '<a href="https://combostrap.com/footer_slot">Footer Slot</a> - The name of the page to search for the footer page slot';
+$lang[TplUtility::CONF_HEADER_OLD] = '<a href="https://combostrap.com/header_slot">Header Slot</a> - The name of the page to search for the header page slot';
 $lang[TplUtility::CONF_SIDEKICK_SLOT] = '<a href="https://combostrap.com/sidekick_slot">Sidekick Slot</a> - The name of the slot on the right side of the content';
 
 $lang[TplUtility::CONF_USE_CDN] = '<a href="https://combostrap.com/cdn">CDN</a> - Use a frontend CDN for the Bootstrap files';

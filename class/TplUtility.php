@@ -14,6 +14,7 @@ namespace ComboStrap;
 
 use Doku_Event;
 use dokuwiki\Extension\Event;
+use dokuwiki\plugin\config\core\Configuration;
 use Exception;
 
 
@@ -35,12 +36,15 @@ class TplUtility
     const LVL_MSG_WARNING = 2;
     const LVL_MSG_DEBUG = 3;
     const TEMPLATE_NAME = 'strap';
-    const CONF_HEADER = "headerbar";
+
+    const CONF_HEADER_OLD = "headerbar";
+    const CONF_HEADER_SLOT_PAGE_NAME = "headerSlotPageName";
     /**
      * The bar are also used to not add a {@link \action_plugin_combo_metacanonical}
      *
      */
-    const CONF_FOOTER = "footerbar";
+    const CONF_FOOTER_OLD = "footerbar";
+    const CONF_FOOTER_SLOT_PAGE_NAME = "footerSlotPageName";
 
     const CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD = 'heightFixedTopNavbar';
     const CONF_HEIGHT_FIXED_TOP_MENUBAR = 'heightFixedTopMenuBar';
@@ -74,11 +78,12 @@ class TplUtility
     const CONF_REM_SIZE = "remSize";
     const CONF_GRID_COLUMNS = "gridColumns";
     const CONF_USE_CDN = "useCDN";
-    const CONF_SIDEKICK_OLD = "sidekickbar";
-    const CONF_SIDEKICK_SLOT = "sidekickslot";
+
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
     const BS_4_BOOTSTRAP_VERSION_STYLESHEET = "4.5.0 - bootstrap";
 
+    const CONF_SIDEKICK_OLD = "sidekickbar";
+    const CONF_SIDEKICK_SLOT_PAGE_NAME = "sidekickSlotPageName";
 
     /**
      * @var array|null
@@ -368,9 +373,43 @@ EOF;
 
     public static function getSideKickSlotPageName()
     {
-        $name = tpl_getConf(TplUtility::CONF_SIDEKICK_SLOT, null);
+        $name = tpl_getConf(TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME, null);
         if ($name == null) {
-            $name = tpl_getConf(self::CONF_SIDEKICK_OLD, "sidekickslot");
+            $name = tpl_getConf(TplUtility::CONF_SIDEKICK_OLD, "slot_sidekick");
+        }
+        return $name;
+    }
+
+    public static function getHeaderSlotPageName()
+    {
+        $name = tpl_getConf(TplUtility::CONF_HEADER_SLOT_PAGE_NAME, null);
+        if ($name == null) {
+            $name = tpl_getConf(TplUtility::CONF_HEADER_OLD, "slot_header");
+        }
+        return $name;
+    }
+
+    public static function getFooterSlotPageName()
+    {
+        $footerSlotPageName = TplUtility::CONF_FOOTER_SLOT_PAGE_NAME;
+        $name = tpl_getConf($footerSlotPageName, null);
+        if ($name == null) {
+            $name = tpl_getConf(TplUtility::CONF_FOOTER_OLD, null);
+        }
+        if ($name == null) {
+            $oldDefaultName = "footerbar";
+            $id = page_findnearest($oldDefaultName);
+            if ($id !== false) {
+                $name = $oldDefaultName;
+            } else {
+                $name = "slot_footer";
+            }
+//            $configuration = new Configuration();
+//            $settings[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = $name;
+//            $configuration->updateSettings($settings);
+//            $configuration->save();
+//            $canonical = "footer_slot";
+            TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">footer slot</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
         }
         return $name;
     }
@@ -1136,17 +1175,17 @@ EOF;
     static function getHeader()
     {
 
-        $navBarPageName = tpl_getConf(self::CONF_HEADER);
-        if (page_findnearest($navBarPageName)) {
+        $navBarPageName = TplUtility::getHeaderSlotPageName();
+        if ($id = page_findnearest($navBarPageName)) {
 
-            $header = tpl_include_page($navBarPageName, 0, 1);
+            $header = tpl_include_page($id, 0, false);
 
         } else {
 
             $domain = self::getApexDomainUrl();
-            $header = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>.<br/>
-            If you don\'t known the <a href="https://combostrap.com/strap">Strap template</a>, it\'s recommended to read the <a href="' . $domain . '/strap">introduction</a>.<br/>
-            Otherwise, to create a navigation bar, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/navbar">navbar component</a>.
+            $header = '<div class="container p-3" style="text-align: center;position:relative;z-index:100">Welcome to the <a href="' . $domain . '/">Strap template</a>.<br/>
+            If you don\'t known the <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="' . $domain . '/getting_started">Getting Started Guide</a>.<br/>
+            Otherwise, to create a menu bar in the header, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/menubar">menubar component</a>.
             </div>';
 
         }
@@ -1159,9 +1198,9 @@ EOF;
     {
         $domain = self::getApexDomainUrl();
 
-        $footerPageName = tpl_getConf(self::CONF_FOOTER);
-        if (page_findnearest($footerPageName)) {
-            $footer = tpl_include_page($footerPageName, 0, 1);
+        $footerPageName = TplUtility::getFooterSlotPageName();
+        if ($id = page_findnearest($footerPageName)) {
+            $footer = tpl_include_page($id, 0, false);
         } else {
             $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
         }

@@ -19,17 +19,6 @@ use ComboStrap\TplUtility;
  */
 
 
-/**
- * The name of the footer page to search
- * See {@link TplUtility::CONF_FOOTER}
- */
-$conf['footerbar'] = 'footerbar';
-/**
- * The name of the header page to search
- * See {@link TplUtility::CONF_HEADER}
- */
-$conf['headerbar'] = 'headerbar';
-
 
 /**
  * CDN for anonymous
