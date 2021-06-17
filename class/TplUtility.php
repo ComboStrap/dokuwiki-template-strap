@@ -14,7 +14,6 @@ namespace ComboStrap;
 
 use Doku_Event;
 use dokuwiki\Extension\Event;
-use dokuwiki\plugin\config\core\Configuration;
 use Exception;
 
 
