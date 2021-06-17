@@ -17,9 +17,9 @@ use ComboStrap\TplUtility;
 $lang['debug'] = 'Enable the rendering / processing of debug information';
 
 // for the configuration manager
-$lang[TplUtility::CONF_FOOTER_OLD] = '<a href="https://combostrap.com/footer_slot">Footer Slot</a> - The name of the page to search for the footer page slot';
-$lang[TplUtility::CONF_HEADER_OLD] = '<a href="https://combostrap.com/header_slot">Header Slot</a> - The name of the page to search for the header page slot';
-$lang[TplUtility::CONF_SIDEKICK_SLOT] = '<a href="https://combostrap.com/sidekick_slot">Sidekick Slot</a> - The name of the slot on the right side of the content';
+$lang[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = '<a href="https://combostrap.com/footer_slot">Footer Slot</a> - The name of the page to search for the footer page slot';
+$lang[TplUtility::CONF_HEADER_SLOT_PAGE_NAME] = '<a href="https://combostrap.com/header_slot">Header Slot</a> - The name of the page to search for the header page slot';
+$lang[TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME] = '<a href="https://combostrap.com/sidekick_slot">Sidekick Slot</a> - The name of the slot on the right side of the content';
 
 $lang[TplUtility::CONF_USE_CDN] = '<a href="https://combostrap.com/cdn">CDN</a> - Use a frontend CDN for the Bootstrap files';
 
@@ -30,7 +30,7 @@ $lang[TplUtility::CONF_REM_SIZE] = '<a href="https://combostrap.com/length/scale
 $lang[TplUtility::CONF_GRID_COLUMNS] = '<a href="https://combostrap.com/dynamic/grid">Dynamic Grid</a> - The number of columns in the grid';
 
 
-$lang[TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR] = '<a href="https://combostrap.com/top/navbar">Fixed-top Menubar</a> - The height of the top menu bar in pixel (40px normally)';
+$lang[TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR] = '<a href="https://combostrap.com/top_menubar">Fixed-top Menubar</a> - The height of the top menu bar in pixel (40px normally)';
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading';
 $lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
