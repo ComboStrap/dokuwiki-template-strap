@@ -7,7 +7,6 @@ use dokuwiki\plugin\config\core\Loader;
 require_once(__DIR__ . '/../class/TplUtility.php');
 
 
-
 /**
  * Test the settings.php file
  *
@@ -52,15 +51,15 @@ class template_strap_conf_test extends DokuWikiTest
         // $_SERVER[] = $user;
         $request->setServer('REMOTE_USER', $user);
 
-        $response = $request->get(array('do' => 'admin', 'page' => "config"),'/doku.php');
+        $response = $request->get(array('do' => 'admin', 'page' => "config"), '/doku.php');
 
         // Simple
         /**
          * The conf identifier used as id in the pae configuration
          * and in array
          */
-        $htmlId = "tpl____".TplUtility::TEMPLATE_NAME."____tpl_settings_name";
-        $countListContainer = $response->queryHTML("#". $htmlId)->count();
+        $htmlId = "tpl____" . TplUtility::TEMPLATE_NAME . "____tpl_settings_name";
+        $countListContainer = $response->queryHTML("#" . $htmlId)->count();
         $this->assertEquals(1, $countListContainer, "There should an element");
 
     }
@@ -100,6 +99,17 @@ class template_strap_conf_test extends DokuWikiTest
             }
 
             foreach ($meta as $key => $value) {
+
+                /**
+                 * Known configuration without defaulg
+                 */
+                if (in_array($key,
+                    [TplUtility::CONF_FOOTER_SLOT_PAGE_NAME,
+                        TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
+                        TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME]
+                )) {
+                    continue;
+                }
                 $this->assertArrayHasKey(
                     $key,
                     $conf,
@@ -158,7 +168,7 @@ class template_strap_conf_test extends DokuWikiTest
         // plugin defaults
         foreach ($meta as $key => $value) {
             $this->assertArrayHasKey(
-                $keyPrefix.$key,
+                $keyPrefix . $key,
                 $defaultConf,
                 'Key $conf[\'' . $key . '\'] could not be parsed in ' . DOKU_PLUGIN . 'syntax/conf/default.php. Be sure to give only values and not variable.'
             );

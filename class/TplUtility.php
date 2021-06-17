@@ -411,6 +411,22 @@ EOF;
     public static function updateConfiguration($key, $value)
     {
 
+        /**
+         * Hack to avoid updating during test request
+         */
+        if(defined('DOKU_UNITTEST')) {
+            global $_REQUEST;
+            if (isset($_REQUEST["id"])) {
+                // this is a test request
+                // the local.php file has a the `DOKU_TMP_DATA`
+                // constant in the file and updating the file
+                // with this method will then update the value of savedir to DOKU_TMP_DATA
+                // we get then the error
+                // The datadir ('pages') at DOKU_TMP_DATA/pages is not found
+                return true;
+            }
+        }
+
         $key = "tpl____strap____" . $key;
         $configuration = new Configuration();
         $settings = $configuration->getSettings();
