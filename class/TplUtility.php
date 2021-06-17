@@ -374,44 +374,38 @@ EOF;
 
     public static function getSideKickSlotPageName()
     {
-        $name = tpl_getConf(TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME, null);
-        if ($name == null) {
-            $name = tpl_getConf(TplUtility::CONF_SIDEKICK_OLD, "slot_sidekick");
-        }
-        return $name;
+
+        return TplUtility::migrateSlotConfAndGetValue(
+            TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
+            "slot_sidekick",
+            TplUtility::CONF_SIDEKICK_OLD,
+            "sidekickbar",
+            "sidekick_slot"
+        );
     }
 
     public static function getHeaderSlotPageName()
     {
-        $name = tpl_getConf(TplUtility::CONF_HEADER_SLOT_PAGE_NAME, null);
-        if ($name == null) {
-            $name = tpl_getConf(TplUtility::CONF_HEADER_OLD, "slot_header");
-        }
-        return $name;
+
+        return TplUtility::migrateSlotConfAndGetValue(
+            TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
+            "slot_header",
+            TplUtility::CONF_HEADER_OLD,
+            "headerbar",
+            "header_slot"
+        );
+
     }
 
     public static function getFooterSlotPageName()
     {
-        $footerSlotPageName = TplUtility::CONF_FOOTER_SLOT_PAGE_NAME;
-        $name = tpl_getConf($footerSlotPageName, null);
-        if ($name == null) {
-            $name = tpl_getConf(TplUtility::CONF_FOOTER_OLD, null);
-        }
-        if ($name == null) {
-            $oldDefaultName = "footerbar";
-            $id = page_findnearest($oldDefaultName);
-            if ($id !== false) {
-                $name = $oldDefaultName;
-            } else {
-                $name = "slot_footer";
-            }
-            $updated = TplUtility::updateConfiguration($footerSlotPageName, $name);
-            $canonical = "footer_slot";
-            if ($updated) {
-                TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">footer slot</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
-            }
-        }
-        return $name;
+        return self::migrateSlotConfAndGetValue(
+            TplUtility::CONF_FOOTER_SLOT_PAGE_NAME,
+            "slot_footer",
+            TplUtility::CONF_FOOTER_OLD,
+            "footerbar",
+            "footer_slot"
+        );
     }
 
     public static function updateConfiguration($key, $value)
@@ -443,6 +437,33 @@ EOF;
         }
 
 
+    }
+
+    /**
+     * Helper to migrate from bar to slot
+     * @return mixed|string
+     */
+    public static function migrateSlotConfAndGetValue($newConf, $newDefault, $oldConf, $oldDefaultName, $canonical)
+    {
+
+        $name = tpl_getConf($newConf, null);
+        if ($name == null) {
+            $name = tpl_getConf($oldConf, null);
+        }
+        if ($name == null) {
+
+            $id = page_findnearest($oldDefaultName);
+            if ($id !== false) {
+                $name = $oldDefaultName;
+            } else {
+                $name = $newDefault;
+            }
+            $updated = TplUtility::updateConfiguration($newConf, $name);
+            if ($updated) {
+                TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">$newConf</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
+            }
+        }
+        return $name;
     }
 
 
