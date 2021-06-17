@@ -1,6 +1,7 @@
 <?php
 
 use ComboStrap\TplUtility;
+use dokuwiki\plugin\config\core\Configuration;
 
 require_once(__DIR__ . '/../class/TplUtility.php');
 
@@ -134,6 +135,39 @@ class TplUtilityTest extends DokuWikiTest
          * TODO:  We should test that the file are not the same with bar plugin that shows the files of a namespace
          * The test was done manually
          */
+
+    }
+
+    public function testUpdateConfiguration()
+    {
+
+        $strapName = "strap";
+        $strapKey = TplUtility::CONF_FOOTER_SLOT_PAGE_NAME;
+        $value = "value";
+        TplUtility::updateConfiguration($strapKey, $value);
+
+        $configuration = new Configuration();
+        $settings = $configuration->getSettings();
+        $key = "tpl____${strapName}____".$strapKey;
+
+        $setting = $settings[$key];
+        $this->assertEquals(true,isset($setting));
+
+        $formsOutput = $setting->out("conf");
+        $formsOutputExpected =<<<EOF
+\$conf['tpl']['$strapName']['$strapKey'] = '$value';
+
+EOF;
+
+        $this->assertEquals($formsOutputExpected,$formsOutput);
+
+        global $config_cascade;
+        $config = end($config_cascade['main']['local']);
+        $conf = [];
+        /** @noinspection PhpIncludeInspection */
+        include $config;
+        $this->assertEquals($value, $conf["tpl"]["strap"][$strapKey],"Good value in config");
+
 
     }
 

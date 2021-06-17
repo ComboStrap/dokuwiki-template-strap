@@ -37,6 +37,6 @@ $lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> 
 
 $lang[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version and a corresponding stylesheet';
 
-$lang[TplUtility::CONF_JQUERY_DOKU] = '<a href="https://combostrap.com/jquery">Jquery</a> - Use the DokuWiki Jquery';
+$lang[TplUtility::CONF_JQUERY_DOKU] = '<a href="https://combostrap.com/jquery">Jquery</a> - Use the DokuWiki Jquery (Only valid for Bootstrap 4)';
 
 ?>

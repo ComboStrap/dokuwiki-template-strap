@@ -14,6 +14,8 @@ namespace ComboStrap;
 
 use Doku_Event;
 use dokuwiki\Extension\Event;
+use dokuwiki\plugin\config\core\Configuration;
+use dokuwiki\plugin\config\core\Writer;
 use Exception;
 
 
@@ -403,14 +405,44 @@ EOF;
             } else {
                 $name = "slot_footer";
             }
-//            $configuration = new Configuration();
-//            $settings[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = $name;
-//            $configuration->updateSettings($settings);
-//            $configuration->save();
-//            $canonical = "footer_slot";
-            TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">footer slot</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
+            $updated = TplUtility::updateConfiguration($footerSlotPageName, $name);
+            $canonical = "footer_slot";
+            if ($updated) {
+                TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">footer slot</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
+            }
         }
         return $name;
+    }
+
+    public static function updateConfiguration($key, $value)
+    {
+
+        $key = "tpl____strap____" . $key;
+        $configuration = new Configuration();
+        $settings = $configuration->getSettings();
+
+        if (!isset($settings[$key])) {
+            return false;
+        }
+
+        $setting = &$settings[$key];
+        $setting->update($value);
+
+        /**
+         * We cannot update the setting
+         * via the configuration object
+         * We are taking another pass
+         */
+        $writer = new Writer();
+        if (!$writer->isLocked()) {
+            $writer->save($settings);
+            return true;
+        } else {
+            TplUtility::msg("The configuration was locked. The configuration ($key) was not changed to the value ($value)");
+            return false;
+        }
+
+
     }
 
 
