@@ -97,6 +97,8 @@ if ($ACT != "show") {
 } else {
     if ($layout == "landing") {
         $mainIsContained = false;
+        // No gutter on x otherwise there is a overflow on the right
+        $landingPageGutter = "style=\"--bs-gutter-x: 0\"";
     }
 }
 if ($mainIsContained) {
@@ -244,7 +246,7 @@ echo $headerBar
     }
     ?>
 
-    <div class="row justify-content-md-center">
+    <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
 
 
         <?php
