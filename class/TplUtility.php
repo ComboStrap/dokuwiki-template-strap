@@ -38,13 +38,9 @@ class TplUtility
     const LVL_MSG_DEBUG = 3;
     const TEMPLATE_NAME = 'strap';
 
-    const CONF_HEADER_OLD = "headerbar";
+
     const CONF_HEADER_SLOT_PAGE_NAME = "headerSlotPageName";
-    /**
-     * The bar are also used to not add a {@link \action_plugin_combo_metacanonical}
-     *
-     */
-    const CONF_FOOTER_OLD = "footerbar";
+
     const CONF_FOOTER_SLOT_PAGE_NAME = "footerSlotPageName";
 
     const CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD = 'heightFixedTopNavbar';
@@ -85,7 +81,20 @@ class TplUtility
 
     const CONF_SIDEKICK_OLD = "sidekickbar";
     const CONF_SIDEKICK_SLOT_PAGE_NAME = "sidekickSlotPageName";
+    const CONF_SLOT_HEADER_PAGE_NAME_VALUE = "slot_header";
 
+    /**
+     * @deprecated see {@link TplUtility::CONF_HEADER_SLOT_PAGE_NAME}
+     */
+    const CONF_HEADER_OLD = "headerbar";
+    /**
+     * @deprecated
+     */
+    const CONF_HEADER_OLD_VALUE = TplUtility::CONF_HEADER_OLD;
+    /**
+     * @deprecated see {@link TplUtility::CONF_FOOTER_SLOT_PAGE_NAME}
+     */
+    const CONF_FOOTER_OLD = "footerbar";
     /**
      * @var array|null
      */
@@ -389,9 +398,9 @@ EOF;
 
         return TplUtility::migrateSlotConfAndGetValue(
             TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
-            "slot_header",
+            TplUtility::CONF_SLOT_HEADER_PAGE_NAME_VALUE,
             TplUtility::CONF_HEADER_OLD,
-            "headerbar",
+            TplUtility::CONF_HEADER_OLD_VALUE,
             "header_slot"
         );
 
@@ -412,9 +421,8 @@ EOF;
      * @param string $key the key configuration
      * @param string $value the value
      * @return bool
-     * @throws Exception
      */
-    public static function updateConfigurations($key, $value)
+    public static function updateConfiguration($key, $value)
     {
 
         /**
@@ -492,7 +500,7 @@ EOF;
      * Helper to migrate from bar to slot
      * @return mixed|string
      */
-    public static function migrateSlotConfAndGetValue($newConf, $newDefault, $oldConf, $oldDefaultName, $canonical)
+    public static function migrateSlotConfAndGetValue($newConf, $newDefaultValue, $oldConf, $oldDefaultValue, $canonical)
     {
 
         $name = tpl_getConf($newConf, null);
@@ -516,7 +524,7 @@ EOF;
                 $childrenDirectories = glob($directory . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
                 foreach ($childrenDirectories as $childrenDirectory) {
                     $directoryName = pathinfo($childrenDirectory)['filename'];
-                    $dokuFilePath = $directoryName . ":" . $oldDefaultName;
+                    $dokuFilePath = $directoryName . ":" . $oldDefaultValue;
                     if (page_exists($dokuFilePath)) {
                         $foundOldName = true;
                         break;
@@ -525,11 +533,11 @@ EOF;
             }
 
             if ($foundOldName) {
-                $name = $oldDefaultName;
+                $name = $oldDefaultValue;
             } else {
-                $name = $newDefault;
+                $name = $newDefaultValue;
             }
-            $updated = TplUtility::updateConfigurations($newConf, $name);
+            $updated = TplUtility::updateConfiguration($newConf, $name);
             if ($updated) {
                 TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">$newConf</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
             }

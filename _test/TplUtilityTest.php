@@ -138,13 +138,30 @@ class TplUtilityTest extends DokuWikiTest
 
     }
 
-    public function testUpdateConfiguration()
+    /**
+     * Test that a wiki with an old header configuration
+     * is saved to the old value
+     *
+     * The functionality scan for children page
+     * with the same name and if found set the new configuration
+     * when we try to get the value
+     */
+    public function testUpdateConfigurationWithOldValue()
     {
 
+        /**
+         * Creating a page in a children directory
+         * with the old configuration
+         */
+        $oldConf = TplUtility::CONF_HEADER_OLD;
+        $expectedValue = TplUtility::CONF_HEADER_OLD_VALUE;
+        saveWikiText("ns:".$oldConf, "Header page with the old", 'Script Test base');
+
         $strapName = "strap";
-        $strapKey = TplUtility::CONF_FOOTER_SLOT_PAGE_NAME;
-        $value = "value";
-        TplUtility::updateConfiguration($strapKey, $value);
+        $strapKey = TplUtility::CONF_HEADER_SLOT_PAGE_NAME;
+
+        $value = TplUtility::getHeaderSlotPageName();
+        $this->assertEquals($expectedValue,$value);
 
         $configuration = new Configuration();
         $settings = $configuration->getSettings();
@@ -155,7 +172,7 @@ class TplUtilityTest extends DokuWikiTest
 
         $formsOutput = $setting->out("conf");
         $formsOutputExpected =<<<EOF
-\$conf['tpl']['$strapName']['$strapKey'] = '$value';
+\$conf['tpl']['$strapName']['$strapKey'] = '$expectedValue';
 
 EOF;
 
@@ -166,10 +183,46 @@ EOF;
         $conf = [];
         /** @noinspection PhpIncludeInspection */
         include $config;
-        $this->assertEquals($value, $conf["tpl"]["strap"][$strapKey],"Good value in config");
+        $this->assertEquals($expectedValue, $conf["tpl"]["strap"][$strapKey],"Good value in config");
 
 
     }
+
+    public function testUpdateConfigurationForANewInstallation()
+    {
+
+        $expectedValue = "slot_header";
+        $strapName = "strap";
+        $strapKey = TplUtility::CONF_HEADER_SLOT_PAGE_NAME;
+
+        $value = TplUtility::getHeaderSlotPageName();
+        $this->assertEquals($expectedValue,$value);
+
+        $configuration = new Configuration();
+        $settings = $configuration->getSettings();
+        $key = "tpl____${strapName}____".$strapKey;
+
+        $setting = $settings[$key];
+        $this->assertEquals(true,isset($setting));
+
+        $formsOutput = $setting->out("conf");
+        $formsOutputExpected =<<<EOF
+\$conf['tpl']['$strapName']['$strapKey'] = '$expectedValue';
+
+EOF;
+
+        $this->assertEquals($formsOutputExpected,$formsOutput);
+
+        global $config_cascade;
+        $config = end($config_cascade['main']['local']);
+        $conf = [];
+        /** @noinspection PhpIncludeInspection */
+        include $config;
+        $this->assertEquals($expectedValue, $conf["tpl"]["strap"][$strapKey],"Good value in config");
+
+
+    }
+
 
 
 }
