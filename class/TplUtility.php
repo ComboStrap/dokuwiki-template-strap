@@ -408,7 +408,13 @@ EOF;
         );
     }
 
-    public static function updateConfiguration($key, $value)
+    /**
+     * @param string $key the key configuration
+     * @param string $value the value
+     * @return bool
+     * @throws Exception
+     */
+    public static function updateConfigurations($key, $value)
     {
 
         /**
@@ -444,30 +450,40 @@ EOF;
             }
         }
 
-        $key = "tpl____strap____" . $key;
+
         $configuration = new Configuration();
         $settings = $configuration->getSettings();
 
-        if (!isset($settings[$key])) {
-            return false;
-        }
 
-        $setting = &$settings[$key];
-        $setting->update($value);
+        $key = "tpl____strap____" . $key;
+        if (isset($settings[$key])) {
+            $setting = &$settings[$key];
+            $setting->update($value);
+            /**
+             * We cannot update the setting
+             * via the configuration object
+             * We are taking another pass
+             */
 
-        /**
-         * We cannot update the setting
-         * via the configuration object
-         * We are taking another pass
-         */
-        $writer = new Writer();
-        if (!$writer->isLocked()) {
-            $writer->save($settings);
-            return true;
+            $writer = new Writer();
+            if (!$writer->isLocked()) {
+                try {
+                    $writer->save($settings);
+                    return true;
+                } catch (Exception $e) {
+                    TplUtility::msg("An error occurred while trying to save automatically the configuration ($key) to the value ($value). Error: " . $e->getMessage());
+                    return false;
+                }
+            } else {
+                TplUtility::msg("The configuration file was locked. The upgrade configuration ($key) value could not be not changed to ($value)");
+                return false;
+            }
+
         } else {
-            TplUtility::msg("The configuration was locked. The configuration ($key) was not changed to the value ($value)");
-            return false;
+            TplUtility::msg("The configuration ($key) is unknown and was therefore not change to ($value)");
         }
+
+        return false;
 
 
     }
@@ -485,13 +501,35 @@ EOF;
         }
         if ($name == null) {
 
-            $id = page_findnearest($oldDefaultName);
-            if ($id !== false) {
+            $foundOldName = false;
+            if (page_exists($oldConf)) {
+                $foundOldName = true;
+            }
+
+            if (!$foundOldName) {
+                global $conf;
+                $startPageName = $conf["start"];
+                $startPagePath = wikiFN($startPageName);
+                $directory = dirname($startPagePath);
+
+
+                $childrenDirectories = glob($directory . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+                foreach ($childrenDirectories as $childrenDirectory) {
+                    $directoryName = pathinfo($childrenDirectory)['filename'];
+                    $dokuFilePath = $directoryName . ":" . $oldDefaultName;
+                    if (page_exists($dokuFilePath)) {
+                        $foundOldName = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($foundOldName) {
                 $name = $oldDefaultName;
             } else {
                 $name = $newDefault;
             }
-            $updated = TplUtility::updateConfiguration($newConf, $name);
+            $updated = TplUtility::updateConfigurations($newConf, $name);
             if ($updated) {
                 TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">$newConf</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
             }
@@ -1228,13 +1266,12 @@ EOF;
      * @param int $level - the level see LVL constant
      * @param string $canonical - the canonical
      */
-    static function msg($message, $level = self::LVL_MSG_ERROR, $canonical = null)
+    static function msg($message, $level = self::LVL_MSG_ERROR, $canonical = "strap")
     {
         $strapUrl = self::getStrapUrl();
         $prefix = "<a href=\"$strapUrl\">Strap</a>";
-        if ($canonical != null) {
-            $prefix = '<a href="https://combostrap.com/' . $canonical . '">' . ucfirst($canonical) . '</a>';
-        }
+        $prefix = '<a href="https://combostrap.com/' . $canonical . '">' . ucfirst($canonical) . '</a>';
+
         $htmlMsg = $prefix . " - " . $message;
         if ($level != self::LVL_MSG_DEBUG) {
             msg($htmlMsg, $level, '', '', MSG_MANAGERS_ONLY);
