@@ -425,7 +425,6 @@ class template_strap_script_test extends DokuWikiTest
 
             }
 
-
             $request = new TestRequest();
             $request->setServer('REMOTE_USER', $user);
             $response = $request->get(array('id' => $pageId, '/doku.php'));

@@ -414,16 +414,33 @@ EOF;
         /**
          * Hack to avoid updating during test request
          */
-        if(defined('DOKU_UNITTEST')) {
+        if (defined('DOKU_UNITTEST')) {
             global $_REQUEST;
             if (isset($_REQUEST["id"])) {
-                // this is a test request
-                // the local.php file has a the `DOKU_TMP_DATA`
-                // constant in the file and updating the file
-                // with this method will then update the value of savedir to DOKU_TMP_DATA
-                // we get then the error
-                // The datadir ('pages') at DOKU_TMP_DATA/pages is not found
-                return true;
+                /**
+                 * This hack resolves two problems
+                 *
+                 * First one
+                 * this is a test request
+                 * the local.php file has a the `DOKU_TMP_DATA`
+                 * constant in the file and updating the file
+                 * with this method will then update the value of savedir to DOKU_TMP_DATA
+                 * we get then the error
+                 * The datadir ('pages') at DOKU_TMP_DATA/pages is not found
+                 *
+                 *
+                 * Second one
+                 * if in a php test unit, we send a php request two times
+                 * the headers have been already send and the
+                 * {@link msg()} function will send them
+                 * causing the {@link TplUtility::outputBufferShouldBeEmpty() output buffer check} to fail
+                 */
+                global $MSG_shown;
+                if (isset($MSG_shown) || headers_sent()) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
         }
 
@@ -480,6 +497,26 @@ EOF;
             }
         }
         return $name;
+    }
+
+    /**
+     * Output buffer checks
+     *
+     * It should be null before printing otherwise
+     * you may get a text before the HTML header
+     * and it mess up the whole page
+     */
+    public static function outputBufferShouldBeEmpty()
+    {
+        $length = ob_get_length();
+        if ($length > 0) {
+            $ob = ob_get_contents();
+            ob_clean();
+            /**
+             * If you got this problem check that this is not a character before a  `<?php` declaration
+             */
+            TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
+        }
     }
 
 

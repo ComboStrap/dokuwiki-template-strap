@@ -118,18 +118,9 @@ if ($htmlRem != null) {
 }
 
 /**
- * Ob checks
- * It should be null, otherwise
- * you may get a text before the HTML header
- * and it mess up the whole page
+ * The output buffer should be empty
  */
-$length = ob_get_length();
-if ($length > 0) {
-    $ob = ob_get_contents();
-    ob_clean();
-    // If you got this problem check that this is not a character before a  `<?php` declaration
-    TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
-}
+TplUtility::outputBufferShouldBeEmpty();
 
 
 ?>
