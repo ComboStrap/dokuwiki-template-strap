@@ -121,14 +121,6 @@ class TplUtility
 
         $crumbs = breadcrumbs(); //setup crumb trace
 
-        /**
-         * To be above the first h1 heading
-         * Otherwise when using a fix top bar,
-         * you can;t click on them
-         */
-        echo '<style>#breadcrumb li { z-index: 100 }</style>';
-
-
         echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3 d-print-none">' . PHP_EOL;
 
         $i = 0;
@@ -1135,8 +1127,6 @@ EOF;
                     $newHeaderTypes[$headerType] = $newHeaderData;
                     break;
                 case "style":
-                    // generator, color, robots, keywords
-                    // nothing to do pick them all
                     $newHeaderTypes[$headerType] = $headerData;
                     break;
 
