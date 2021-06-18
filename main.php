@@ -74,6 +74,11 @@ $footerBar = TplUtility::getFooter();
  * Grid
  */
 $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
+/**
+ * Layout
+ *
+ * See also: https://1linelayouts.glitch.me/ and https://www.cssportal.com/layout-generator/layout.php
+ */
 $layout = p_get_metadata($ID, "layout");
 if ($layout === "median") {
     $maximalWidthMain = 8;
