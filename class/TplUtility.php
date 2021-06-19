@@ -191,7 +191,7 @@ class TplUtility
             $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
 
             $headStyle = <<<EOF
-<style>
+<style class="snippet-top-menubar-combo">
     main > h1, main > h2, main > h3, main > h4, main > h5, #dokuwiki__top {
     $topHeaderStyle
     }
@@ -222,10 +222,11 @@ EOF;
         return self::$TEMPLATE_INFO;
     }
 
-    private static function getVersion()
+    public static function getFullQualifyVersion()
     {
         return "v" . self::getTemplateInfo()['version'] . " (" . self::getTemplateInfo()['date'] . ")";
     }
+
 
     private static function getStrapUrl()
     {
@@ -555,6 +556,11 @@ EOF;
              */
             TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
         }
+    }
+
+    public static function getStrapVersion()
+    {
+
     }
 
 
@@ -1353,7 +1359,7 @@ EOF;
     {
 
         $domain = self::getApexDomainUrl();
-        $version = self::getVersion();
+        $version = self::getFullQualifyVersion();
         $poweredBy = "<div class=\"mx-auto\" style=\"width: 300px;text-align: center;\">";
         $poweredBy .= "  <small><i>Powered by <a href=\"$domain\" title=\"ComboStrap " . $version . "\">ComboStrap</a></i></small>";
         $poweredBy .= '</div>';
