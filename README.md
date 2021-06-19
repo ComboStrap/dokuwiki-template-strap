@@ -21,12 +21,10 @@
     * `header` slot
     * `Side` slot
     * `sidekick` slot
-  * Performance: All Javascript and CSS stylesheet are served asynchronously (defer for js and at the end for css)
-  * Resources (Javascript or Stylesheet) served from CDN or locally
-  * Load the third library via CDN or locally
-  * Dynamic Layout and more
-
-
+  * Performance:
+    * One Stylesheet dependency available globally from CDN
+    * All Javascript are served asynchronously
+    * Lazy image loading
 
 
 ## Version
