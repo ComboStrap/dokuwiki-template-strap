@@ -21,6 +21,10 @@
     * `header` slot
     * `Side` slot
     * `sidekick` slot
+  * Layout:
+    * `holy grail`
+    * `median`
+    * `landing`
   * Performance:
     * One Stylesheet dependency available globally from CDN
     * All Javascript are served asynchronously
