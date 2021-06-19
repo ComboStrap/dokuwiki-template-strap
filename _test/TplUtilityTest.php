@@ -185,6 +185,11 @@ EOF;
         include $config;
         $this->assertEquals($expectedValue, $conf["tpl"]["strap"][$strapKey],"Good value in config");
 
+        /**
+         * The conf has been messed up
+         * See {@link TplUtility::updateConfiguration()} for information
+         */
+        self::setUpBeforeClass();
 
     }
 
@@ -220,6 +225,11 @@ EOF;
         include $config;
         $this->assertEquals($expectedValue, $conf["tpl"]["strap"][$strapKey],"Good value in config");
 
+        /**
+         * The conf has been messed up
+         * See {@link TplUtility::updateConfiguration()} for information
+         */
+        self::setUpBeforeClass();
 
     }
 
