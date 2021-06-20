@@ -1,9 +1,16 @@
 {
     "5.0.1": {
         "bootstrap": {
-            "file": "bootstrap.min.css",
-            "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css",
-            "integrity": "sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+            "ltr": {
+                "file": "bootstrap.min.css",
+                "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css",
+                "integrity": "sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+            },
+            "rtl": {
+                "file": "bootstrap.rtl.min.css",
+                "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.rtl.min.css",
+                "integrity": "sha256-gJYrxsju+NRgLmQN+kQKXG77wjYZocl732HDPV5BlTQ="
+            }
         },
         "cerulean": {
             "file": "bootstrap.cerulean.min.css",

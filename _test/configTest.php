@@ -7,7 +7,6 @@ use dokuwiki\plugin\config\core\Loader;
 require_once(__DIR__ . '/../class/TplUtility.php');
 
 
-
 /**
  * Test the settings.php file
  *
@@ -16,6 +15,12 @@ require_once(__DIR__ . '/../class/TplUtility.php');
  */
 class template_strap_conf_test extends DokuWikiTest
 {
+
+    const CONF_WITHOUT_DEFAULT = [TplUtility::CONF_FOOTER_SLOT_PAGE_NAME,
+        TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
+        TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
+        TplUtility::CONF_REM_SIZE
+        ];
 
     public function setUp()
     {
@@ -52,15 +57,15 @@ class template_strap_conf_test extends DokuWikiTest
         // $_SERVER[] = $user;
         $request->setServer('REMOTE_USER', $user);
 
-        $response = $request->get(array('do' => 'admin', 'page' => "config"),'/doku.php');
+        $response = $request->get(array('do' => 'admin', 'page' => "config"), '/doku.php');
 
         // Simple
         /**
          * The conf identifier used as id in the pae configuration
          * and in array
          */
-        $htmlId = "tpl____".TplUtility::TEMPLATE_NAME."____tpl_settings_name";
-        $countListContainer = $response->queryHTML("#". $htmlId)->count();
+        $htmlId = "tpl____" . TplUtility::TEMPLATE_NAME . "____tpl_settings_name";
+        $countListContainer = $response->queryHTML("#" . $htmlId)->count();
         $this->assertEquals(1, $countListContainer, "There should an element");
 
     }
@@ -100,6 +105,15 @@ class template_strap_conf_test extends DokuWikiTest
             }
 
             foreach ($meta as $key => $value) {
+
+                /**
+                 * Known configuration without default
+                 */
+                if (in_array($key,
+                    self::CONF_WITHOUT_DEFAULT
+                )) {
+                    continue;
+                }
                 $this->assertArrayHasKey(
                     $key,
                     $conf,
@@ -114,6 +128,7 @@ class template_strap_conf_test extends DokuWikiTest
         $lang = array();
         $settings_file = __DIR__ . '/../lang/en/settings.php';
         if (file_exists($settings_file)) {
+            /** @noinspection PhpIncludeInspection */
             include($settings_file);
         }
 
@@ -125,7 +140,7 @@ class template_strap_conf_test extends DokuWikiTest
         );
 
         if (gettype($conf) != 'NULL' && gettype($lang) != 'NULL') {
-            foreach ($lang as $key => $value) {
+            foreach ($conf as $key => $value) {
                 $this->assertArrayHasKey(
                     $key,
                     $conf,
@@ -133,7 +148,7 @@ class template_strap_conf_test extends DokuWikiTest
                 );
             }
 
-            foreach ($conf as $key => $value) {
+            foreach ($lang as $key => $value) {
                 $this->assertArrayHasKey(
                     $key,
                     $lang,
@@ -144,8 +159,10 @@ class template_strap_conf_test extends DokuWikiTest
 
 
         /**
-         * The default are read through parsing
-         * by the config plugin
+         * The default value are read through parsing
+         * by the config plugin.
+         * You can't use variable in them.
+         *
          * Yes that's fuck up but yeah
          * This test check that we can read them
          */
@@ -157,8 +174,16 @@ class template_strap_conf_test extends DokuWikiTest
 
         // plugin defaults
         foreach ($meta as $key => $value) {
+            /**
+             * Known configuration without default
+             */
+            if (in_array($key,
+                self::CONF_WITHOUT_DEFAULT
+            )) {
+                continue;
+            }
             $this->assertArrayHasKey(
-                $keyPrefix.$key,
+                $keyPrefix . $key,
                 $defaultConf,
                 'Key $conf[\'' . $key . '\'] could not be parsed in ' . DOKU_PLUGIN . 'syntax/conf/default.php. Be sure to give only values and not variable.'
             );

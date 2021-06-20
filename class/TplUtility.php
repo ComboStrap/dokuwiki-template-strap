@@ -14,6 +14,8 @@ namespace ComboStrap;
 
 use Doku_Event;
 use dokuwiki\Extension\Event;
+use dokuwiki\plugin\config\core\Configuration;
+use dokuwiki\plugin\config\core\Writer;
 use Exception;
 
 
@@ -35,13 +37,14 @@ class TplUtility
     const LVL_MSG_WARNING = 2;
     const LVL_MSG_DEBUG = 3;
     const TEMPLATE_NAME = 'strap';
-    const CONF_HEADER = "headerbar";
-    /**
-     * The bar are also used to not add a {@link \action_plugin_combo_metacanonical}
-     *
-     */
-    const CONF_FOOTER = "footerbar";
-    const CONF_HEIGHT_FIXED_TOP_NAVBAR = 'heightFixedTopNavbar';
+
+
+    const CONF_HEADER_SLOT_PAGE_NAME = "headerSlotPageName";
+
+    const CONF_FOOTER_SLOT_PAGE_NAME = "footerSlotPageName";
+
+    const CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD = 'heightFixedTopNavbar';
+    const CONF_HEIGHT_FIXED_TOP_MENUBAR = 'heightFixedTopMenuBar';
 
     /**
      * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
@@ -72,10 +75,26 @@ class TplUtility
     const CONF_REM_SIZE = "remSize";
     const CONF_GRID_COLUMNS = "gridColumns";
     const CONF_USE_CDN = "useCDN";
-    const CONF_SIDEKICK = "sidekickbar";
+
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
+    const BS_4_BOOTSTRAP_VERSION_STYLESHEET = "4.5.0 - bootstrap";
 
+    const CONF_SIDEKICK_OLD = "sidekickbar";
+    const CONF_SIDEKICK_SLOT_PAGE_NAME = "sidekickSlotPageName";
+    const CONF_SLOT_HEADER_PAGE_NAME_VALUE = "slot_header";
 
+    /**
+     * @deprecated see {@link TplUtility::CONF_HEADER_SLOT_PAGE_NAME}
+     */
+    const CONF_HEADER_OLD = "headerbar";
+    /**
+     * @deprecated
+     */
+    const CONF_HEADER_OLD_VALUE = TplUtility::CONF_HEADER_OLD;
+    /**
+     * @deprecated see {@link TplUtility::CONF_FOOTER_SLOT_PAGE_NAME}
+     */
+    const CONF_FOOTER_OLD = "footerbar";
     /**
      * @var array|null
      */
@@ -102,7 +121,7 @@ class TplUtility
 
         $crumbs = breadcrumbs(); //setup crumb trace
 
-        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3">' . PHP_EOL;
+        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3 d-print-none">' . PHP_EOL;
 
         $i = 0;
         // Try to get the template custom breadcrumb
@@ -127,7 +146,7 @@ class TplUtility
             if ($name == "start") {
                 $name = "Home";
             }
-            tpl_link(wl($id), hsc($name), 'title="' . $name . '" style="width: 100%;z-index:10"');
+            tpl_link(wl($id), hsc($name), 'title="' . $name . '"');
 
             print '</li>' . PHP_EOL;
 
@@ -146,7 +165,7 @@ class TplUtility
     {
         // The padding top for the top fix bar
         $paddingTop = 0;
-        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR, 0);
+        $heightTopBar = self::getTopFixedHeightForMenuBar();
         if ($heightTopBar != 0) {
             $paddingTop = $heightTopBar + 10;
         }
@@ -165,15 +184,15 @@ class TplUtility
     public static function getHeadStyleNodeForFixedTopNavbar()
     {
         $headStyle = "";
-        $heightTopBar = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR);
+        $heightTopBar = self::getTopFixedHeightForMenuBar();
         if ($heightTopBar !== 0) {
             $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
             $marginTop = -2 * $heightTopBar;
             $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
 
             $headStyle = <<<EOF
-<style>
-    main > h1, main > h2, main > h3, main > h4, main h5, #dokuwiki__top {
+<style class="snippet-top-menubar-combo">
+    main > h1, main > h2, main > h3, main > h4, main > h5, #dokuwiki__top {
     $topHeaderStyle
     }
 </style>
@@ -203,10 +222,11 @@ EOF;
         return self::$TEMPLATE_INFO;
     }
 
-    private static function getVersion()
+    public static function getFullQualifyVersion()
     {
         return "v" . self::getTemplateInfo()['version'] . " (" . self::getTemplateInfo()['date'] . ")";
     }
+
 
     private static function getStrapUrl()
     {
@@ -343,6 +363,204 @@ EOF;
     private static function getBootStrapMajorVersion()
     {
         return self::getBootStrapVersion()[0];
+    }
+
+    public static function getTopFixedHeightForMenuBar()
+    {
+        $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_MENUBAR, null);
+        if ($height == null) {
+            $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD, 0);
+        }
+        return $height;
+    }
+
+    public static function getSideKickSlotPageName()
+    {
+
+        return TplUtility::migrateSlotConfAndGetValue(
+            TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
+            "slot_sidekick",
+            TplUtility::CONF_SIDEKICK_OLD,
+            "sidekickbar",
+            "sidekick_slot"
+        );
+    }
+
+    public static function getHeaderSlotPageName()
+    {
+
+        return TplUtility::migrateSlotConfAndGetValue(
+            TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
+            TplUtility::CONF_SLOT_HEADER_PAGE_NAME_VALUE,
+            TplUtility::CONF_HEADER_OLD,
+            TplUtility::CONF_HEADER_OLD_VALUE,
+            "header_slot"
+        );
+
+    }
+
+    public static function getFooterSlotPageName()
+    {
+        return self::migrateSlotConfAndGetValue(
+            TplUtility::CONF_FOOTER_SLOT_PAGE_NAME,
+            "slot_footer",
+            TplUtility::CONF_FOOTER_OLD,
+            "footerbar",
+            "footer_slot"
+        );
+    }
+
+    /**
+     * @param string $key the key configuration
+     * @param string $value the value
+     * @return bool
+     */
+    public static function updateConfiguration($key, $value)
+    {
+
+        /**
+         * Hack to avoid updating during test request
+         */
+        if (defined('DOKU_UNITTEST')) {
+            global $_REQUEST;
+            if (isset($_REQUEST["id"])) {
+                /**
+                 * This hack resolves two problems
+                 *
+                 * First one
+                 * this is a test request
+                 * the local.php file has a the `DOKU_TMP_DATA`
+                 * constant in the file and updating the file
+                 * with this method will then update the value of savedir to DOKU_TMP_DATA
+                 * we get then the error
+                 * The datadir ('pages') at DOKU_TMP_DATA/pages is not found
+                 *
+                 *
+                 * Second one
+                 * if in a php test unit, we send a php request two times
+                 * the headers have been already send and the
+                 * {@link msg()} function will send them
+                 * causing the {@link TplUtility::outputBufferShouldBeEmpty() output buffer check} to fail
+                 */
+                global $MSG_shown;
+                if (isset($MSG_shown) || headers_sent()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+
+
+        $configuration = new Configuration();
+        $settings = $configuration->getSettings();
+
+
+        $key = "tpl____strap____" . $key;
+        if (isset($settings[$key])) {
+            $setting = &$settings[$key];
+            $setting->update($value);
+            /**
+             * We cannot update the setting
+             * via the configuration object
+             * We are taking another pass
+             */
+
+            $writer = new Writer();
+            if (!$writer->isLocked()) {
+                try {
+                    $writer->save($settings);
+                    return true;
+                } catch (Exception $e) {
+                    TplUtility::msg("An error occurred while trying to save automatically the configuration ($key) to the value ($value). Error: " . $e->getMessage());
+                    return false;
+                }
+            } else {
+                TplUtility::msg("The configuration file was locked. The upgrade configuration ($key) value could not be not changed to ($value)");
+                return false;
+            }
+
+        } else {
+            TplUtility::msg("The configuration ($key) is unknown and was therefore not change to ($value)");
+        }
+
+        return false;
+
+
+    }
+
+    /**
+     * Helper to migrate from bar to slot
+     * @return mixed|string
+     */
+    public static function migrateSlotConfAndGetValue($newConf, $newDefaultValue, $oldConf, $oldDefaultValue, $canonical)
+    {
+
+        $name = tpl_getConf($newConf, null);
+        if ($name == null) {
+            $name = tpl_getConf($oldConf, null);
+        }
+        if ($name == null) {
+
+            $foundOldName = false;
+            if (page_exists($oldConf)) {
+                $foundOldName = true;
+            }
+
+            if (!$foundOldName) {
+                global $conf;
+                $startPageName = $conf["start"];
+                $startPagePath = wikiFN($startPageName);
+                $directory = dirname($startPagePath);
+
+
+                $childrenDirectories = glob($directory . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+                foreach ($childrenDirectories as $childrenDirectory) {
+                    $directoryName = pathinfo($childrenDirectory)['filename'];
+                    $dokuFilePath = $directoryName . ":" . $oldDefaultValue;
+                    if (page_exists($dokuFilePath)) {
+                        $foundOldName = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($foundOldName) {
+                $name = $oldDefaultValue;
+            } else {
+                $name = $newDefaultValue;
+            }
+            $updated = TplUtility::updateConfiguration($newConf, $name);
+            if ($updated) {
+                TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">$newConf</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
+            }
+        }
+        return $name;
+    }
+
+    /**
+     * Output buffer checks
+     *
+     * It should be null before printing otherwise
+     * you may get a text before the HTML header
+     * and it mess up the whole page
+     */
+    public static function outputBufferShouldBeEmpty()
+    {
+        $length = ob_get_length();
+        if ($length > 0) {
+            $ob = ob_get_contents();
+            ob_clean();
+            /**
+             * If you got this problem check that this is not a character before a  `<?php` declaration
+             */
+            TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
+        }
+    }
+
+    public static function getStrapVersion()
+    {
+
     }
 
 
@@ -627,7 +845,7 @@ EOF;
      */
     static function getStylesheetsForMetadataConfiguration()
     {
-        $cssVersionsMetas = self::getStyleSheetsFromJsonFile();
+        $cssVersionsMetas = self::getStyleSheetsFromJsonFileAsArray();
         $listVersionStylesheetMeta = array();
         foreach ($cssVersionsMetas as $bootstrapVersion => $cssVersionMeta) {
             foreach ($cssVersionMeta as $fileName => $values) {
@@ -642,7 +860,7 @@ EOF;
      * @param $version - return only the selected version if set
      * @return array - an array of the meta JSON custom files
      */
-    static function getStyleSheetsFromJsonFile($version = null)
+    static function getStyleSheetsFromJsonFileAsArray($version = null)
     {
 
         $jsonAsArray = true;
@@ -651,6 +869,8 @@ EOF;
         if ($styleSheets == null) {
             self::msg("Unable to read the file {$stylesheetsFile} as json");
         }
+
+
         $localStyleSheetsFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
         if (file_exists($localStyleSheetsFile)) {
             $localStyleSheets = json_decode(file_get_contents($localStyleSheetsFile), $jsonAsArray);
@@ -662,7 +882,6 @@ EOF;
                     $stylesheetsFiles = array_merge($stylesheetsFiles, $localStyleSheets[$bootstrapVersion]);
                 }
             }
-
         }
 
         if (isset($version)) {
@@ -672,7 +891,30 @@ EOF;
                 $styleSheets = $styleSheets[$version];
             }
         }
-        return $styleSheets;
+
+        /**
+         * Select Rtl or Ltr
+         * Stylesheet name may have another level
+         * with direction property of the language
+         *
+         * Bootstrap needs another stylesheet
+         * See https://getbootstrap.com/docs/5.0/getting-started/rtl/
+         */
+        global $lang;
+        $direction = $lang["direction"];
+        if (empty($direction)) {
+            $direction = "ltr";
+        }
+        $directedStyleSheets = [];
+        foreach ($styleSheets as $name => $styleSheetDefinition) {
+            if (isset($styleSheetDefinition[$direction])) {
+                $directedStyleSheets[$name] = $styleSheetDefinition[$direction];
+            } else {
+                $directedStyleSheets[$name] = $styleSheetDefinition;
+            }
+        }
+
+        return $directedStyleSheets;
     }
 
     /**
@@ -702,7 +944,7 @@ EOF;
 
         // Css
         $bootstrapCssFile = TplUtility::getStyleSheetConf();
-        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFile($version);
+        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFileAsArray($version);
 
         if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
             self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
@@ -833,7 +1075,7 @@ EOF;
 
                     // Add Jquery at the beginning
                     $boostrapMajorVersion = TplUtility::getBootStrapMajorVersion();
-                    if ($boostrapMajorVersion=="4") {
+                    if ($boostrapMajorVersion == "4") {
                         if (
                             empty($_SERVER['REMOTE_USER'])
                             && tpl_getConf(self::CONF_JQUERY_DOKU) == 0
@@ -867,7 +1109,7 @@ EOF;
                         // Content should never be null
                         // Name may change
                         // https://www.w3.org/TR/html4/struct/global.html#edef-META
-                        if (!key_exists("content",$metaData)) {
+                        if (!key_exists("content", $metaData)) {
                             $message = "The head meta (" . print_r($metaData, true) . ") does not have a content property";
                             msg($message, -1, "", "", MSG_ADMINS_ONLY);
                             if (defined('DOKU_UNITTEST')
@@ -891,8 +1133,6 @@ EOF;
                     $newHeaderTypes[$headerType] = $newHeaderData;
                     break;
                 case "style":
-                    // generator, color, robots, keywords
-                    // nothing to do pick them all
                     $newHeaderTypes[$headerType] = $headerData;
                     break;
 
@@ -1030,13 +1270,12 @@ EOF;
      * @param int $level - the level see LVL constant
      * @param string $canonical - the canonical
      */
-    static function msg($message, $level = self::LVL_MSG_ERROR, $canonical = null)
+    static function msg($message, $level = self::LVL_MSG_ERROR, $canonical = "strap")
     {
         $strapUrl = self::getStrapUrl();
         $prefix = "<a href=\"$strapUrl\">Strap</a>";
-        if ($canonical != null) {
-            $prefix = '<a href="https://combostrap.com/' . $canonical . '">' . ucfirst($canonical) . '</a>';
-        }
+        $prefix = '<a href="https://combostrap.com/' . $canonical . '">' . ucfirst($canonical) . '</a>';
+
         $htmlMsg = $prefix . " - " . $message;
         if ($level != self::LVL_MSG_DEBUG) {
             msg($htmlMsg, $level, '', '', MSG_MANAGERS_ONLY);
@@ -1082,21 +1321,22 @@ EOF;
     static function getHeader()
     {
 
-        $navBarPageName = tpl_getConf(self::CONF_HEADER);
-        if (page_findnearest($navBarPageName)) {
+        $navBarPageName = TplUtility::getHeaderSlotPageName();
+        if ($id = page_findnearest($navBarPageName)) {
 
-            $header = tpl_include_page($navBarPageName, 0, 1);
+            $header = tpl_include_page($id, 0, false);
 
         } else {
 
             $domain = self::getApexDomainUrl();
-            $header = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>.<br/>
-            If you don\'t known the <a href="https://combostrap.com/strap">Strap template</a>, it\'s recommended to read the <a href="' . $domain . '/strap">introduction</a>.<br/>
-            Otherwise, to create a navigation bar, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/navbar">navbar component</a>.
+            $header = '<div class="container p-3" style="text-align: center;position:relative;z-index:100">Welcome to the <a href="' . $domain . '/">Strap template</a>.<br/>
+            If you don\'t known the <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="' . $domain . '/getting_started">Getting Started Guide</a>.<br/>
+            Otherwise, to create a menu bar in the header, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/menubar">menubar component</a>.
             </div>';
 
         }
-        return $header;
+        // No header on print
+        return "<div class=\"d-print-none\">$header</div>";
 
     }
 
@@ -1104,22 +1344,22 @@ EOF;
     {
         $domain = self::getApexDomainUrl();
 
-        $footerPageName = tpl_getConf(self::CONF_FOOTER);
-        if (page_findnearest($footerPageName)) {
-            $footer = tpl_include_page($footerPageName, 0, 1);
+        $footerPageName = TplUtility::getFooterSlotPageName();
+        if ($id = page_findnearest($footerPageName)) {
+            $footer = tpl_include_page($id, 0, false);
         } else {
             $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
         }
 
-
-        return $footer;
+        // No footer on print
+        return "<div class=\"d-print-none\">$footer</div>";
     }
 
     static function getPoweredBy()
     {
 
         $domain = self::getApexDomainUrl();
-        $version = self::getVersion();
+        $version = self::getFullQualifyVersion();
         $poweredBy = "<div class=\"mx-auto\" style=\"width: 300px;text-align: center;\">";
         $poweredBy .= "  <small><i>Powered by <a href=\"$domain\" title=\"ComboStrap " . $version . "\">ComboStrap</a></i></small>";
         $poweredBy .= '</div>';

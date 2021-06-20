@@ -23,7 +23,8 @@ main > h1, main > h2, main > h3, main > h4, main > h5, main > h6,
     max width prevent it */
     max-width: 100%;
     text-decoration: underline #8cacbb solid;
-    clear: left;
+
+    /*clear: left; When using RTL language, in case of fix top bar, the padding on the H1-6 will be used - why it's here ?*/
     color: #000;
     font-size: 100%;
     font-weight: normal;

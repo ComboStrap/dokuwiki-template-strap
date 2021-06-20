@@ -14,17 +14,21 @@
 ## Features
 
 
-  * [bootstrap integrated](http://getbootstrap.com/)
-  * [Top Fixed Navbar](http://getbootstrap.com/components/#navbar-fixed-top)
-  * `Footer` page called `footerbar`. Same functionality than for the [sidebar](https://www.dokuwiki.org/faq:sidebar#i_have_a_sidebar_functionality_how_can_i_create_or_edit_a_sidebar_now) but with a page called `footer`.
-  * `header` page called `headerbar`. Same functionality than for the [sidebar](https://www.dokuwiki.org/faq:sidebar#i_have_a_sidebar_functionality_how_can_i_create_or_edit_a_sidebar_now) but with a page called `footer`.
-  * `sidekick` page called `sidekickbar`. Same functionality than for the [sidebar](https://www.dokuwiki.org/faq:sidebar#i_have_a_sidebar_functionality_how_can_i_create_or_edit_a_sidebar_now) but with a page called `footer`.
-  * Performance: All Javascript and CSS stylesheet are served asynchronously (defer for js and at the end for css)
-  * Resources (Javascript or Stylesheet) served from CDN or locally
-  * Load the third library via CDN or locally
-  * Dynamic Layout and more
-
-
+  * [bootstrap 5 integrated](http://getbootstrap.com/)
+  * [Menubar (Top Fixed or not)](http://getbootstrap.com/menubar)
+  * Dynamic template with:
+    * `Footer` slot
+    * `header` slot
+    * `Side` slot
+    * `sidekick` slot
+  * Layout:
+    * `holy grail`
+    * `median`
+    * `landing`
+  * Performance:
+    * One Stylesheet dependency available globally from CDN
+    * All Javascript are served asynchronously
+    * Lazy image loading
 
 
 ## Version

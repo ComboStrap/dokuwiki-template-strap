@@ -8,17 +8,17 @@ require_once(__DIR__ . '/../class/TplUtility.php');
 
 use ComboStrap\TplUtility;
 
-$meta[TplUtility::CONF_FOOTER] = array('string',
+$meta[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );
 
-$meta[TplUtility::CONF_HEADER] = array('string',
+$meta[TplUtility::CONF_HEADER_SLOT_PAGE_NAME] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );
 
-$meta[TplUtility::CONF_SIDEKICK] = array('string',
+$meta[TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME] = array('string',
     "_caution" => "warning", // Show a warning
     "_pattern" => "/[a-zA-Z0-9]*/" // Only Accept alphanumeric characters
 );
@@ -42,7 +42,7 @@ $meta[TplUtility::CONF_REM_SIZE] = array('string');
 
 $meta[TplUtility::CONF_GRID_COLUMNS] = array('multichoice', '_choices' => array('12', '16'));
 
-$meta[TplUtility::CONF_HEIGHT_FIXED_TOP_NAVBAR] = array('string');
+$meta[TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR] = array('string');
 
 $meta['preloadCss'] = array('onoff');
 

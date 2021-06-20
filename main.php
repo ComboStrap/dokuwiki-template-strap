@@ -11,6 +11,7 @@ use dokuwiki\Menu\UserMenu;
 
 require_once(__DIR__ . '/class/TplUtility.php');
 
+
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
 
@@ -51,7 +52,7 @@ if ($showSideBar) {
 /**
  * Sidekickbar
  */
-$sideKickPageName = tpl_getConf(TplUtility::CONF_SIDEKICK);
+$sideKickPageName = TplUtility::getSideKickSlotPageName();
 $hasRightSidebar = page_findnearest($sideKickPageName);
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
@@ -73,6 +74,11 @@ $footerBar = TplUtility::getFooter();
  * Grid
  */
 $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
+/**
+ * Layout
+ *
+ * See also: https://1linelayouts.glitch.me/ and https://www.cssportal.com/layout-generator/layout.php
+ */
 $layout = p_get_metadata($ID, "layout");
 if ($layout === "median") {
     $maximalWidthMain = 8;
@@ -88,36 +94,74 @@ if ($showSideBar) {
 }
 
 /**
+ * Landing page
+ */
+$mainIsContained = true;
+if ($ACT != "show") {
+    $mainIsContained = true;
+} else {
+    if ($layout == "landing") {
+        $mainIsContained = false;
+        // No gutter on x otherwise there is a overflow on the right
+        $landingPageGutter = "style=\"--bs-gutter-x: 0\"";
+    }
+}
+if ($mainIsContained) {
+    $mainContainedClasses = "container mb-3";
+}
+
+/**
  * Bootstrap meta-headers
  */
 TplUtility::registerHeaderHandler();
 
 /**
- * Default font size
+ * Default rem font size
  */
-$htmlRem = tpl_getConf("rem", "16px");
+$rootStyle = "";
+$htmlRem = tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+if ($htmlRem != null) {
+    $rootStyle = "style=\"font-size:{$htmlRem}px\"";
+}
 
 /**
- * Ob checks
- * It should be null, otherwise
- * you may get a text before the HTML header
- * and it mess up the whole page
+ * The output buffer should be empty
  */
-$length = ob_get_length();
-if ($length > 0) {
-    $ob = ob_get_contents();
-    ob_clean();
-    // If you got this problem check that this is not a character before a  `<?php` declaration
-    TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob.")", TplUtility::LVL_MSG_ERROR, "strap");
-}
+TplUtility::outputBufferShouldBeEmpty();
+
 
 ?>
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
+<?php
+/**
+ * Lang for a page
+ *
+ * https://www.w3.org/International/questions/qa-html-language-declarations
+ *   * Always use a language attribute on the html element.
+ *   * When serving XHTML 1.x (ie. using a MIME type such as application/xhtml+xml),
+ * use both the lang attribute and the xml:lang attribute together
+ *
+ * See also {@link \ComboStrap\Lang::processLangAttribute()} for the localization of an element
+ *
+ * @var $javascriptRTL - put the button to the end when the page has a language direction of rtl
+ */
+$javascriptRTL = "";
+if ($lang['direction'] == "rtl") {
+    $javascriptRTL = <<<EOF
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    Array.from(document.getElementsByClassName("secedit")).forEach(e=>e.classList.add('float-end'));
+    }
+);
+</script>
+EOF;
+
+}
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
-      dir="<?php echo $lang['direction'] ?>"
-      style="font-size:<?php echo $htmlRem ?>">
+      dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
 <head>
 
     <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
@@ -142,6 +186,38 @@ if ($length > 0) {
     echo TplUtility::getHeadStyleNodeForFixedTopNavbar();
     ?>
 
+    <?php
+    /**
+     * In case of a RTL lang,
+     * we put the secedit button to the left
+     */
+    echo $javascriptRTL;
+    ?>
+
+    <?php
+    /**
+     * When we have a landing page, the page tools bar
+     * which is by default on the right side is not visible
+     * This setting will set up inside and make it visible alongside the page
+     */
+    if ($layout == "landing" & $ACT == "show") { ?>
+        <style>
+            #dokuwiki__pagetools {
+                right: 44px !important;
+            }
+        </style>
+    <?php } ?>
+
+    <?php
+    /**
+     * To be above the first h1 heading
+     * Otherwise when using a fix top bar,
+     * you can;t click on them
+     */
+    if (!$conf['breadcrumbs']) {?>
+        <style>#breadcrumb li { z-index: 100 }</style>
+    <?php } ?>
+
 </head>
 <?php
 // * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
@@ -156,7 +232,7 @@ echo $headerBar
 
 // Relative positioning is important for the positioning of the pagetools
 ?>
-<div class="container mb-3 <?php echo tpl_classes() ?> " style="position: relative">
+<div class="<?php echo $mainContainedClasses ?> <?php echo tpl_classes() ?> " style="position: relative">
 
 
     <?php // To go at the top of the page, style is for the fix top page --> ?>
@@ -184,13 +260,14 @@ echo $headerBar
     }
     ?>
 
-    <div class="row justify-content-md-center">
+    <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
 
 
         <?php
         // SIDE BAR
         if ($showSideBar): ?>
-            <div role="complementary" class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first">
+            <div role="complementary"
+                 class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 
@@ -219,7 +296,8 @@ echo $headerBar
         // SIDE BAR
         if ($showSideKickBar): ?>
 
-            <div role="complementary" class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last">
+            <div role="complementary"
+                 class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
 
                 <nav class="bs-docs-sidebar hidden-prints">
 

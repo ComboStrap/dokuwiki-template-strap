@@ -19,21 +19,6 @@ use ComboStrap\TplUtility;
  */
 
 
-/**
- * The name of the footer page to search
- * See {@link TplUtility::CONF_FOOTER}
- */
-$conf['footerbar'] = 'footerbar';
-/**
- * The name of the header page to search
- * See {@link TplUtility::CONF_HEADER}
- */
-$conf['headerbar'] = 'headerbar';
-/**
- * The name of the header page to search
- * See {@link TplUtility::CONF_SIDEKICK}
- */
-$conf['sidekickbar'] = 'sidekickbar';
 
 /**
  * CDN for anonymous
@@ -44,7 +29,6 @@ $conf['useCDN'] = 1;
 // Print Debug statement
 $conf['debug'] = 1;
 
-$conf['remSize'] = "16";
 
 /**
  * {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
@@ -56,11 +40,11 @@ $conf['gridColumns'] = 12;
 $conf['gridColumns'] = 12;
 
 /**
- * The height of the navbar when
+ * The height of the menu bar when
  * it's fixed in order to calculate the needed style
- * @see {@link \ComboStrap\TplConstant::CONF_HEIGHT_FIXED_TOP_NAVBAR
+ * @see {@link \ComboStrap\TplUtility::CONF_HEIGHT_FIXED_TOP_MENUBAR}
  */
-$conf['heightFixedTopNavbar'] = 0;
+$conf['heightFixedTopMenuBar'] = 0;
 
 $conf['preloadCss'] = 0;
 
@@ -72,6 +56,8 @@ $conf['privateToolbar'] = 0;
  * @see {@link TplUtility::CONF_JQUERY_DOKU}
  */
 $conf['jQueryDoku'] = 0;
+
+
 
 
 ?>
