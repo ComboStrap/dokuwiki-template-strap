@@ -78,6 +78,21 @@ $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
  * Layout
  *
  * See also: https://1linelayouts.glitch.me/ and https://www.cssportal.com/layout-generator/layout.php
+ *
+ * Two basic layouts for the web: fixed or liquid
+ * A liquid design (also referred to as a fluid or dynamic design) fills the entire browser window by using percentages
+ * rather than fixed pixel values to define the width / height
+ *
+ * dimension =
+ *   "fluid" = max-width / min-height
+ *   "contained" =
+ *
+ * In fluid web design, the widths of page elements are set proportional to the width of the screen or browser window.
+ * A fluid website expands or contracts based on the width of the current viewport.
+ *
+ * Contained (ie fixed)
+ * https://getbootstrap.com/docs/5.0/layout/containers/
+ *
  */
 $layout = p_get_metadata($ID, "layout");
 if ($layout === "median") {
