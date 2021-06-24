@@ -1360,8 +1360,8 @@ EOF;
 
         $domain = self::getApexDomainUrl();
         $version = self::getFullQualifyVersion();
-        $poweredBy = "<div class=\"mx-auto\" style=\"width: 300px;text-align: center;\">";
-        $poweredBy .= "  <small><i>Powered by <a href=\"$domain\" title=\"ComboStrap " . $version . "\">ComboStrap</a></i></small>";
+        $poweredBy = "<div class=\"mx-auto\" style=\"width: 300px;text-align: center;margin-bottom: 1rem\">";
+        $poweredBy .= "  <small><i>Powered by <a href=\"$domain\" title=\"ComboStrap " . $version . "\" style=\"color:#495057\">ComboStrap</a></i></small>";
         $poweredBy .= '</div>';
         return $poweredBy;
     }
