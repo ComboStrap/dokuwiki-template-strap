@@ -227,7 +227,7 @@ EOF;
     /**
      * To be above the first h1 heading
      * Otherwise when using a fix top bar,
-     * you can;t click on them
+     * you can't click on them
      */
     if (!$conf['breadcrumbs']) {?>
         <style>#breadcrumb li { z-index: 100 }</style>
