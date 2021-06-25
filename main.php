@@ -94,7 +94,13 @@ $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
  * https://getbootstrap.com/docs/5.0/layout/containers/
  *
  */
-$layout = p_get_metadata($ID, "layout");
+// for the identity forms
+global $ACT;
+if (in_array($ACT, ["login", "resendpwd", "register"])) {
+    $layout = "median";
+} else {
+    $layout = p_get_metadata($ID, "layout");
+}
 if ($layout === "median") {
     $maximalWidthMain = 8;
 } else {
@@ -229,8 +235,10 @@ EOF;
      * Otherwise when using a fix top bar,
      * you can't click on them
      */
-    if (!$conf['breadcrumbs']) {?>
-        <style>#breadcrumb li { z-index: 100 }</style>
+    if (!$conf['breadcrumbs']) { ?>
+        <style>#breadcrumb li {
+                z-index: 100
+            }</style>
     <?php } ?>
 
 </head>
