@@ -96,7 +96,7 @@ $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
  */
 // for the identity forms
 global $ACT;
-if (in_array($ACT, ["login", "resendpwd", "register"])) {
+if (in_array($ACT, ["login", "resendpwd", "register", "profile"])) {
     $layout = "median";
 } else {
     $layout = p_get_metadata($ID, "layout");
