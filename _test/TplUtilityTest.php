@@ -116,6 +116,8 @@ class TplUtilityTest extends DokuWikiTest
 
     }
 
+
+
     /**
      * Testing the {@link TplUtility::renderBar()}
      */

@@ -57,6 +57,8 @@ $conf['privateToolbar'] = 0;
  */
 $conf['jQueryDoku'] = 0;
 
+$conf["disableDokuwikiJavascriptForPublicUser"] = 0;
+
 
 
 

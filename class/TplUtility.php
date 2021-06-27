@@ -95,6 +95,13 @@ class TplUtility
      * @deprecated see {@link TplUtility::CONF_FOOTER_SLOT_PAGE_NAME}
      */
     const CONF_FOOTER_OLD = "footerbar";
+
+    /**
+     * Disable the javascript of Dokuwiki
+     * if public
+     */
+    const CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER = "disableDokuwikiJavascriptForPublicUser";
+
     /**
      * @var array|null
      */
@@ -1026,12 +1033,41 @@ EOF;
 
                 case "script":
 
+                    /**
+                     * Do we delete the dokuwiki javascript ?
+                     */
+                    $scriptToDeletes = [];
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplUtility::CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER, 0)) {
+                        $scriptToDeletes = [
+                            'JSINFO',
+                            'js.php'
+                        ];
+                        if (TplUtility::getBootStrapMajorVersion()=="5"){
+                            // bs 5 does not depends on jquery
+                            $scriptToDeletes[]="jquery.php";
+                        }
+                    }
+
+                    /**
+                     * The new script array
+                     */
                     $newScriptData = array();
                     // A variable to hold the Jquery scripts
                     // jquery-migrate, jquery, jquery-ui ou jquery.php
                     // see https://www.dokuwiki.org/config:jquerycdn
                     $jqueryDokuScripts = array();
                     foreach ($headerData as $scriptData) {
+
+                        foreach ($scriptToDeletes as $scriptToDelete) {
+                            if (isset($scriptData["_data"]) && !empty($scriptData["_data"])){
+                                $haystack = $scriptData["_data"];
+                            } else {
+                                $haystack = $scriptData["src"];
+                            }
+                            if (preg_match("/$scriptToDelete/i", $haystack)) {
+                                continue 2;
+                            }
+                        }
 
                         $critical = false;
                         if (isset($scriptData["critical"])) {

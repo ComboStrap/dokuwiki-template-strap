@@ -183,7 +183,7 @@ class template_strap_script_test extends DokuWikiTest
         $jqueryUI = tpl_getConf(TplUtility::CONF_JQUERY_DOKU);
         $this->assertEquals(0, $jqueryUI, "jquery is off");
         TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, self::DEFAULT_BOOTSTRAP_5);
-        $testDescription ="Jquery on Boostrap 5 should be present";
+        $testDescription = "Jquery on Boostrap 5 should be present";
         $version = TplUtility::getBootStrapVersion();
         $scriptsSignature = [
             "jquery.php",
@@ -365,9 +365,90 @@ class template_strap_script_test extends DokuWikiTest
 
 
     /**
+     * For public combostrap website
+     * The Dokuwiki Javascript can be disabled
+     * If no other plugin use it
+     */
+    public function test_handleBootStrapMetaHeaders_anonymous_no_dokuwiki_javascript()
+    {
+
+        /**
+         * Disable
+         */
+        TplUtility::setConf(TplUtility::CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER, 1);
+
+        /**
+         * For 4 and 5
+         */
+        $bootstrapStylesheetVersions = [self::DEFAULT_BOOTSTRAP_5, self::DEFAULT_BOOTSTRAP_4];
+
+        foreach ($bootstrapStylesheetVersions as $bootstrapStylesheetVersion) {
+
+            $testDescription = "No Javascript for public user (Bootstrap $bootstrapStylesheetVersion)";
+
+            TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $bootstrapStylesheetVersion);
+
+            $version = TplUtility::getBootStrapVersion();
+            if ($version == "4.5.0") {
+
+                /**
+                 * On 4, bootstrap depends on Jquery
+                 */
+                $scriptsSignature = [
+                    "jquery-(.*).js",
+                    "popper.min.js",
+                    "bootstrap.min.js"
+                ];
+
+                $stylsheetSignature = [
+                    "bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+
+            } else {
+
+                /**
+                 * 5, only boostrap js
+                 */
+                $scriptsSignature = [
+                    "bootstrap.bundle.min.js"
+                ];
+
+                $stylsheetSignature = [
+                    "bootstrap.min.css",
+                    '\/lib\/exe\/css.php\?t\=strap'
+                ];
+
+
+            }
+
+            // Anonymous
+            $pageId = 'start';
+            saveWikiText($pageId, "Content", 'Script Test base');
+            idx_addPage($pageId);
+
+            $request = new TestRequest();
+            $response = $request->get(array('id' => $pageId, '/doku.php'));
+
+            /**
+             * Script signature
+             */
+            $this->checkMeta($response, 'script', "src", $scriptsSignature, $testDescription);
+
+            /**
+             * Stylesheet signature (href)
+             */
+            $this->checkMeta($response, 'link[rel="stylesheet"]', "href", $stylsheetSignature, $testDescription);
+        }
+
+    }
+
+    /**
      * When a user is logged in, the CDN is no more
      */
-    public function test_handleBootStrapMetaHeaders_loggedin_default()
+    public
+    function test_handleBootStrapMetaHeaders_loggedin_default()
     {
 
         $pageId = 'start';
@@ -453,7 +534,8 @@ class template_strap_script_test extends DokuWikiTest
      *
      * @throws Exception
      */
-    public function test_css_preload_anonymous()
+    public
+    function test_css_preload_anonymous()
     {
 
         TplUtility::setConf('preloadCss', 1);
@@ -530,7 +612,8 @@ class template_strap_script_test extends DokuWikiTest
      * with default conf
      * @throws Exception
      */
-    public function test_getBootstrapMetaHeaders()
+    public
+    function test_getBootstrapMetaHeaders()
     {
 
         // Default
@@ -553,7 +636,8 @@ class template_strap_script_test extends DokuWikiTest
      * with bootswatch stylesheet and cdn (default)
      * @throws Exception
      */
-    public function test_getBootstrapMetaHeadersWithCustomStyleSheet()
+    public
+    function test_getBootstrapMetaHeadersWithCustomStyleSheet()
     {
         $template = "simplex";
         $version = "5.0.1";
@@ -578,7 +662,8 @@ class template_strap_script_test extends DokuWikiTest
     /**
      * Test that a detail page is rendering
      */
-    public function test_favicon()
+    public
+    function test_favicon()
     {
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -595,7 +680,8 @@ class template_strap_script_test extends DokuWikiTest
     /**
      * Test that a media page is rendering
      */
-    public function test_media_manager_php()
+    public
+    function test_media_manager_php()
     {
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -613,7 +699,8 @@ class template_strap_script_test extends DokuWikiTest
      * Test that a toolbar is not shown when it's private
      * @throws Exception
      */
-    public function test_privateToolbar()
+    public
+    function test_privateToolbar()
     {
         TplUtility::setConf('privateToolbar', 0);
 
