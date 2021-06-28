@@ -57,6 +57,6 @@ $meta[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = array('multichoice', '_ch
 
 $meta[TplUtility::CONF_JQUERY_DOKU] = array('onoff');
 
-$meta[TplUtility::CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER] = array('onoff');
+$meta[TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT] = array('onoff');
 
 ?>

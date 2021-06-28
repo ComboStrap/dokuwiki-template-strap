@@ -99,8 +99,9 @@ class TplUtility
     /**
      * Disable the javascript of Dokuwiki
      * if public
+     * https://combostrap.com/frontend/optimization
      */
-    const CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER = "disableDokuwikiJavascriptForPublicUser";
+    const CONF_DISABLE_BACKEND_JAVASCRIPT = "disableBackendJavascript";
 
     /**
      * @var array|null
@@ -1037,7 +1038,7 @@ EOF;
                      * Do we delete the dokuwiki javascript ?
                      */
                     $scriptToDeletes = [];
-                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplUtility::CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER, 0)) {
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT, 0)) {
                         $scriptToDeletes = [
                             'JSINFO',
                             'js.php'

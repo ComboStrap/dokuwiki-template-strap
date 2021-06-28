@@ -375,7 +375,7 @@ class template_strap_script_test extends DokuWikiTest
         /**
          * Disable
          */
-        TplUtility::setConf(TplUtility::CONF_DISABLE_DOKUWIKI_JAVASCRIPT_FOR_PUBLIC_USER, 1);
+        TplUtility::setConf(TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT, 1);
 
         /**
          * For 4 and 5
