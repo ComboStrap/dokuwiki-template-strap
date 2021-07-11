@@ -119,7 +119,7 @@ class TplUtilityTest extends DokuWikiTest
 
 
     /**
-     * Testing the {@link TplUtility::renderBar()}
+     * Testing the {@link TplUtility::renderSlot()}
      */
     public function testBarCache()
     {
@@ -131,7 +131,7 @@ class TplUtilityTest extends DokuWikiTest
         p_save_metadata($sidebarName, $metadata);
         global $ID;
         $ID = ":namespace:whatever";
-        $data = TplUtility::renderBar($sidebarName);
+        $data = TplUtility::renderSlot($sidebarName);
         $this->assertNotEmpty($data);
         /**
          * TODO:  We should test that the file are not the same with bar plugin that shows the files of a namespace

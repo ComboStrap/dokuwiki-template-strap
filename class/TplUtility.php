@@ -355,7 +355,7 @@ EOF;
      * debug information in the form of
      * an HTML comment
      */
-    public static function renderBar($barName)
+    public static function renderSlot($barName)
     {
 
         if (class_exists("ComboStrap\Page")) {
