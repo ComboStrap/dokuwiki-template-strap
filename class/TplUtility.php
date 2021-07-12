@@ -1040,7 +1040,7 @@ EOF;
                     $scriptToDeletes = [];
                     if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT, 0)) {
                         $scriptToDeletes = [
-                            'JSINFO',
+                            //'JSINFO', Don't delete Jsinfo !! It contains metadata information (that is used to get context)
                             'js.php'
                         ];
                         if (TplUtility::getBootStrapMajorVersion()=="5"){
