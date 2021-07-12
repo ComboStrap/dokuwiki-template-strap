@@ -489,7 +489,16 @@ EOF;
             }
 
         } else {
-            TplUtility::msg("The configuration ($key) is unknown and was therefore not change to ($value)");
+
+            /**
+             * When we run test,
+             * strap is not always the active template
+             * and therefore the configurations are not loaded
+             */
+            global $conf;
+            if ($conf['template'] == TplUtility::TEMPLATE_NAME) {
+                TplUtility::msg("The configuration ($key) is unknown and was therefore not change to ($value)");
+            }
         }
 
         return false;
@@ -1043,9 +1052,9 @@ EOF;
                             //'JSINFO', Don't delete Jsinfo !! It contains metadata information (that is used to get context)
                             'js.php'
                         ];
-                        if (TplUtility::getBootStrapMajorVersion()=="5"){
+                        if (TplUtility::getBootStrapMajorVersion() == "5") {
                             // bs 5 does not depends on jquery
-                            $scriptToDeletes[]="jquery.php";
+                            $scriptToDeletes[] = "jquery.php";
                         }
                     }
 
@@ -1060,7 +1069,7 @@ EOF;
                     foreach ($headerData as $scriptData) {
 
                         foreach ($scriptToDeletes as $scriptToDelete) {
-                            if (isset($scriptData["_data"]) && !empty($scriptData["_data"])){
+                            if (isset($scriptData["_data"]) && !empty($scriptData["_data"])) {
                                 $haystack = $scriptData["_data"];
                             } else {
                                 $haystack = $scriptData["src"];
