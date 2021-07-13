@@ -104,6 +104,12 @@ class TplUtility
     const CONF_DISABLE_BACKEND_JAVASCRIPT = "disableBackendJavascript";
 
     /**
+     * A parameter switch to allows the update
+     * of conf in test
+     */
+    const COMBO_TEST_UPDATE = "combo_update_conf";
+
+    /**
      * @var array|null
      */
     private static $TEMPLATE_INFO = null;
@@ -434,7 +440,7 @@ EOF;
          * to the modification of the configuration
          */
         global $_REQUEST;
-        if (defined('DOKU_UNITTEST') && !isset($_REQUEST["combo_update_conf"])) {
+        if (defined('DOKU_UNITTEST') && !isset($_REQUEST[self::COMBO_TEST_UPDATE])) {
 
                 /**
                  * This hack resolves two problems

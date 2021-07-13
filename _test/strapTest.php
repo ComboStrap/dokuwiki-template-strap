@@ -397,7 +397,8 @@ class template_strap_script_test extends DokuWikiTest
                 $scriptsSignature = [
                     "jquery-(.*).js",
                     "popper.min.js",
-                    "bootstrap.min.js"
+                    "bootstrap.min.js",
+                    'JSINFO'
                 ];
 
                 $stylsheetSignature = [
@@ -412,7 +413,8 @@ class template_strap_script_test extends DokuWikiTest
                  * 5, only boostrap js
                  */
                 $scriptsSignature = [
-                    "bootstrap.bundle.min.js"
+                    "bootstrap.bundle.min.js",
+                    'JSINFO'
                 ];
 
                 $stylsheetSignature = [
