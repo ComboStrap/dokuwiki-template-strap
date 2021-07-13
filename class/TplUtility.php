@@ -427,11 +427,15 @@ EOF;
     {
 
         /**
-         * Hack to avoid updating during test request
+         * Hack to avoid updating during {@link \TestRequest}
+         * when not asked
+         * Because the test request environment is wiped out only on the class level,
+         * the class / test function needs to specifically say that it's open
+         * to the modification of the configuration
          */
-        if (defined('DOKU_UNITTEST')) {
-            global $_REQUEST;
-            if (isset($_REQUEST["id"])) {
+        global $_REQUEST;
+        if (defined('DOKU_UNITTEST') && !isset($_REQUEST["combo_update_conf"])) {
+
                 /**
                  * This hack resolves two problems
                  *
@@ -456,13 +460,12 @@ EOF;
                 } else {
                     return true;
                 }
-            }
+
         }
 
 
         $configuration = new Configuration();
         $settings = $configuration->getSettings();
-
 
         $key = "tpl____strap____" . $key;
         if (isset($settings[$key])) {
