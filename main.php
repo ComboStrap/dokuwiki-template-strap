@@ -45,7 +45,7 @@ if ($showSideBar) {
      * debug information in the form of
      * an HTML comment
      */
-    $sideBarHtml = TplUtility::renderBar($sidebarName);
+    $sideBarHtml = TplUtility::renderSlot($sidebarName);
 }
 
 
@@ -56,7 +56,7 @@ $sideKickPageName = TplUtility::getSideKickSlotPageName();
 $hasRightSidebar = page_findnearest($sideKickPageName);
 $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
-    $sideKickBarHtml = TplUtility::renderBar($sideKickPageName);
+    $sideKickBarHtml = TplUtility::renderSlot($sideKickPageName);
 }
 
 /**

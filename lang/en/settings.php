@@ -39,4 +39,6 @@ $lang[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = '<a href="https://combost
 
 $lang[TplUtility::CONF_JQUERY_DOKU] = '<a href="https://combostrap.com/jquery">Jquery</a> - Use the DokuWiki Jquery (Only valid for Bootstrap 4)';
 
+$lang[TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT] = '<a href="https://combostrap.com/frontend/optimization">FrontEnd Optimization</a> - Delete backend javascript library for public users';
+
 ?>

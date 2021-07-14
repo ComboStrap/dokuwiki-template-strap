@@ -95,6 +95,20 @@ class TplUtility
      * @deprecated see {@link TplUtility::CONF_FOOTER_SLOT_PAGE_NAME}
      */
     const CONF_FOOTER_OLD = "footerbar";
+
+    /**
+     * Disable the javascript of Dokuwiki
+     * if public
+     * https://combostrap.com/frontend/optimization
+     */
+    const CONF_DISABLE_BACKEND_JAVASCRIPT = "disableBackendJavascript";
+
+    /**
+     * A parameter switch to allows the update
+     * of conf in test
+     */
+    const COMBO_TEST_UPDATE = "combo_update_conf";
+
     /**
      * @var array|null
      */
@@ -347,7 +361,7 @@ EOF;
      * debug information in the form of
      * an HTML comment
      */
-    public static function renderBar($barName)
+    public static function renderSlot($barName)
     {
 
         if (class_exists("ComboStrap\Page")) {
@@ -419,11 +433,15 @@ EOF;
     {
 
         /**
-         * Hack to avoid updating during test request
+         * Hack to avoid updating during {@link \TestRequest}
+         * when not asked
+         * Because the test request environment is wiped out only on the class level,
+         * the class / test function needs to specifically say that it's open
+         * to the modification of the configuration
          */
-        if (defined('DOKU_UNITTEST')) {
-            global $_REQUEST;
-            if (isset($_REQUEST["id"])) {
+        global $_REQUEST;
+        if (defined('DOKU_UNITTEST') && !isset($_REQUEST[self::COMBO_TEST_UPDATE])) {
+
                 /**
                  * This hack resolves two problems
                  *
@@ -448,13 +466,12 @@ EOF;
                 } else {
                     return true;
                 }
-            }
+
         }
 
 
         $configuration = new Configuration();
         $settings = $configuration->getSettings();
-
 
         $key = "tpl____strap____" . $key;
         if (isset($settings[$key])) {
@@ -481,7 +498,16 @@ EOF;
             }
 
         } else {
-            TplUtility::msg("The configuration ($key) is unknown and was therefore not change to ($value)");
+
+            /**
+             * When we run test,
+             * strap is not always the active template
+             * and therefore the configurations are not loaded
+             */
+            global $conf;
+            if ($conf['template'] == TplUtility::TEMPLATE_NAME) {
+                TplUtility::msg("The configuration ($key) is unknown and was therefore not change to ($value)");
+            }
         }
 
         return false;
@@ -1026,12 +1052,41 @@ EOF;
 
                 case "script":
 
+                    /**
+                     * Do we delete the dokuwiki javascript ?
+                     */
+                    $scriptToDeletes = [];
+                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT, 0)) {
+                        $scriptToDeletes = [
+                            //'JSINFO', Don't delete Jsinfo !! It contains metadata information (that is used to get context)
+                            'js.php'
+                        ];
+                        if (TplUtility::getBootStrapMajorVersion() == "5") {
+                            // bs 5 does not depends on jquery
+                            $scriptToDeletes[] = "jquery.php";
+                        }
+                    }
+
+                    /**
+                     * The new script array
+                     */
                     $newScriptData = array();
                     // A variable to hold the Jquery scripts
                     // jquery-migrate, jquery, jquery-ui ou jquery.php
                     // see https://www.dokuwiki.org/config:jquerycdn
                     $jqueryDokuScripts = array();
                     foreach ($headerData as $scriptData) {
+
+                        foreach ($scriptToDeletes as $scriptToDelete) {
+                            if (isset($scriptData["_data"]) && !empty($scriptData["_data"])) {
+                                $haystack = $scriptData["_data"];
+                            } else {
+                                $haystack = $scriptData["src"];
+                            }
+                            if (preg_match("/$scriptToDelete/i", $haystack)) {
+                                continue 2;
+                            }
+                        }
 
                         $critical = false;
                         if (isset($scriptData["critical"])) {

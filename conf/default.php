@@ -57,6 +57,11 @@ $conf['privateToolbar'] = 0;
  */
 $conf['jQueryDoku'] = 0;
 
+/**
+ * See {@link TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT}
+ */
+$conf["disableBackendJavascript"] = 0;
+
 
 
 
