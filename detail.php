@@ -44,7 +44,7 @@ TplUtility::setHttpHeader();
 
 </head>
 
-<body style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
+<body>
 
 <div id="dokuwiki__site">
     <div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?>">

@@ -200,12 +200,6 @@ EOF;
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
-    <?php
-    /**
-     * In case of a fix bar
-     */
-    echo TplUtility::getHeadStyleNodeForFixedTopNavbar();
-    ?>
 
     <?php
     /**
@@ -247,7 +241,7 @@ EOF;
 // * dokuwiki__top ID is needed for the "Back to top" utility
 // * used also by some plugins
 ?>
-<body class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
+<body class="dokuwiki">
 
 
 <?php
