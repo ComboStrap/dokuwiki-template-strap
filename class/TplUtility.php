@@ -174,6 +174,7 @@ class TplUtility
      *
      * Return the padding top in pixel that must be applied when using a top bar
      * @return int
+     * @deprecated replaced by javascript
      */
     public static function getPaddingTop()
     {
