@@ -186,7 +186,7 @@ EOF;
 <head>
 
     <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
 
     <?php // Responsive meta tag ?>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -379,5 +379,5 @@ TplUtility::addPreloadedResources();
     ?>
 </div>
 
-
+</body>
 </html>
