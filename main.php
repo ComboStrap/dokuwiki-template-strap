@@ -186,7 +186,7 @@ EOF;
 <head>
 
     <?php // Avoid using character entities in your HTML, provided their encoding matches that of the document (generally UTF-8) ?>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
 
     <?php // Responsive meta tag ?>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -200,12 +200,6 @@ EOF;
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
-    <?php
-    /**
-     * In case of a fix bar
-     */
-    echo TplUtility::getHeadStyleNodeForFixedTopNavbar();
-    ?>
 
     <?php
     /**
@@ -247,7 +241,7 @@ EOF;
 // * dokuwiki__top ID is needed for the "Back to top" utility
 // * used also by some plugins
 ?>
-<body class="dokuwiki" style="padding-top: <?php echo TplUtility::getPaddingTop() ?>px;">
+<body class="dokuwiki">
 
 
 <?php
@@ -385,5 +379,5 @@ TplUtility::addPreloadedResources();
     ?>
 </div>
 
-
+</body>
 </html>

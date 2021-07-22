@@ -43,8 +43,6 @@ class TplUtility
 
     const CONF_FOOTER_SLOT_PAGE_NAME = "footerSlotPageName";
 
-    const CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD = 'heightFixedTopNavbar';
-    const CONF_HEIGHT_FIXED_TOP_MENUBAR = 'heightFixedTopMenuBar';
 
     /**
      * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
@@ -168,51 +166,6 @@ class TplUtility
         echo '</ol>' . PHP_EOL;
         echo '</nav>' . PHP_EOL;
         return true;
-    }
-
-    /**
-     *
-     * Return the padding top in pixel that must be applied when using a top bar
-     * @return int
-     */
-    public static function getPaddingTop()
-    {
-        // The padding top for the top fix bar
-        $paddingTop = 0;
-        $heightTopBar = self::getTopFixedHeightForMenuBar();
-        if ($heightTopBar != 0) {
-            $paddingTop = $heightTopBar + 10;
-        }
-        return $paddingTop;
-    }
-
-
-    /**
-     * When using a topbar, all header and top element should
-     * get this style in order to navigate correctly
-     * @return string
-     * As the top-nav-bar is fix, the two below values must be equal to the navbar offset
-     * in order to get a correct navigation to the anchor
-     * See http://stackoverflow.com/questions/17181355/boostrap-using-fixed-navbar-and-anchor-tags-to-jump-to-sections
-     */
-    public static function getHeadStyleNodeForFixedTopNavbar()
-    {
-        $headStyle = "";
-        $heightTopBar = self::getTopFixedHeightForMenuBar();
-        if ($heightTopBar !== 0) {
-            $paddingTop = 2 * $heightTopBar + 10; // + 10 to get the message area not below the topnavbar
-            $marginTop = -2 * $heightTopBar;
-            $topHeaderStyle = "padding-top:{$paddingTop}px;margin-top:{$marginTop}px;z-index:-1";
-
-            $headStyle = <<<EOF
-<style class="snippet-top-menubar-combo">
-    main > h1, main > h2, main > h3, main > h4, main > h5, #dokuwiki__top {
-    $topHeaderStyle
-    }
-</style>
-EOF;
-        }
-        return $headStyle;
     }
 
     /**
@@ -379,14 +332,6 @@ EOF;
         return self::getBootStrapVersion()[0];
     }
 
-    public static function getTopFixedHeightForMenuBar()
-    {
-        $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_MENUBAR, null);
-        if ($height == null) {
-            $height = tpl_getConf(self::CONF_HEIGHT_FIXED_TOP_NAVBAR_OLD, 0);
-        }
-        return $height;
-    }
 
     public static function getSideKickSlotPageName()
     {
@@ -1220,10 +1165,10 @@ EOF;
 
         // Icon Png
         $possibleLocation = array(':wiki:favicon-32x32.png', ':favicon-32x32.png', 'images/favicon-32x32.png');
-        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '">';
+        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '"/>';
 
         $possibleLocation = array(':wiki:favicon-16x16.png', ':favicon-16x16.png', 'images/favicon-16x16.png');
-        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '">';
+        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '"/>';
 
         // Apple touch icon
         $possibleLocation = array(':wiki:apple-touch-icon.png', ':apple-touch-icon.png', 'images/apple-touch-icon.png');
