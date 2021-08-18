@@ -350,8 +350,11 @@ echo $headerBar
         <div id="dokuwiki__pagetools" style="z-index: 1030;" class="d-none d-md-block">
             <div class="tools">
                 <ul>
-                    <?php echo (new PageMenu())->getListItems(); ?>
+                    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>User</span><svg style="height:19px"></svg></a></li>
                     <?php echo (new UserMenu())->getListItems('action'); ?>
+                    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Page</span><svg style="height:19px"></svg></a></li>
+                    <?php echo (new PageMenu())->getListItems(); ?>
+                    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Website</span><svg style="height:19px"></svg></a></li>
                     <?php echo (new SiteMenu())->getListItems('action'); ?>
                     <?php // FYI: for all menu in mobile: echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']); ?>
                 </ul>
