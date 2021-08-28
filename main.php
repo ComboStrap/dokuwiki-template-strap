@@ -392,10 +392,7 @@ echo $headerBar
                             aria-label="Close">
                     </button>
                 </div>
-                <!--            <div class="offcanvas-header">-->
-                <!--                <h5 id="offcanvasRightLabel">Offcanvas right</h5>-->
-                <!--            </div>-->
-                <div class="railbar-body" style="align-items: center;display: flex;">
+                <div id="railbar-offcanvas-body" class="offcanvas-body" style="align-items: center;display: flex;">
                     <?php echo TplUtility::getRailBar(); ?>
                 </div>
             </div>

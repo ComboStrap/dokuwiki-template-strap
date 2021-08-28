@@ -20,6 +20,67 @@
     height: auto;
 }
 
+#railbar-offcanvas-body {
+    @ico-width: 28px;
+    @ico-margin: 8px;
+    @item-width: (@ico-width + @ico-margin + @ico-margin);
+    @item-height: (@ico-width + @ico-margin);
+    ul {
+        text-align: right;
+        margin: 0;
+        padding: 0;
+        /* add transparent border to prevent jumping when proper border is added on hover */
+        border: 1px solid transparent;
+
+        li {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            font-size: 0.875em;
+
+            a {
+
+                display: block;
+                /* add transparent border to prevent jumping when proper border is added on focus */
+                border: 1px solid transparent;
+                white-space: nowrap;
+                line-height: @item-height;
+                vertical-align: middle;
+                height: @item-height;
+
+                span {
+                    display: none; // hide label until hover
+                    margin: 0 @ico-margin;
+                }
+
+                svg {
+                    width: @ico-width;
+                    height: @ico-width;
+                    margin: 0 @ico-margin;
+                    display: inline-block;
+                    vertical-align: middle;
+                    fill: @ini_border;
+                }
+            }
+
+            // on interaction show the full item
+            a:active,
+            a:focus,
+            a:hover {
+                background-color: @ini_background_alt;
+
+                span {
+                    display: inline-block;
+                }
+
+                svg {
+                    fill: @ini_link;
+                }
+            }
+        }
+    }
+}
+
 #dokuwiki__pagetools {
     @ico-width: 28px;
     @ico-margin: 8px;
