@@ -211,43 +211,15 @@ EOF;
      * When we have a landing page, the toolbar
      * which is by default on the right side is not visible
      * This setting will set up inside and make it visible alongside the page
+     * We may also just put it completely in the offcanvas
      */
     if ($layout == "landing" & $ACT == "show") { ?>
         <style>
-            #dokuwiki__pagetools {
+            #railbar-fixed {
                 right: 44px !important;
             }
         </style>
     <?php } ?>
-
-    <style>
-
-        #railbar-open {
-            position: fixed;
-            right: 0;
-            top: 45vh;
-        }
-
-        #railbar-open:before {
-            content: "<";
-        }
-
-        #railbar-close {
-            position: relative;
-            left: -37px;
-            width: fit-content;
-            top: 45vh;
-        }
-
-        #railbar-close:before {
-            content: ">";
-        }
-
-        #railbar-offcanvas {
-            width: fit-content
-        }
-
-    </style>
 
     <?php
     /**
@@ -373,13 +345,13 @@ echo $headerBar
     <?php
     // PAGE/USER/SITE ACTIONS
     if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
-        <div id="dokuwiki__pagetools" style="z-index: 1030;" class="d-none d-md-block">
+        <div id="railbar-fixed" style="z-index: 1030;" class="d-none d-lg-block">
             <div class="tools">
                 <?php echo TplUtility::getRailBar(); ?>
             </div>
         </div>
-        <div id="railbar" class="d-md-none">
-            <button id="railbar-open" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+        <div id="railbar-offcanvas-wrapper" class="d-lg-none">
+            <button id="railbar-offcanvas-open" class="btn" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#railbar-offcanvas" aria-controls="railbar-offcanvas">
             </button>
 
@@ -388,7 +360,7 @@ echo $headerBar
                  style="visibility: hidden;" aria-hidden="true">
                 <!-- Pseudo relative element  https://stackoverflow.com/questions/6040005/relatively-position-an-element-without-it-taking-up-space-in-document-flow -->
                 <div style="position: relative; width: 0; height: 0">
-                    <button id="railbar-close" class="btn btn-primary" type="button" data-bs-dismiss="offcanvas"
+                    <button id="railbar-offcanvas-close" class="btn" type="button" data-bs-dismiss="offcanvas"
                             aria-label="Close">
                     </button>
                 </div>

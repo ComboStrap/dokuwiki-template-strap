@@ -541,7 +541,7 @@ class TplUtility
         // FYI: The below code outputs all menu in mobile (in another HTML layout)
         // echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']);
         return <<<EOF
-<ul>
+<ul id="railbar">
     <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>User</span><svg style="height:19px"></svg></a></li>
     $liUserTools
     <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Page</span><svg style="height:19px"></svg></a></li>
