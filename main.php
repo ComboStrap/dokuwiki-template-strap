@@ -1,18 +1,15 @@
 <?php
+if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
 
 //Library of template function
+require_once(__DIR__ . '/class/TplUtility.php');
 
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 use dokuwiki\Menu\PageMenu;
 use dokuwiki\Menu\SiteMenu;
 use dokuwiki\Menu\UserMenu;
-
-require_once(__DIR__ . '/class/TplUtility.php');
-
-
-if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
 
 TplUtility::setHttpHeader();
@@ -211,7 +208,7 @@ EOF;
 
     <?php
     /**
-     * When we have a landing page, the page tools bar
+     * When we have a landing page, the toolbar
      * which is by default on the right side is not visible
      * This setting will set up inside and make it visible alongside the page
      */
@@ -222,6 +219,35 @@ EOF;
             }
         </style>
     <?php } ?>
+
+    <style>
+
+        #railbar-open {
+            position: fixed;
+            right: 0;
+            top: 45vh;
+        }
+
+        #railbar-open:before {
+            content: "<";
+        }
+
+        #railbar-close {
+            position: relative;
+            left: -37px;
+            width: fit-content;
+            top: 45vh;
+        }
+
+        #railbar-close:before {
+            content: ">";
+        }
+
+        #railbar-offcanvas {
+            width: fit-content
+        }
+
+    </style>
 
     <?php
     /**
@@ -349,17 +375,32 @@ echo $headerBar
     if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
         <div id="dokuwiki__pagetools" style="z-index: 1030;" class="d-none d-md-block">
             <div class="tools">
-                <ul>
-                    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>User</span><svg style="height:19px"></svg></a></li>
-                    <?php echo (new UserMenu())->getListItems('action'); ?>
-                    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Page</span><svg style="height:19px"></svg></a></li>
-                    <?php echo (new PageMenu())->getListItems(); ?>
-                    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Website</span><svg style="height:19px"></svg></a></li>
-                    <?php echo (new SiteMenu())->getListItems('action'); ?>
-                    <?php // FYI: for all menu in mobile: echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']); ?>
-                </ul>
+                <?php echo TplUtility::getRailBar(); ?>
             </div>
         </div>
+        <div id="railbar" class="d-md-none">
+            <button id="railbar-open" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#railbar-offcanvas" aria-controls="railbar-offcanvas">
+            </button>
+
+            <div id="railbar-offcanvas" class="offcanvas offcanvas-end" tabindex="-1"
+                 aria-labelledby="offcanvasRightLabel"
+                 style="visibility: hidden;" aria-hidden="true">
+                <!-- Pseudo relative element  https://stackoverflow.com/questions/6040005/relatively-position-an-element-without-it-taking-up-space-in-document-flow -->
+                <div style="position: relative; width: 0; height: 0">
+                    <button id="railbar-close" class="btn btn-primary" type="button" data-bs-dismiss="offcanvas"
+                            aria-label="Close">
+                    </button>
+                </div>
+                <!--            <div class="offcanvas-header">-->
+                <!--                <h5 id="offcanvasRightLabel">Offcanvas right</h5>-->
+                <!--            </div>-->
+                <div class="railbar-body" style="align-items: center;display: flex;">
+                    <?php echo TplUtility::getRailBar(); ?>
+                </div>
+            </div>
+        </div>
+
     <?php } ?>
 
 </div>

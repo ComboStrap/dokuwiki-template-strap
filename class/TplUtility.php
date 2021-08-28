@@ -14,6 +14,9 @@ namespace ComboStrap;
 
 use Doku_Event;
 use dokuwiki\Extension\Event;
+use dokuwiki\Menu\PageMenu;
+use dokuwiki\Menu\SiteMenu;
+use dokuwiki\Menu\UserMenu;
 use dokuwiki\plugin\config\core\Configuration;
 use dokuwiki\plugin\config\core\Writer;
 use Exception;
@@ -387,30 +390,30 @@ class TplUtility
         global $_REQUEST;
         if (defined('DOKU_UNITTEST') && !isset($_REQUEST[self::COMBO_TEST_UPDATE])) {
 
-                /**
-                 * This hack resolves two problems
-                 *
-                 * First one
-                 * this is a test request
-                 * the local.php file has a the `DOKU_TMP_DATA`
-                 * constant in the file and updating the file
-                 * with this method will then update the value of savedir to DOKU_TMP_DATA
-                 * we get then the error
-                 * The datadir ('pages') at DOKU_TMP_DATA/pages is not found
-                 *
-                 *
-                 * Second one
-                 * if in a php test unit, we send a php request two times
-                 * the headers have been already send and the
-                 * {@link msg()} function will send them
-                 * causing the {@link TplUtility::outputBufferShouldBeEmpty() output buffer check} to fail
-                 */
-                global $MSG_shown;
-                if (isset($MSG_shown) || headers_sent()) {
-                    return false;
-                } else {
-                    return true;
-                }
+            /**
+             * This hack resolves two problems
+             *
+             * First one
+             * this is a test request
+             * the local.php file has a the `DOKU_TMP_DATA`
+             * constant in the file and updating the file
+             * with this method will then update the value of savedir to DOKU_TMP_DATA
+             * we get then the error
+             * The datadir ('pages') at DOKU_TMP_DATA/pages is not found
+             *
+             *
+             * Second one
+             * if in a php test unit, we send a php request two times
+             * the headers have been already send and the
+             * {@link msg()} function will send them
+             * causing the {@link TplUtility::outputBufferShouldBeEmpty() output buffer check} to fail
+             */
+            global $MSG_shown;
+            if (isset($MSG_shown) || headers_sent()) {
+                return false;
+            } else {
+                return true;
+            }
 
         }
 
@@ -529,11 +532,26 @@ class TplUtility
         }
     }
 
-    public static function getStrapVersion()
+
+    public static function getRailBar()
     {
+        $liUserTools = (new UserMenu())->getListItems('action');
+        $liPageTools = (new PageMenu())->getListItems();
+        $liSiteTools  = (new SiteMenu())->getListItems('action');
+        // FYI: The below code outputs all menu in mobile (in another HTML layout)
+        // echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']);
+        return <<<EOF
+<ul>
+    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>User</span><svg style="height:19px"></svg></a></li>
+    $liUserTools
+    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Page</span><svg style="height:19px"></svg></a></li>
+    $liPageTools
+    <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Website</span><svg style="height:19px"></svg></a></li>
+    $liSiteTools
+</ul>
+EOF;
 
     }
-
 
     /**
      * Hierarchical breadcrumbs
