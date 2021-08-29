@@ -7,9 +7,6 @@ require_once(__DIR__ . '/class/TplUtility.php');
 
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
-use dokuwiki\Menu\PageMenu;
-use dokuwiki\Menu\SiteMenu;
-use dokuwiki\Menu\UserMenu;
 
 
 TplUtility::setHttpHeader();

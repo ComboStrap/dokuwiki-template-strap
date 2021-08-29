@@ -1120,7 +1120,6 @@ EOF;
 
                     $newHeaderTypes[$headerType] = $newScriptData;
                     break;
-                default:
                 case "meta":
                     $newHeaderData = array();
                     foreach ($headerData as $metaData) {
@@ -1128,7 +1127,7 @@ EOF;
                         // Name may change
                         // https://www.w3.org/TR/html4/struct/global.html#edef-META
                         if (!key_exists("content", $metaData)) {
-                            $message = "The head meta (" . print_r($metaData, true) . ") does not have a content property";
+                            $message = "Strap - The head meta (" . print_r($metaData, true) . ") does not have a content property";
                             msg($message, -1, "", "", MSG_ADMINS_ONLY);
                             if (defined('DOKU_UNITTEST')
                             ) {
@@ -1137,7 +1136,7 @@ EOF;
                         } else {
                             $content = $metaData["content"];
                             if (empty($content)) {
-                                $messageEmpty = "The below head meta has an empty content property (" . print_r($metaData, true) . ")";
+                                $messageEmpty = "Strap - the below head meta has an empty content property (" . print_r($metaData, true) . ")";
                                 msg($messageEmpty, -1, "", "", MSG_ADMINS_ONLY);
                                 if (defined('DOKU_UNITTEST')
                                 ) {
@@ -1150,10 +1149,18 @@ EOF;
                     }
                     $newHeaderTypes[$headerType] = $newHeaderData;
                     break;
+                case "noscript": // https://github.com/ComboStrap/dokuwiki-plugin-gtm/blob/master/action.php#L32
                 case "style":
                     $newHeaderTypes[$headerType] = $headerData;
                     break;
-
+                default:
+                    $message = "Strap - The header type ($headerType) is unknown and was not controlled.";
+                    $newHeaderTypes[$headerType] = $headerData;
+                    msg($message, -1, "", "", MSG_ADMINS_ONLY);
+                    if (defined('DOKU_UNITTEST')
+                    ) {
+                        throw new \RuntimeException($message);
+                    }
             }
         }
 
