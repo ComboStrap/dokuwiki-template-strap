@@ -12,7 +12,7 @@ require_once(__DIR__ . '/../class/DomUtility.php');
  * @group template_strap
  * @group templates
  */
-class template_strap_script_test extends DokuWikiTest
+class strapTest extends DokuWikiTest
 {
 
     const DEFAULT_BOOTSTRAP_4 = "4.5.0 - bootstrap";
@@ -698,13 +698,13 @@ class template_strap_script_test extends DokuWikiTest
     }
 
     /**
-     * Test that a toolbar is not shown when it's private
+     * Test that a railbar is not shown when it's private
      * @throws Exception
      */
     public
-    function test_privateToolbar()
+    function test_privateRailbar()
     {
-        TplUtility::setConf('privateToolbar', 0);
+        TplUtility::setConf('privateRailbar', 0);
 
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');

@@ -1110,11 +1110,16 @@ EOF;
                             $newScriptData[] = $bootstrapHeaders[$headerType]['js'];
                         }
                     } else {
-                        // We take the Jqueries of doku
+
                         // There is no JQuery in 5
-                        $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
                         // We had the js of Bootstrap (bundle with popper)
-                        $newScriptData[] = $bootstrapHeaders[$headerType]['js'];
+                        // Add Jquery before the js.php
+                        $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
+                        // Then add at the top of the top (first of the first) bootstrap
+                        // Why ? Because Jquery should be last to be able to see the missing icon
+                        // https://stackoverflow.com/questions/17367736/jquery-ui-dialog-missing-close-icon
+                        $newScriptData = array_merge([$bootstrapHeaders[$headerType]['js']],$newScriptData);
+
                     }
 
 
