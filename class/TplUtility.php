@@ -533,11 +533,16 @@ class TplUtility
     }
 
 
+    /**
+     *
+     * https://material.io/components/navigation-rail|Navigation rail
+     * @return string - the ul part of the railbar
+     */
     public static function getRailBar()
     {
         $liUserTools = (new UserMenu())->getListItems('action');
         $liPageTools = (new PageMenu())->getListItems();
-        $liSiteTools  = (new SiteMenu())->getListItems('action');
+        $liSiteTools = (new SiteMenu())->getListItems('action');
         // FYI: The below code outputs all menu in mobile (in another HTML layout)
         // echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']);
         return <<<EOF
@@ -1118,7 +1123,7 @@ EOF;
                         // Then add at the top of the top (first of the first) bootstrap
                         // Why ? Because Jquery should be last to be able to see the missing icon
                         // https://stackoverflow.com/questions/17367736/jquery-ui-dialog-missing-close-icon
-                        $newScriptData = array_merge([$bootstrapHeaders[$headerType]['js']],$newScriptData);
+                        $newScriptData = array_merge([$bootstrapHeaders[$headerType]['js']], $newScriptData);
 
                     }
 
