@@ -111,6 +111,7 @@ if ($showSideBar) {
 /**
  * Landing page
  */
+$landingPageGutter = "";
 $mainIsContained = true;
 if ($ACT != "show") {
     $mainIsContained = true;
@@ -138,6 +139,13 @@ $htmlRem = tpl_getConf(TplUtility::CONF_REM_SIZE, null);
 if ($htmlRem != null) {
     $rootStyle = "style=\"font-size:{$htmlRem}px\"";
 }
+
+/**
+ * Railbar
+ * Railbar can add snippet in the head
+ * And should then be could before the HTML output
+ */
+$railBar = TplUtility::getRailBar();
 
 /**
  * The output buffer should be empty
@@ -264,14 +272,6 @@ echo $headerBar
     ?>
 
 
-    <?php
-    global $ID;
-    global $conf;
-    if ($ID != $conf["start"]) {
-        TplUtility::renderTrailBreadcrumb();
-    }
-    ?>
-
     <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
 
 
@@ -344,7 +344,7 @@ echo $headerBar
     if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
         <div id="railbar-fixed" style="z-index: 1030;" class="d-none d-lg-block">
             <div class="tools">
-                <?php echo TplUtility::getRailBar(); ?>
+                <?php echo $railBar; ?>
             </div>
         </div>
         <div id="railbar-offcanvas-wrapper" class="d-lg-none">
@@ -362,7 +362,7 @@ echo $headerBar
                     </button>
                 </div>
                 <div id="railbar-offcanvas-body" class="offcanvas-body" style="align-items: center;display: flex;">
-                    <?php echo TplUtility::getRailBar(); ?>
+                    <?php echo $railBar; ?>
                 </div>
             </div>
         </div>
