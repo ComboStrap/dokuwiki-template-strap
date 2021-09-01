@@ -44,7 +44,7 @@ $conf['preloadCss'] = 0;
 
 $conf['preloadCss'] = 0;
 
-$conf['privateToolbar'] = 0;
+$conf['privateRailbar'] = 0;
 
 /**
  * @see {@link TplUtility::CONF_JQUERY_DOKU}

@@ -341,7 +341,7 @@ echo $headerBar
 
     <?php
     // PAGE/USER/SITE ACTIONS
-    if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
+    if (!(tpl_getConf(TplUtility::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
         <div id="railbar-fixed" style="z-index: 1030;" class="d-none d-lg-flex">
             <div class="tools">
                 <?php echo $railBar; ?>

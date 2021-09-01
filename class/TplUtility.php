@@ -109,6 +109,7 @@ class TplUtility
      * of conf in test
      */
     const COMBO_TEST_UPDATE = "combo_update_conf";
+    const CONF_PRIVATE_RAIL_BAR = "privateRailbar";
 
     /**
      * @var array|null
@@ -546,7 +547,7 @@ class TplUtility
         // FYI: The below code outputs all menu in mobile (in another HTML layout)
         // echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']);
         return <<<EOF
-<ul id="railbar">
+<ul class="railbar">
     <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>User</span><svg style="height:19px"></svg></a></li>
     $liUserTools
     <li><a href="#" style="height: 19px;line-height: 17px;text-align: left;font-weight:bold"><span>Page</span><svg style="height:19px"></svg></a></li>

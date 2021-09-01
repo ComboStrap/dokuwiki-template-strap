@@ -44,7 +44,7 @@ $meta[TplUtility::CONF_GRID_COLUMNS] = array('multichoice', '_choices' => array(
 
 $meta['preloadCss'] = array('onoff');
 
-$meta['privateToolbar'] = array('onoff');
+$meta[TplUtility::CONF_PRIVATE_RAIL_BAR] = array('onoff');
 
 
 // $meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.1'));

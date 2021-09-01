@@ -31,7 +31,7 @@ $lang[TplUtility::CONF_GRID_COLUMNS] = '<a href="https://combostrap.com/dynamic/
 
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading (!The page rendering will flash - FOUC)';
-$lang['privateToolbar'] = '<a href="https://combostrap.com/toolbar">Toolbar</a> - Enable private toolbar';
+$lang[TplUtility::CONF_PRIVATE_RAIL_BAR] = '<a href="https://combostrap.com/railbar">Railbar</a> - Enable private railbar';
 
 $lang[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version and a corresponding stylesheet';
 

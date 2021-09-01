@@ -704,7 +704,7 @@ class strapTest extends DokuWikiTest
     public
     function test_privateRailbar()
     {
-        TplUtility::setConf('privateRailbar', 0);
+        TplUtility::setConf(TplUtility::CONF_PRIVATE_RAIL_BAR, 0);
 
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -713,22 +713,22 @@ class strapTest extends DokuWikiTest
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId, '/doku.php'));
 
-        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
-        $this->assertEquals(1, $toolbarCount);
+        $toolbarCount = $response->queryHTML('.railbar')->count();
+        $this->assertEquals(2, $toolbarCount);
 
         // Anonymous user should not see it
-        TplUtility::setConf('privateToolbar', 1);
+        TplUtility::setConf(TplUtility::CONF_PRIVATE_RAIL_BAR, 1);
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId, '/doku.php'));
-        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
+        $toolbarCount = $response->queryHTML('.railbar')->count();
         $this->assertEquals(0, $toolbarCount);
 
         // Connected user should see it
         $request = new TestRequest();
         $request->setServer('REMOTE_USER', 'auser');
         $response = $request->get(array('id' => $pageId, '/doku.php'));
-        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
-        $this->assertEquals(1, $toolbarCount);
+        $toolbarCount = $response->queryHTML('.railbar')->count();
+        $this->assertEquals(2, $toolbarCount);
 
     }
 
