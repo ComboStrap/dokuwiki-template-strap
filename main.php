@@ -9,8 +9,6 @@ use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 
 
-TplUtility::setHttpHeader();
-
 global $ID;
 global $lang;
 global $ACT;
@@ -56,7 +54,7 @@ if ($showSideKickBar) {
 /**
  * Headerbar
  */
-$headerBar = TplUtility::getHeader();
+$headerBar = TplUtility::getPageHeader();
 
 /**
  * Footerbar
@@ -198,10 +196,8 @@ EOF;
 
     <title><?php TplUtility::renderPageTitle() ?></title>
 
-
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
-
 
     <?php
     /**
@@ -213,10 +209,11 @@ EOF;
 
     <?php
     /**
-     * When we have a landing page, the toolbar
+     * When we have a landing page, the railbar
      * which is by default on the right side is not visible
      * This setting will set up inside and make it visible alongside the page
      * We may also just put it completely in the offcanvas
+     * See for the HTML code {@link TplUtility::getRailBar()}
      */
     if ($layout == "landing" & $ACT == "show") { ?>
         <style>
@@ -226,18 +223,6 @@ EOF;
         </style>
     <?php } ?>
 
-    <?php
-    /**
-     * To be above the first h1 heading
-     * Otherwise when using a fix top bar,
-     * you can't click on them
-     */
-    if (!$conf['breadcrumbs']) { ?>
-        <style>#breadcrumb li {
-                z-index: 100
-            }</style>
-    <?php } ?>
-
 </head>
 <?php
 // * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
@@ -245,7 +230,6 @@ EOF;
 // * used also by some plugins
 ?>
 <body class="dokuwiki">
-
 
 <?php
 echo $headerBar
@@ -338,36 +322,7 @@ echo $headerBar
 
     </div>
 
-
-    <?php
-    // PAGE/USER/SITE ACTIONS
-    if (!(tpl_getConf(TplUtility::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
-        <div id="railbar-fixed" style="z-index: 1030;" class="d-none d-lg-flex">
-            <div class="tools">
-                <?php echo $railBar; ?>
-            </div>
-        </div>
-        <div id="railbar-offcanvas-wrapper" class="d-lg-none">
-            <button id="railbar-offcanvas-open" class="btn" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#railbar-offcanvas" aria-controls="railbar-offcanvas">
-            </button>
-
-            <div id="railbar-offcanvas" class="offcanvas offcanvas-end" tabindex="-1"
-                 aria-labelledby="offcanvasRightLabel"
-                 style="visibility: hidden;" aria-hidden="true">
-                <!-- Pseudo relative element  https://stackoverflow.com/questions/6040005/relatively-position-an-element-without-it-taking-up-space-in-document-flow -->
-                <div style="position: relative; width: 0; height: 0">
-                    <button id="railbar-offcanvas-close" class="btn" type="button" data-bs-dismiss="offcanvas"
-                            aria-label="Close">
-                    </button>
-                </div>
-                <div id="railbar-offcanvas-body" class="offcanvas-body" style="align-items: center;display: flex;">
-                    <?php echo $railBar; ?>
-                </div>
-            </div>
-        </div>
-
-    <?php } ?>
+    <?php echo $railBar ?>
 
 </div>
 

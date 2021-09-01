@@ -204,13 +204,6 @@ class TplUtility
         return self::getTemplateInfo()["strap"];
     }
 
-    /**
-     * ???
-     */
-    public static function setHttpHeader()
-    {
-        header('X-UA-Compatible: IE=edge');
-    }
 
     public static function registerHeaderHandler()
     {
@@ -535,11 +528,55 @@ class TplUtility
 
 
     /**
+     * @return string
+     * Railbar items can add snippet in the head
+     * And should then be could before the HTML output
+     */
+    public static function getRailBar()
+    {
+
+        if (tpl_getConf(TplUtility::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
+            return "";
+        }
+
+        $railBarListItems = TplUtility::getRailBarListItems();
+
+        return <<<EOF
+<div id="railbar-fixed" style="z-index: 1030;" class="d-none d-lg-flex">
+    <div class="tools">
+        $railBarListItems
+    </div>
+</div>
+<div id="railbar-offcanvas-wrapper" class="d-lg-none">
+    <button id="railbar-offcanvas-open" class="btn" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#railbar-offcanvas" aria-controls="railbar-offcanvas">
+    </button>
+
+    <div id="railbar-offcanvas" class="offcanvas offcanvas-end" tabindex="-1"
+         aria-labelledby="offcanvasRightLabel"
+         style="visibility: hidden;" aria-hidden="true">
+        <!-- Pseudo relative element  https://stackoverflow.com/questions/6040005/relatively-position-an-element-without-it-taking-up-space-in-document-flow -->
+        <div style="position: relative; width: 0; height: 0">
+            <button id="railbar-offcanvas-close" class="btn" type="button" data-bs-dismiss="offcanvas"
+                    aria-label="Close">
+            </button>
+        </div>
+        <div id="railbar-offcanvas-body" class="offcanvas-body" style="align-items: center;display: flex;">
+            $railBarListItems
+        </div>
+    </div>
+</div>
+EOF;
+
+    }
+
+    /**
      *
      * https://material.io/components/navigation-rail|Navigation rail
      * @return string - the ul part of the railbar
      */
-    public static function getRailBar()
+    public
+    static function getRailBarListItems()
     {
         $liUserTools = (new UserMenu())->getListItems('action');
         $liPageTools = (new PageMenu())->getListItems();
@@ -1354,7 +1391,7 @@ EOF;
         return $html_output;
     }
 
-    static function getHeader()
+    static function getPageHeader()
     {
 
         $navBarPageName = TplUtility::getHeaderSlotPageName();
