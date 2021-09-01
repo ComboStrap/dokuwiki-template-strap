@@ -553,8 +553,9 @@ class TplUtility
     </button>
 
     <div id="railbar-offcanvas" class="offcanvas offcanvas-end" tabindex="-1"
-         aria-labelledby="offcanvasRightLabel"
+         aria-labelledby="offcanvas-label"
          style="visibility: hidden;" aria-hidden="true">
+         <h5 class="d-none" id="offcanvas-label">Railbar</h5>
         <!-- Pseudo relative element  https://stackoverflow.com/questions/6040005/relatively-position-an-element-without-it-taking-up-space-in-document-flow -->
         <div style="position: relative; width: 0; height: 0">
             <button id="railbar-offcanvas-close" class="btn" type="button" data-bs-dismiss="offcanvas"
