@@ -109,7 +109,27 @@ class TplUtility
      * of conf in test
      */
     const COMBO_TEST_UPDATE = "combo_update_conf";
+
+    /**
+     * Do we show the rail bar for anonymous user
+     */
     const CONF_PRIVATE_RAIL_BAR = "privateRailbar";
+
+    /**
+     * When do we toggle from offcanvas to fixed railbar
+     */
+    const CONF_BREAKPOINT_RAIL_BAR = "breakpointRailbar";
+
+    /**
+     * Breakpoint naming
+     */
+    const BREAKPOINT_EXTRA_SMALL_NAME = "extra-small";
+    const BREAKPOINT_SMALL_NAME = "small";
+    const BREAKPOINT_MEDIUM_NAME = "medium";
+    const BREAKPOINT_LARGE_NAME = "large";
+    const BREAKPOINT_EXTRA_LARGE_NAME = "extra-large";
+    const BREAKPOINT_EXTRA_EXTRA_LARGE_NAME = "extra-extra-large";
+    const BREAKPOINT_NEVER_NAME = "never";
 
     /**
      * @var array|null
@@ -538,16 +558,40 @@ class TplUtility
         if (tpl_getConf(TplUtility::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
             return "";
         }
+        $breakpoint = tpl_getConf(TplUtility::CONF_BREAKPOINT_RAIL_BAR, TplUtility::BREAKPOINT_LARGE_NAME);
+
+        $bootstrapBreakpoint = "";
+        switch($breakpoint){
+            case TplUtility::BREAKPOINT_EXTRA_SMALL_NAME:
+                $bootstrapBreakpoint = "xs";
+                break;
+            case TplUtility::BREAKPOINT_SMALL_NAME:
+                $bootstrapBreakpoint = "sm";
+                break;
+            case TplUtility::BREAKPOINT_MEDIUM_NAME:
+                $bootstrapBreakpoint = "md";
+                break;
+            case TplUtility::BREAKPOINT_LARGE_NAME:
+                $bootstrapBreakpoint = "lg";
+                break;
+            case TplUtility::BREAKPOINT_EXTRA_LARGE_NAME:
+                $bootstrapBreakpoint = "xl";
+                break;
+            case TplUtility::BREAKPOINT_EXTRA_EXTRA_LARGE_NAME:
+                $bootstrapBreakpoint = "xxl";
+                break;
+        }
+
+        $classOffCanvas="";
+        $classFixed="";
+        if(!empty($bootstrapBreakpoint)){
+            $classOffCanvas="class=\"d-$bootstrapBreakpoint-none\"";
+            $classFixed="class=\"d-none d-$bootstrapBreakpoint-flex\"";
+        }
 
         $railBarListItems = TplUtility::getRailBarListItems();
-
-        return <<<EOF
-<div id="railbar-fixed" style="z-index: 1030;" class="d-none d-lg-flex">
-    <div class="tools">
-        $railBarListItems
-    </div>
-</div>
-<div id="railbar-offcanvas-wrapper" class="d-lg-none">
+        $railBarOffCanvas = <<<EOF
+<div id="railbar-offcanvas-wrapper" $classOffCanvas>
     <button id="railbar-offcanvas-open" class="btn" type="button" data-bs-toggle="offcanvas"
             data-bs-target="#railbar-offcanvas" aria-controls="railbar-offcanvas">
     </button>
@@ -568,6 +612,25 @@ class TplUtility
     </div>
 </div>
 EOF;
+
+        if($breakpoint!=TplUtility::BREAKPOINT_NEVER_NAME) {
+            $railBarFixed = <<<EOF
+<div id="railbar-fixed" style="z-index: 1030;" $classFixed>
+    <div class="tools">
+        $railBarListItems
+    </div>
+</div>
+EOF;
+            return <<<EOF
+$railBarOffCanvas
+$railBarFixed
+EOF;
+        } else {
+
+            return $railBarOffCanvas;
+
+        }
+
 
     }
 

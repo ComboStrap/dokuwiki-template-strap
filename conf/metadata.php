@@ -45,6 +45,15 @@ $meta[TplUtility::CONF_GRID_COLUMNS] = array('multichoice', '_choices' => array(
 $meta['preloadCss'] = array('onoff');
 
 $meta[TplUtility::CONF_PRIVATE_RAIL_BAR] = array('onoff');
+$meta[TplUtility::CONF_BREAKPOINT_RAIL_BAR] = array('multichoice', '_choices' => array(
+    TplUtility::BREAKPOINT_EXTRA_SMALL_NAME,
+    TplUtility::BREAKPOINT_SMALL_NAME,
+    TplUtility::BREAKPOINT_MEDIUM_NAME,
+    TplUtility::BREAKPOINT_LARGE_NAME,
+    TplUtility::BREAKPOINT_EXTRA_LARGE_NAME,
+    TplUtility::BREAKPOINT_EXTRA_EXTRA_LARGE_NAME,
+    TplUtility::BREAKPOINT_NEVER_NAME
+));
 
 
 // $meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.1'));

@@ -31,7 +31,10 @@ $lang[TplUtility::CONF_GRID_COLUMNS] = '<a href="https://combostrap.com/dynamic/
 
 
 $lang['preloadCss'] = '<a href="https://combostrap.com/css#preloadCSS">CSS Optimization</a> - Enable CSS Preloading (!The page rendering will flash - FOUC)';
+
+
 $lang[TplUtility::CONF_PRIVATE_RAIL_BAR] = '<a href="https://combostrap.com/railbar">Railbar</a> - Enable private railbar';
+$lang[TplUtility::CONF_BREAKPOINT_RAIL_BAR] = '<a href="https://combostrap.com/railbar">Railbar</a> - Breakpoint when the railbar toggle from offcanvas to fixed component';
 
 $lang[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = '<a href="https://combostrap.com/bootstrap">Bootstrap</a> - The Bootstrap version and a corresponding stylesheet';
 
