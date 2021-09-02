@@ -1,21 +1,13 @@
 <?php
-
-
-//Library of template function
-
-use Combostrap\TplUtility;
-use dokuwiki\Extension\Event;
-use dokuwiki\Menu\PageMenu;
-use dokuwiki\Menu\SiteMenu;
-use dokuwiki\Menu\UserMenu;
-
-require_once(__DIR__ . '/class/TplUtility.php');
-
-
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
 
-TplUtility::setHttpHeader();
+//Library of template function
+require_once(__DIR__ . '/class/TplUtility.php');
+
+use Combostrap\TplUtility;
+use dokuwiki\Extension\Event;
+
 
 global $ID;
 global $lang;
@@ -62,7 +54,7 @@ if ($showSideKickBar) {
 /**
  * Headerbar
  */
-$headerBar = TplUtility::getHeader();
+$headerBar = TplUtility::getPageHeader();
 
 /**
  * Footerbar
@@ -117,6 +109,7 @@ if ($showSideBar) {
 /**
  * Landing page
  */
+$landingPageGutter = "";
 $mainIsContained = true;
 if ($ACT != "show") {
     $mainIsContained = true;
@@ -144,6 +137,13 @@ $htmlRem = tpl_getConf(TplUtility::CONF_REM_SIZE, null);
 if ($htmlRem != null) {
     $rootStyle = "style=\"font-size:{$htmlRem}px\"";
 }
+
+/**
+ * Railbar
+ * Railbar can add snippet in the head
+ * And should then be could before the HTML output
+ */
+$railBar = TplUtility::getRailBar();
 
 /**
  * The output buffer should be empty
@@ -196,10 +196,8 @@ EOF;
 
     <title><?php TplUtility::renderPageTitle() ?></title>
 
-
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
-
 
     <?php
     /**
@@ -211,28 +209,18 @@ EOF;
 
     <?php
     /**
-     * When we have a landing page, the page tools bar
+     * When we have a landing page, the railbar
      * which is by default on the right side is not visible
      * This setting will set up inside and make it visible alongside the page
+     * We may also just put it completely in the offcanvas
+     * See for the HTML code {@link TplUtility::getRailBar()}
      */
     if ($layout == "landing" & $ACT == "show") { ?>
         <style>
-            #dokuwiki__pagetools {
+            #railbar-fixed {
                 right: 44px !important;
             }
         </style>
-    <?php } ?>
-
-    <?php
-    /**
-     * To be above the first h1 heading
-     * Otherwise when using a fix top bar,
-     * you can't click on them
-     */
-    if (!$conf['breadcrumbs']) { ?>
-        <style>#breadcrumb li {
-                z-index: 100
-            }</style>
     <?php } ?>
 
 </head>
@@ -242,7 +230,6 @@ EOF;
 // * used also by some plugins
 ?>
 <body class="dokuwiki">
-
 
 <?php
 echo $headerBar
@@ -268,14 +255,6 @@ echo $headerBar
     Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
     ?>
 
-
-    <?php
-    global $ID;
-    global $conf;
-    if ($ID != $conf["start"]) {
-        TplUtility::renderTrailBreadcrumb();
-    }
-    ?>
 
     <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
 
@@ -343,21 +322,7 @@ echo $headerBar
 
     </div>
 
-
-    <?php
-    // PAGE/USER/SITE ACTIONS
-    if (!(tpl_getConf('privateToolbar') === 1 && empty($_SERVER['REMOTE_USER']))) { ?>
-        <div id="dokuwiki__pagetools" style="z-index: 1030;" class="d-none d-md-block">
-            <div class="tools">
-                <ul>
-                    <?php echo (new PageMenu())->getListItems(); ?>
-                    <?php echo (new UserMenu())->getListItems('action'); ?>
-                    <?php echo (new SiteMenu())->getListItems('action'); ?>
-                    <?php // FYI: for all menu in mobile: echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']); ?>
-                </ul>
-            </div>
-        </div>
-    <?php } ?>
+    <?php echo $railBar ?>
 
 </div>
 

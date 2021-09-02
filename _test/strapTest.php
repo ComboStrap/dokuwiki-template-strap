@@ -12,7 +12,7 @@ require_once(__DIR__ . '/../class/DomUtility.php');
  * @group template_strap
  * @group templates
  */
-class template_strap_script_test extends DokuWikiTest
+class strapTest extends DokuWikiTest
 {
 
     const DEFAULT_BOOTSTRAP_4 = "4.5.0 - bootstrap";
@@ -698,13 +698,13 @@ class template_strap_script_test extends DokuWikiTest
     }
 
     /**
-     * Test that a toolbar is not shown when it's private
+     * Test that a railbar is not shown when it's private
      * @throws Exception
      */
     public
-    function test_privateToolbar()
+    function test_privateRailbar()
     {
-        TplUtility::setConf('privateToolbar', 0);
+        TplUtility::setConf(TplUtility::CONF_PRIVATE_RAIL_BAR, 0);
 
         $pageId = 'start';
         saveWikiText($pageId, "Content", 'Script Test base');
@@ -713,22 +713,22 @@ class template_strap_script_test extends DokuWikiTest
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId, '/doku.php'));
 
-        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
-        $this->assertEquals(1, $toolbarCount);
+        $toolbarCount = $response->queryHTML('.railbar')->count();
+        $this->assertEquals(2, $toolbarCount);
 
         // Anonymous user should not see it
-        TplUtility::setConf('privateToolbar', 1);
+        TplUtility::setConf(TplUtility::CONF_PRIVATE_RAIL_BAR, 1);
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId, '/doku.php'));
-        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
+        $toolbarCount = $response->queryHTML('.railbar')->count();
         $this->assertEquals(0, $toolbarCount);
 
         // Connected user should see it
         $request = new TestRequest();
         $request->setServer('REMOTE_USER', 'auser');
         $response = $request->get(array('id' => $pageId, '/doku.php'));
-        $toolbarCount = $response->queryHTML('#dokuwiki__pagetools')->count();
-        $this->assertEquals(1, $toolbarCount);
+        $toolbarCount = $response->queryHTML('.railbar')->count();
+        $this->assertEquals(2, $toolbarCount);
 
     }
 

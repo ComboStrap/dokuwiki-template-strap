@@ -11,7 +11,7 @@ require_once(__DIR__ . '/../class/TplUtility.php');
  * @group template_strap
  * @group templates
  */
-class TplUtilityTest extends DokuWikiTest
+class tplUtilityTest extends DokuWikiTest
 {
 
     public function setUp()

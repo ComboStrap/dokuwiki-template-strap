@@ -44,7 +44,14 @@ $conf['preloadCss'] = 0;
 
 $conf['preloadCss'] = 0;
 
-$conf['privateToolbar'] = 0;
+/**
+ * {@link TplUtility::CONF_PRIVATE_RAIL_BAR}
+ */
+$conf['privateRailbar'] = 0;
+/**
+ * {@link TplUtility::CONF_BREAKPOINT_RAIL_BAR}
+ */
+$conf['breakpointRailbar'] = "large";
 
 /**
  * @see {@link TplUtility::CONF_JQUERY_DOKU}
