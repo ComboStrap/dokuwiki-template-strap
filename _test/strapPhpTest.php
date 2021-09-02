@@ -7,7 +7,7 @@
  * @group template_strap
  * @group templates
  */
-class phpTest extends DokuWikiTest
+class strapPhpTest extends DokuWikiTest
 {
 
 
