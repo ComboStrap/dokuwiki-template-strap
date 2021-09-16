@@ -551,6 +551,10 @@ class TplUtility
      * @return string
      * Railbar items can add snippet in the head
      * And should then be could before the HTML output
+     *
+     * In Google Material Design, they call it a
+     * navigational drawer
+     * https://material.io/components/navigation-drawer
      */
     public static function getRailBar()
     {
