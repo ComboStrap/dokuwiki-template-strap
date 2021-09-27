@@ -30,6 +30,7 @@
     * One Stylesheet dependency available globally from CDN
     * All Javascript are served asynchronously
     * Lazy image loading
+  * and all [ComboStrap component](http://combostrap.com/component)
 
 
 ## Version
