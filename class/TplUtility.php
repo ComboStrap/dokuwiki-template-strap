@@ -1302,18 +1302,18 @@ EOF;
 
         // FavIcon.ico
         $possibleLocation = array(':wiki:favicon.ico', ':favicon.ico', 'images/favicon.ico');
-        $return .= '<link rel="shortcut icon" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '" />' . NL;
+        $return .= '<link rel="shortcut icon" href="' . tpl_getMediaFile($possibleLocation, true) . '" />' . NL;
 
         // Icon Png
         $possibleLocation = array(':wiki:favicon-32x32.png', ':favicon-32x32.png', 'images/favicon-32x32.png');
-        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
 
         $possibleLocation = array(':wiki:favicon-16x16.png', ':favicon-16x16.png', 'images/favicon-16x16.png');
-        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
 
         // Apple touch icon
         $possibleLocation = array(':wiki:apple-touch-icon.png', ':apple-touch-icon.png', 'images/apple-touch-icon.png');
-        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '" />' . NL;
+        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation,  true) . '" />' . NL;
 
         return $return;
 

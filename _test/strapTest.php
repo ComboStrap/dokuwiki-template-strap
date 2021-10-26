@@ -662,7 +662,7 @@ class strapTest extends DokuWikiTest
 
 
     /**
-     * Test that a detail page is rendering
+     * Test favicon
      */
     public
     function test_favicon()
@@ -674,8 +674,29 @@ class strapTest extends DokuWikiTest
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId));
 
-        $generator = $response->queryHTML('link[rel="shortcut icon"]')->count();
-        $this->assertEquals(1, $generator);
+        // Favicon
+        $shortCut = $response->queryHTML('link[rel="shortcut icon"]');
+        $this->assertEquals(1, $shortCut->count());
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/favicon.ico",$shortCut->attr("href"),"Favicon");
+
+        // Icon
+        $icons = $response->queryHTML('link[rel="icon"]');
+        $this->assertEquals(2, $icons->count());
+        /**
+         * @var DOMElement $firstIcons
+         */
+        $firstIcons = $icons->elements[0] ;
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/favicon-32x32.png",$firstIcons->getAttribute("href"));
+        /**
+         * @var DOMElement $secondIcon
+         */
+        $secondIcon = $icons->elements[1] ;
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/favicon-16x16.png",$secondIcon->getAttribute("href"));
+
+        // Apple touch icon
+        $appleIcons = $response->queryHTML('link[rel="apple-touch-icon"]');
+        $this->assertEquals(1, $appleIcons->count());
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/apple-touch-icon.png",$appleIcons->attr("href"),"Apple Icon");
 
     }
 
