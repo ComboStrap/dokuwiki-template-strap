@@ -336,7 +336,7 @@ class TplUtility
 
         if (class_exists("ComboStrap\Page")) {
             $page = new Page($barName);
-            return $page->render();
+            return $page->toXhtml();
         } else {
             TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
             return tpl_include_page($barName, 0, 1);
@@ -1324,7 +1324,7 @@ EOF;
 
         global $conf;
         global $ID;
-        $title = tpl_pagetitle($ID, true) . ' [' . $conf["title"] . ']';
+        $title = tpl_pagetitle($ID, true) . ' |' . $conf["title"];
         // trigger event here
         Event::createAndTrigger('TPL_TITLE_OUTPUT', $title, '\ComboStrap\TplUtility::callBackPageTitle', true);
         return true;
