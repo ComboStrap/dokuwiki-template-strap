@@ -1440,7 +1440,7 @@ EOF;
      * @param bool $prependTOC
      * @return false|string - Adapted from {@link tpl_content()} to return the HTML
      */
-    static function tpl_content($prependTOC = true)
+    static function tpl_content(bool $prependTOC = true)
     {
         global $ACT;
         global $INFO;
