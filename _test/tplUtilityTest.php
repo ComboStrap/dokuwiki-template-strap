@@ -104,13 +104,13 @@ class tplUtilityTest extends DokuWikiTest
 
         $boostrapVersion = "5.0.1";
         $metas = TplUtility::buildBootstrapMetas($boostrapVersion);
-        $this->assertEquals(2, sizeof($metas));
+        $this->assertEquals(3, sizeof($metas));
         $this->assertEquals("bootstrap.rtl.min.css", $metas["css"]["file"]);
 
 
         TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, $boostrapVersion . TplUtility::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . "simplex");
         $metas = TplUtility::buildBootstrapMetas($boostrapVersion);
-        $this->assertEquals(2, sizeof($metas));
+        $this->assertEquals(3, sizeof($metas));
         $this->assertEquals("bootstrap.simplex.min.css", $metas["css"]["file"]);
         $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@5.0.1/dist/simplex/bootstrap.min.css", $metas["css"]["url"]);
 
