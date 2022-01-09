@@ -336,7 +336,7 @@ class TplUtility
 
         if (class_exists("ComboStrap\Page")) {
             $page = new Page($barName);
-            return $page->render();
+            return $page->toXhtml();
         } else {
             TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
             return tpl_include_page($barName, 0, 1);
@@ -618,8 +618,9 @@ class TplUtility
 EOF;
 
         if($breakpoint!=TplUtility::BREAKPOINT_NEVER_NAME) {
+            $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
             $railBarFixed = <<<EOF
-<div id="railbar-fixed" style="z-index: 1030;" $classFixed>
+<div id="railbar-fixed" style="z-index: $zIndexRailbar;" $classFixed>
     <div class="tools">
         $railBarListItems
     </div>
@@ -774,28 +775,7 @@ EOF;
 
     }
 
-    function renderSearchForm($ajax = true, $autocomplete = true)
-    {
-        global $lang;
-        global $ACT;
-        global $QUERY;
 
-        // don't print the search form if search action has been disabled
-        if (!actionOK('search')) return false;
-
-        print '<form id="navBarSearch" action="' . wl() . '" accept-charset="utf-8" class="search form-inline my-lg-0" id="dw__search" method="get" role="search">';
-        print '<input type="hidden" name="do" value="search" />';
-        print '<label class="sr-only" for="search">Search Term</label>';
-        print '<input type="text" ';
-        if ($ACT == 'search') print 'value="' . htmlspecialchars($QUERY) . '" ';
-        print 'placeholder="' . $lang['btn_search'] . '..." ';
-        if (!$autocomplete) print 'autocomplete="off" ';
-        print 'id="qsearch__in" accesskey="f" name="id" class="edit form-control" title="[F]" />';
-//    print '<button type="submit" title="'.$lang['btn_search'].'">'.$lang['btn_search'].'</button>';
-        if ($ajax) print '<div id="qsearch__out" class="ajax_qsearch JSpopup"></div>';
-        print '</form>';
-        return true;
-    }
 
     /**
      * This is a fork of tpl_actionlink where I have added the class parameters
@@ -1223,13 +1203,15 @@ EOF;
                     } else {
 
                         // There is no JQuery in 5
-                        // We had the js of Bootstrap (bundle with popper)
+                        // We had the js of Bootstrap and popper
                         // Add Jquery before the js.php
                         $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
                         // Then add at the top of the top (first of the first) bootstrap
                         // Why ? Because Jquery should be last to be able to see the missing icon
                         // https://stackoverflow.com/questions/17367736/jquery-ui-dialog-missing-close-icon
-                        $newScriptData = array_merge([$bootstrapHeaders[$headerType]['js']], $newScriptData);
+                        $bootstrap[] = $bootstrapHeaders[$headerType]['popper'];
+                        $bootstrap[] = $bootstrapHeaders[$headerType]['js'];
+                        $newScriptData = array_merge($bootstrap, $newScriptData);
 
                     }
 
@@ -1302,18 +1284,18 @@ EOF;
 
         // FavIcon.ico
         $possibleLocation = array(':wiki:favicon.ico', ':favicon.ico', 'images/favicon.ico');
-        $return .= '<link rel="shortcut icon" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '" />' . NL;
+        $return .= '<link rel="shortcut icon" href="' . tpl_getMediaFile($possibleLocation, true) . '" />' . NL;
 
         // Icon Png
         $possibleLocation = array(':wiki:favicon-32x32.png', ':favicon-32x32.png', 'images/favicon-32x32.png');
-        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
 
         $possibleLocation = array(':wiki:favicon-16x16.png', ':favicon-16x16.png', 'images/favicon-16x16.png');
-        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
 
         // Apple touch icon
         $possibleLocation = array(':wiki:apple-touch-icon.png', ':apple-touch-icon.png', 'images/apple-touch-icon.png');
-        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation, $fallback = true) . '" />' . NL;
+        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation,  true) . '" />' . NL;
 
         return $return;
 
@@ -1324,7 +1306,7 @@ EOF;
 
         global $conf;
         global $ID;
-        $title = tpl_pagetitle($ID, true) . ' [' . $conf["title"] . ']';
+        $title = tpl_pagetitle($ID, true) . ' |' . $conf["title"];
         // trigger event here
         Event::createAndTrigger('TPL_TITLE_OUTPUT', $title, '\ComboStrap\TplUtility::callBackPageTitle', true);
         return true;
@@ -1440,7 +1422,7 @@ EOF;
      * @param bool $prependTOC
      * @return false|string - Adapted from {@link tpl_content()} to return the HTML
      */
-    static function tpl_content($prependTOC = true)
+    static function tpl_content(bool $prependTOC = true)
     {
         global $ACT;
         global $INFO;

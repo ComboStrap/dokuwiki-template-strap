@@ -124,8 +124,8 @@ class strapTest extends DokuWikiTest
 
                 $scriptsSignature = [
                     //    "jquery.com\/jquery-(.*).js", no more need in Bootstrap 5
-                    // "cdn.jsdelivr.net\/npm\/popper.js", in the bundle below
-                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    "cdn.jsdelivr.net\/npm\/@popperjs",// out of the bundle to use it for auto-completion dropdown
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.min.js",
                     "jquery.php", // jquery of Dokuwiki (Bootstrap 5 does not have its own)
                     'JSINFO',
                     'js.php'
@@ -187,7 +187,8 @@ class strapTest extends DokuWikiTest
         $version = TplUtility::getBootStrapVersion();
         $scriptsSignature = [
             "jquery.php",
-            "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+            "cdn.jsdelivr.net\/npm\/@popperjs",
+            "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.min.js",
             'JSINFO',
             'js.php'
         ];
@@ -242,7 +243,8 @@ class strapTest extends DokuWikiTest
                  */
                 $scriptsSignature = [
                     "jquery.php",
-                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    "cdn.jsdelivr.net\/npm\/@popperjs",
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.min.js",
                     'JSINFO',
                     'js.php'
                 ];
@@ -326,7 +328,8 @@ class strapTest extends DokuWikiTest
                  */
                 $scriptsSignature = [
                     // "jquery.php", no jquery
-                    "$localDirPattern\/bootstrap.bundle.min.js",
+                    "$localDirPattern\/bootstrap.min.js",
+                    "$localDirPattern\/popper.min.js",
                     "jquery.php", // jquery of Dokuwiki (Bootstrap 5 does not have its own)
                     'JSINFO',
                     'js.php'
@@ -413,7 +416,8 @@ class strapTest extends DokuWikiTest
                  * 5, only boostrap js
                  */
                 $scriptsSignature = [
-                    "bootstrap.bundle.min.js",
+                    "bootstrap.min.js",
+                    "cdn.jsdelivr.net\/npm\/@popperjs",
                     'JSINFO'
                 ];
 
@@ -496,8 +500,8 @@ class strapTest extends DokuWikiTest
                  */
                 $scriptsSignature = [
                     "jquery.php",
-                    //"cdn.jsdelivr.net\/npm\/popper.js", popper is in the bundle
-                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.bundle.min.js",
+                    "cdn.jsdelivr.net\/npm\/@popperjs",
+                    "cdn.jsdelivr.net\/npm\/bootstrap\@$version\/dist\/js\/bootstrap.min.js",
                     'JSINFO',
                     'js.php'];
 
@@ -621,7 +625,7 @@ class strapTest extends DokuWikiTest
         // Default
         $metas = TplUtility::getBootstrapMetaHeaders();
         $this->assertEquals(2, sizeof($metas));
-        $this->assertEquals(1, sizeof($metas['script']), "There is three js script");
+        $this->assertEquals(2, sizeof($metas['script']), "There is two js script (bootstrap+popper)");
         $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
 
         TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, self::DEFAULT_BOOTSTRAP_4);
@@ -646,7 +650,7 @@ class strapTest extends DokuWikiTest
         TplUtility::setConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, "$version - $template");
         $metas = TplUtility::getBootstrapMetaHeaders();
         $this->assertEquals(2, sizeof($metas));
-        $this->assertEquals(1, sizeof($metas['script']), "There is three js script");
+        $this->assertEquals(2, sizeof($metas['script']), "There is 2 js script (bootstrap+popper)");
         $this->assertEquals(1, sizeof($metas['link']), "There is one css script");
         $this->assertEquals("https://cdn.jsdelivr.net/npm/bootswatch@{$version}/dist/$template/bootstrap.min.css", $metas['link']['css']['href'], "The href is the cdn");
 
@@ -662,7 +666,7 @@ class strapTest extends DokuWikiTest
 
 
     /**
-     * Test that a detail page is rendering
+     * Test favicon
      */
     public
     function test_favicon()
@@ -674,8 +678,29 @@ class strapTest extends DokuWikiTest
         $request = new TestRequest();
         $response = $request->get(array('id' => $pageId));
 
-        $generator = $response->queryHTML('link[rel="shortcut icon"]')->count();
-        $this->assertEquals(1, $generator);
+        // Favicon
+        $shortCut = $response->queryHTML('link[rel="shortcut icon"]');
+        $this->assertEquals(1, $shortCut->count());
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/favicon.ico", $shortCut->attr("href"), "Favicon");
+
+        // Icon
+        $icons = $response->queryHTML('link[rel="icon"]');
+        $this->assertEquals(2, $icons->count());
+        /**
+         * @var DOMElement $firstIcons
+         */
+        $firstIcons = $icons->elements[0];
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/favicon-32x32.png", $firstIcons->getAttribute("href"));
+        /**
+         * @var DOMElement $secondIcon
+         */
+        $secondIcon = $icons->elements[1];
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/favicon-16x16.png", $secondIcon->getAttribute("href"));
+
+        // Apple touch icon
+        $appleIcons = $response->queryHTML('link[rel="apple-touch-icon"]');
+        $this->assertEquals(1, $appleIcons->count());
+        $this->assertEquals("http://wiki.example.com/./lib/tpl/strap/images/apple-touch-icon.png", $appleIcons->attr("href"), "Apple Icon");
 
     }
 
