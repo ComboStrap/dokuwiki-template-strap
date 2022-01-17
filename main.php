@@ -28,8 +28,8 @@ $mainHtml = TplUtility::tpl_content($prependTOC = false);
  */
 $sidebarName = $conf['sidebar'];
 
-$hasSidebar = page_findnearest($sidebarName);
-$showSideBar = $hasSidebar && ($ACT == 'show');
+$nearestSidebar = page_findnearest($sidebarName);
+$showSideBar = $nearestSidebar !== false && ($ACT == 'show');
 if ($showSideBar) {
     /**
      * Even if there is no sidebar
@@ -37,7 +37,7 @@ if ($showSideBar) {
      * debug information in the form of
      * an HTML comment
      */
-    $sideBarHtml = TplUtility::renderSlot($sidebarName);
+    $sideBarHtml = TplUtility::renderSlot($nearestSidebar);
 }
 
 
