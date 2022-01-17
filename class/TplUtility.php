@@ -1421,6 +1421,7 @@ EOF;
     /**
      * @param bool $prependTOC
      * @return false|string - Adapted from {@link tpl_content()} to return the HTML
+     * Call {@link html_show()} from {@link Show::tplContent()}
      */
     static function tpl_content(bool $prependTOC = true)
     {

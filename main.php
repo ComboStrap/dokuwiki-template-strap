@@ -41,6 +41,7 @@ if ($showSideBar) {
 }
 
 
+
 /**
  * Sidekickbar
  */
