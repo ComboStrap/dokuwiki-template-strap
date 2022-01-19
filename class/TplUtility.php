@@ -565,7 +565,7 @@ class TplUtility
         $breakpoint = tpl_getConf(TplUtility::CONF_BREAKPOINT_RAIL_BAR, TplUtility::BREAKPOINT_LARGE_NAME);
 
         $bootstrapBreakpoint = "";
-        switch($breakpoint){
+        switch ($breakpoint) {
             case TplUtility::BREAKPOINT_EXTRA_SMALL_NAME:
                 $bootstrapBreakpoint = "xs";
                 break;
@@ -586,11 +586,11 @@ class TplUtility
                 break;
         }
 
-        $classOffCanvas="";
-        $classFixed="";
-        if(!empty($bootstrapBreakpoint)){
-            $classOffCanvas="class=\"d-$bootstrapBreakpoint-none\"";
-            $classFixed="class=\"d-none d-$bootstrapBreakpoint-flex\"";
+        $classOffCanvas = "";
+        $classFixed = "";
+        if (!empty($bootstrapBreakpoint)) {
+            $classOffCanvas = "class=\"d-$bootstrapBreakpoint-none\"";
+            $classFixed = "class=\"d-none d-$bootstrapBreakpoint-flex\"";
         }
 
         $railBarListItems = TplUtility::getRailBarListItems();
@@ -617,7 +617,7 @@ class TplUtility
 </div>
 EOF;
 
-        if($breakpoint!=TplUtility::BREAKPOINT_NEVER_NAME) {
+        if ($breakpoint != TplUtility::BREAKPOINT_NEVER_NAME) {
             $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
             $railBarFixed = <<<EOF
 <div id="railbar-fixed" style="z-index: $zIndexRailbar;" $classFixed>
@@ -774,7 +774,6 @@ EOF;
         return $name;
 
     }
-
 
 
     /**
@@ -1288,14 +1287,14 @@ EOF;
 
         // Icon Png
         $possibleLocation = array(':wiki:favicon-32x32.png', ':favicon-32x32.png', 'images/favicon-32x32.png');
-        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation, true) . '"/>';
 
         $possibleLocation = array(':wiki:favicon-16x16.png', ':favicon-16x16.png', 'images/favicon-16x16.png');
-        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation, true) . '"/>';
 
         // Apple touch icon
         $possibleLocation = array(':wiki:apple-touch-icon.png', ':apple-touch-icon.png', 'images/apple-touch-icon.png');
-        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation,  true) . '" />' . NL;
+        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation, true) . '" />' . NL;
 
         return $return;
 
@@ -1430,8 +1429,21 @@ EOF;
         $INFO['prependTOC'] = $prependTOC;
 
         ob_start();
-        Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
-        $html_output = ob_get_clean();
+        if (class_exists("ComboStrap\Page") && $ACT === "show") {
+            global $ID;
+            /**
+             * The action null does nothing.
+             * See {@link Event::trigger()}
+             */
+            Event::createAndTrigger('TPL_ACT_RENDER', $ACT, null);
+            $html_output = Page::createPageFromId($ID)
+                ->toXhtml();
+            $html_output .= ob_get_clean();
+        } else {
+            Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
+            $html_output = ob_get_clean();
+        }
+
 
         /**
          * The action null does nothing.
