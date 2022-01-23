@@ -29,7 +29,7 @@ $mainHtml = TplUtility::tpl_content($prependTOC = false);
 $sidebarName = $conf['sidebar'];
 
 $nearestSidebar = page_findnearest($sidebarName);
-$showSideBar = $nearestSidebar !== false && ($ACT == 'show');
+$showSideBar = $nearestSidebar !== false && ($ACT === 'show');
 if ($showSideBar) {
     /**
      * Even if there is no sidebar
@@ -39,7 +39,6 @@ if ($showSideBar) {
      */
     $sideBarHtml = TplUtility::renderSlot($nearestSidebar);
 }
-
 
 
 /**
@@ -101,11 +100,19 @@ if ($layout === "median") {
 }
 $sidebarScale = 3;
 $sideKickBarScale = 3;
-if ($showSideBar) {
-    $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
-} else {
-    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
+
+switch ($ACT) {
+    case "show":
+        if ($showSideBar) {
+            $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
+        } else {
+            $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
+        }
+        break;
+    default:
+        $mainGridScale = $gridColumns;
 }
+
 
 /**
  * Landing page
