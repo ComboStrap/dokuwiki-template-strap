@@ -24,6 +24,21 @@ global $conf;
 $mainHtml = TplUtility::tpl_content($prependTOC = false);
 
 /**
+ * Main header and footer
+ */
+$nearestMainHeader = page_findnearest(TplUtility::SLOT_MAIN_HEADER_NAME);
+$showMainHeader = $nearestMainHeader !== false && ($ACT === 'show');
+if ($showMainHeader !== false) {
+    $mainHeaderHtml = TplUtility::renderSlot($nearestMainHeader);
+}
+
+$nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER_NAME);
+$showMainFooter = $nearestMainFooter !== false && ($ACT === 'show');
+if ($showMainFooter !== false) {
+    $mainFooterHtml = TplUtility::renderSlot($nearestMainFooter);
+}
+
+/**
  * Sidebar
  */
 $sidebarName = $conf['sidebar'];
@@ -287,10 +302,16 @@ echo $headerBar
         <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
             <?php
+            if($showMainHeader) {
+                echo $mainHeaderHtml;
+            }
             // Add a p around the content to enable the reader view in Mozilla
             // https://github.com/mozilla/readability
             // But Firefox close the P because they must contain only inline element ???
             echo $mainHtml;
+            if($showMainFooter) {
+                echo $mainFooterHtml;
+            }
             ?>
 
         </main>

@@ -130,6 +130,14 @@ class TplUtility
     const BREAKPOINT_EXTRA_LARGE_NAME = "extra-large";
     const BREAKPOINT_EXTRA_EXTRA_LARGE_NAME = "extra-extra-large";
     const BREAKPOINT_NEVER_NAME = "never";
+    /**
+     * Name of the main footer slot
+     */
+    public const SLOT_MAIN_FOOTER_NAME = "slot_main_footer";
+    /**
+     * Name of the main header slot
+     */
+    public const SLOT_MAIN_HEADER_NAME = "slot_main_header";
 
     /**
      * @var array|null
@@ -663,6 +671,11 @@ EOF;
 </ul>
 EOF;
 
+    }
+
+    public static function getMainFooterAndHeaderNames(): array
+    {
+        return [self::SLOT_MAIN_FOOTER_NAME, self::SLOT_MAIN_HEADER_NAME];
     }
 
     /**
