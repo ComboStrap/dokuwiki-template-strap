@@ -678,6 +678,31 @@ EOF;
         return [self::SLOT_MAIN_FOOTER_NAME, self::SLOT_MAIN_HEADER_NAME];
     }
 
+    public static function isNotSlot()
+    {
+        global $ID;
+        return strpos($ID, TplUtility::getSideSlotPageName()) === false
+            && strpos($ID, TplUtility::getSideKickSlotPageName()) === false
+            && strpos($ID, TplUtility::SLOT_MAIN_HEADER_NAME) === false
+            && strpos($ID, TplUtility::SLOT_MAIN_FOOTER_NAME) === false
+            && strpos($ID, TplUtility::getHeaderSlotPageName()) === false
+            && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
+    }
+
+    public static function getSideSlotPageName()
+    {
+        global $conf;
+        return $conf['sidebar'];
+    }
+
+    public static function isNotRootHome(): bool
+    {
+        global $ID;
+        global $conf;
+        $startName = $conf['start'];
+        return $ID !== $startName;
+    }
+
     /**
      * Hierarchical breadcrumbs
      *
@@ -1495,7 +1520,7 @@ EOF;
         return $html_output;
     }
 
-    static function getPageHeader()
+    static function getPageHeader(): string
     {
 
         $navBarPageName = TplUtility::getHeaderSlotPageName();

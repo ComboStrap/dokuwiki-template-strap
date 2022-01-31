@@ -24,24 +24,9 @@ global $conf;
 $mainHtml = TplUtility::tpl_content($prependTOC = false);
 
 /**
- * Main header and footer
- */
-$nearestMainHeader = page_findnearest(TplUtility::SLOT_MAIN_HEADER_NAME);
-$showMainHeader = $nearestMainHeader !== false && ($ACT === 'show');
-if ($showMainHeader !== false) {
-    $mainHeaderHtml = TplUtility::renderSlot($nearestMainHeader);
-}
-
-$nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER_NAME);
-$showMainFooter = $nearestMainFooter !== false && ($ACT === 'show');
-if ($showMainFooter !== false) {
-    $mainFooterHtml = TplUtility::renderSlot($nearestMainFooter);
-}
-
-/**
  * Sidebar
  */
-$sidebarName = $conf['sidebar'];
+$sidebarName = TplUtility::getSideSlotPageName();
 
 $nearestSidebar = page_findnearest($sidebarName);
 $showSideBar = $nearestSidebar !== false && ($ACT === 'show');
@@ -65,6 +50,28 @@ $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
     $sideKickBarHtml = TplUtility::renderSlot($sideKickPageName);
 }
+
+/**
+ * Main header and footer
+ */
+$nearestMainHeader = page_findnearest(TplUtility::SLOT_MAIN_HEADER_NAME);
+$showMainHeader = $nearestMainHeader !== false
+    && ($ACT === 'show')
+    && TplUtility::isNotSlot()
+    && TplUtility::isNotRootHome();
+if ($showMainHeader !== false) {
+    $mainHeaderHtml = TplUtility::renderSlot($nearestMainHeader);
+}
+
+$nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER_NAME);
+$showMainFooter = $nearestMainFooter !== false
+    && ($ACT === 'show')
+    && TplUtility::isNotSlot()
+    && TplUtility::isNotRootHome();
+if ($showMainFooter !== false) {
+    $mainFooterHtml = TplUtility::renderSlot($nearestMainFooter);
+}
+
 
 /**
  * Headerbar
@@ -302,14 +309,14 @@ echo $headerBar
         <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
             <?php
-            if($showMainHeader) {
+            if ($showMainHeader) {
                 echo $mainHeaderHtml;
             }
             // Add a p around the content to enable the reader view in Mozilla
             // https://github.com/mozilla/readability
             // But Firefox close the P because they must contain only inline element ???
             echo $mainHtml;
-            if($showMainFooter) {
+            if ($showMainFooter) {
                 echo $mainFooterHtml;
             }
             ?>
