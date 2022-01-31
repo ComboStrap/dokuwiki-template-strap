@@ -169,7 +169,7 @@ TplUtility::registerHeaderHandler();
  * Default rem font size
  */
 $rootStyle = "";
-$htmlRem = tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+$htmlRem = TplUtility::getRem();
 if ($htmlRem != null) {
     $rootStyle = "style=\"font-size:{$htmlRem}px\"";
 }

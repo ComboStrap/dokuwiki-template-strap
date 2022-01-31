@@ -709,6 +709,11 @@ EOF;
         return $ID !== $startName;
     }
 
+    public static function getRem()
+    {
+        return tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+    }
+
     /**
      * Hierarchical breadcrumbs
      *
