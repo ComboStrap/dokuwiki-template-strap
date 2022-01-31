@@ -19,9 +19,15 @@ global $conf;
  * The Content first because it contains
  * also the front matter that may influence the other bars
  *
- * The content: Show, Edit, ....
+ * If the do action is edit, php plugin uses echo
+ * a lot and the buffer is too small, we got then a buffer overflow
+ *
+ * Other action takes place further where the content should be
  */
-$mainHtml = TplUtility::tpl_content($prependTOC = false);
+$mainHtml = "";
+if ($ACT === 'show') {
+    $mainHtml = TplUtility::tpl_content($prependTOC = false);
+}
 
 /**
  * Sidebar
@@ -176,9 +182,10 @@ if ($htmlRem != null) {
 $railBar = TplUtility::getRailBar();
 
 /**
- * The output buffer should be empty
+ * The output buffer should be empty on show
+ * and can be not empty on other do action
  */
-TplUtility::outputBufferShouldBeEmpty();
+$outputBuffer = TplUtility::outputBuffer();
 
 
 ?>
@@ -315,7 +322,16 @@ echo $headerBar
             // Add a p around the content to enable the reader view in Mozilla
             // https://github.com/mozilla/readability
             // But Firefox close the P because they must contain only inline element ???
-            echo $mainHtml;
+            echo $outputBuffer;
+            if ($ACT === "show") {
+                echo $mainHtml;
+            } else {
+                // all other action are using the php buffer
+                // we can then have an overflow
+                // the buffer is flushed
+                // this is why we output the content here
+                echo TplUtility::tpl_content($prependTOC = false);
+            }
             if ($showMainFooter) {
                 echo $mainFooterHtml;
             }

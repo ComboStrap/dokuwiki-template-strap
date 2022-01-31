@@ -428,7 +428,7 @@ class TplUtility
              * if in a php test unit, we send a php request two times
              * the headers have been already send and the
              * {@link msg()} function will send them
-             * causing the {@link TplUtility::outputBufferShouldBeEmpty() output buffer check} to fail
+             * causing the {@link TplUtility::outputBuffer() output buffer check} to fail
              */
             global $MSG_shown;
             if (isset($MSG_shown) || headers_sent()) {
@@ -541,17 +541,23 @@ class TplUtility
      * you may get a text before the HTML header
      * and it mess up the whole page
      */
-    public static function outputBufferShouldBeEmpty()
+    public static function outputBuffer()
     {
         $length = ob_get_length();
+        $ob = "";
         if ($length > 0) {
             $ob = ob_get_contents();
             ob_clean();
-            /**
-             * If you got this problem check that this is not a character before a  `<?php` declaration
-             */
-            TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
+            global $ACT;
+            if ($ACT === "show") {
+                /**
+                 * If you got this problem check that this is not a character before a  `<?php` declaration
+                 */
+                TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
+            }
         }
+        return $ob;
+
     }
 
 
