@@ -659,7 +659,7 @@ EOF;
      * @return string - the ul part of the railbar
      */
     public
-    static function getRailBarListItems()
+    static function getRailBarListItems(): string
     {
         $liUserTools = (new UserMenu())->getListItems('action');
         $liPageTools = (new PageMenu())->getListItems();

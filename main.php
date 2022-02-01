@@ -296,81 +296,80 @@ echo $headerBar
     <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
 
 
-        <?php
-        // SIDE BAR
-        if ($showSideBar): ?>
-            <div role="complementary"
-                 class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
-
-                <nav class="bs-docs-sidebar hidden-prints">
-
-
-                    <?php echo $sideBarHtml ?>
-
-                </nav>
-
-            </div>
-        <?php endif; ?>
-
-
-        <main class="col-md-<?php echo($mainGridScale) ?> order-first">
+        <?php if ($ACT === "show") { ?>
 
             <?php
-            if ($showMainHeader) {
-                echo $mainHeaderHtml;
-            }
-            // Add a p around the content to enable the reader view in Mozilla
-            // https://github.com/mozilla/readability
-            // But Firefox close the P because they must contain only inline element ???
-            echo $outputBuffer;
-            if ($ACT === "show") {
+            // SIDE BAR
+            if ($showSideBar): ?>
+                <div role="complementary"
+                     class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
+
+                    <nav class="bs-docs-sidebar hidden-prints">
+
+
+                        <?php echo $sideBarHtml ?>
+
+                    </nav>
+
+                </div>
+            <?php endif; ?>
+
+            <main class="col-md-<?php echo($mainGridScale) ?> order-first">
+
+                <?php
+                if ($showMainHeader) {
+                    echo $mainHeaderHtml;
+                }
+                // Add a p around the content to enable the reader view in Mozilla
+                // https://github.com/mozilla/readability
+                // But Firefox close the P because they must contain only inline element ???
+                echo $outputBuffer;
+
                 echo $mainHtml;
-            } else {
+                if ($showMainFooter) {
+                    echo $mainFooterHtml;
+                }
+                ?>
+            </main>
+
+            <?php if ($showSideKickBar):  // Sidekick bar  ?>
+
+                <div role="complementary"
+                     class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
+
+                    <nav class="bs-docs-sidebar hidden-prints">
+
+                        <?php tpl_flush() ?>
+
+                        <?php
+                        echo $sideKickBarHtml
+
+                        // <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>
+                        ?>
+
+                    </nav>
+
+
+                    <?php
+                    // A trigger to show content on the sidebar part of the website
+                    $data = "";// Mandatory
+                    Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
+                    ?>
+
+                </div>
+            <?php endif;  // end show content?>
+
+        <?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
+            <main class="col-md-<?php echo($mainGridScale) ?>">
+                <?php
                 // all other action are using the php buffer
                 // we can then have an overflow
                 // the buffer is flushed
-                // this is why we output the content here
+                // this is why we output the content of do page here
                 echo TplUtility::tpl_content($prependTOC = false);
-            }
-            if ($showMainFooter) {
-                echo $mainFooterHtml;
-            }
-            ?>
-
-        </main>
-
-
-        <?php
-        // SIDE BAR
-        if ($showSideKickBar): ?>
-
-            <div role="complementary"
-                 class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
-
-                <nav class="bs-docs-sidebar hidden-prints">
-
-                    <?php tpl_flush() ?>
-
-                    <?php
-                    echo $sideKickBarHtml
-
-                    // <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>
-                    ?>
-
-                </nav>
-
-
-                <?php
-                // A trigger to show content on the sidebar part of the website
-                $data = "";// Mandatory
-                Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
                 ?>
-
-            </div>
-        <?php
-            // end content
-        endif;
-        ?>
+            </main>
+        <?php } ?>
 
     </div>
 
