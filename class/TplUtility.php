@@ -679,12 +679,17 @@ EOF;
 
     }
 
-    public static function getMainFooterAndHeaderNames(): array
+    public static function getMainHeaderSlotName(): string
     {
-        return [self::SLOT_MAIN_FOOTER_NAME, self::SLOT_MAIN_HEADER_NAME];
+        return self::SLOT_MAIN_HEADER_NAME;
     }
 
-    public static function isNotSlot()
+    public static function getMainFooterSlotName(): string
+    {
+        return self::SLOT_MAIN_FOOTER_NAME;
+    }
+
+    public static function isNotSlot(): bool
     {
         global $ID;
         return strpos($ID, TplUtility::getSideSlotPageName()) === false
