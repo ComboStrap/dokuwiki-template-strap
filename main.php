@@ -343,8 +343,6 @@ echo $headerBar
 
                         <?php
                         echo $sideKickBarHtml
-
-                        // <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>
                         ?>
 
                     </nav>
