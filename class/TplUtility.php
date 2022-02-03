@@ -1542,7 +1542,7 @@ EOF;
         $navBarPageName = TplUtility::getHeaderSlotPageName();
         if ($id = page_findnearest($navBarPageName)) {
 
-            $header = tpl_include_page($id, 0, false);
+            $header = TplUtility::renderSlot($id);
 
         } else {
 
@@ -1558,13 +1558,13 @@ EOF;
 
     }
 
-    static function getFooter()
+    static function getFooter(): string
     {
         $domain = self::getApexDomainUrl();
 
         $footerPageName = TplUtility::getFooterSlotPageName();
-        if ($id = page_findnearest($footerPageName)) {
-            $footer = tpl_include_page($id, 0, false);
+        if ($nearestFooterPageId = page_findnearest($footerPageName)) {
+            $footer = TplUtility::renderSlot($nearestFooterPageId);
         } else {
             $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
         }
@@ -1573,7 +1573,7 @@ EOF;
         return "<div class=\"d-print-none\">$footer</div>";
     }
 
-    static function getPoweredBy()
+    static function getPoweredBy(): string
     {
 
         $domain = self::getApexDomainUrl();
