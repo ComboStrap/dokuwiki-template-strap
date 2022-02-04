@@ -260,6 +260,11 @@ EOF;
             }
         </style>
     <?php } ?>
+    <style>
+        .slot-combo {
+            position: relative;
+        }
+    </style>
 
 </head>
 <?php
@@ -303,13 +308,9 @@ echo $headerBar
             // SIDE BAR
             if ($showSideBar): ?>
                 <div role="complementary"
-                     class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
+                     class="slot-combo col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
 
-                    <nav class="bs-docs-sidebar hidden-prints">
-
-                        <?php echo $sideBarHtml ?>
-
-                    </nav>
+                    <?php echo $sideBarHtml ?>
 
                 </div>
             <?php endif; ?>
@@ -317,7 +318,7 @@ echo $headerBar
             <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
                 <?php if ($showMainHeader) { ?>
-                    <div id="main-header" style="position: relative;">
+                    <div id="main-header" class="slot-combo">
                         <?php echo $mainHeaderHtml; ?>
                     </div>
                 <?php }
@@ -328,7 +329,7 @@ echo $headerBar
 
                 echo $mainHtml;
                 if ($showMainFooter) { ?>
-                    <div id="main-footer" style="position: relative;z-index: 0;">
+                    <div id="main-footer" class="slot-combo">
                         <?php echo $mainFooterHtml; ?>
                     </div>
                 <?php }
@@ -338,20 +339,13 @@ echo $headerBar
             <?php if ($showSideKickBar):  // Sidekick bar  ?>
 
                 <div role="complementary"
-                     class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
-
-                    <nav class="bs-docs-sidebar hidden-prints">
-
-                        <?php tpl_flush() ?>
-
-                        <?php
-                        echo $sideKickBarHtml
-                        ?>
-
-                    </nav>
-
+                     class="col-md-<?php echo($sideKickBarScale) ?> slot-combo order-xs-2 order-md-last d-print-none">
 
                     <?php
+                    tpl_flush();
+
+                    echo $sideKickBarHtml;
+
                     // A trigger to show content on the sidebar part of the website
                     $data = "";// Mandatory
                     Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
