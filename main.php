@@ -156,6 +156,7 @@ if ($ACT != "show") {
         $landingPageGutter = "style=\"--bs-gutter-x: 0\"";
     }
 }
+$mainContainedClasses = "";
 if ($mainIsContained) {
     $mainContainedClasses = "container mb-3";
 }
@@ -306,7 +307,6 @@ echo $headerBar
 
                     <nav class="bs-docs-sidebar hidden-prints">
 
-
                         <?php echo $sideBarHtml ?>
 
                     </nav>
@@ -316,19 +316,22 @@ echo $headerBar
 
             <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
-                <?php
-                if ($showMainHeader) {
-                    echo $mainHeaderHtml;
-                }
+                <?php if ($showMainHeader) { ?>
+                    <div id="main-header" style="position: relative;">
+                        <?php echo $mainHeaderHtml; ?>
+                    </div>
+                <?php }
                 // Add a p around the content to enable the reader view in Mozilla
                 // https://github.com/mozilla/readability
                 // But Firefox close the P because they must contain only inline element ???
                 echo $outputBuffer;
 
                 echo $mainHtml;
-                if ($showMainFooter) {
-                    echo $mainFooterHtml;
-                }
+                if ($showMainFooter) { ?>
+                    <div id="main-footer" style="position: relative;">
+                        <?php echo $mainFooterHtml; ?>
+                    </div>
+                <?php }
                 ?>
             </main>
 
