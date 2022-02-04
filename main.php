@@ -328,7 +328,7 @@ echo $headerBar
 
                 echo $mainHtml;
                 if ($showMainFooter) { ?>
-                    <div id="main-footer" style="position: relative;">
+                    <div id="main-footer" style="position: relative;z-index: 0;">
                         <?php echo $mainFooterHtml; ?>
                     </div>
                 <?php }
