@@ -343,8 +343,12 @@ class TplUtility
     {
 
         if (class_exists("ComboStrap\Page")) {
-            return Page::createPageFromId($slotId)
-                ->toXhtml();
+            $page = Page::createPageFromId($slotId);
+            $html = $page->toXhtml();
+            if (class_exists("ComboStrap\PageEdit")) {
+                $html = PageEdit::replaceAll($html);
+            }
+            return $html;
         } else {
             TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
             return tpl_include_page($slotId, 0, 1);
