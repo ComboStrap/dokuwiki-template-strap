@@ -259,7 +259,9 @@ EOF;
                 right: 44px !important;
             }
         </style>
-    <?php } ?>
+    <?php }
+    // slot-combo is relative to position the edit button
+    ?>
     <style>
         .slot-combo {
             position: relative;
