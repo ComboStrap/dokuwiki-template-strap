@@ -293,7 +293,7 @@ class TplUtility
      * @param $linkData - an array of link style sheet data
      * @return array - the array with the preload attributes
      */
-    private static function toPreloadCss($linkData)
+    private static function toPreloadCss($linkData): array
     {
         /**
          * Save the stylesheet to load it at the end
@@ -1127,7 +1127,7 @@ EOF;
                     $headerData[] = $bootstrapCss;
 
                     // preload all CSS is an heresy as it creates a FOUC (Flash of non-styled element)
-                    // but we known it now and this is
+                    // but we know it only now and this is it
                     $cssPreloadConf = tpl_getConf(self::CONF_PRELOAD_CSS);
                     $newLinkData = array();
                     foreach ($headerData as $linkData) {
@@ -1145,10 +1145,10 @@ EOF;
                                  * We get that for instance for css animation style sheet
                                  * that are not needed for rendering
                                  */
-                                if (isset($linkData["critical"])) {
-                                    $critical = $linkData["critical"];
-                                    $preload = !(filter_var($critical, FILTER_VALIDATE_BOOLEAN));
-                                    unset($linkData["critical"]);
+                                if (isset($linkData["rel"])) {
+                                    if ($linkData["rel"] === "preload") {
+                                        $preload = true;
+                                    }
                                 }
                                 if ($preload) {
                                     $newLinkData[] = TplUtility::toPreloadCss($linkData);
