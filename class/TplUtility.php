@@ -1144,13 +1144,17 @@ EOF;
                                 if (isset($linkData["as"])) {
                                     if ($linkData["as"] === "style") {
                                         $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
+                                        continue 2;
                                     }
                                 }
+                                $newLinkData[] = $linkData;
                                 break;
                             case 'stylesheet':
                                 if ($cssPreloadConf) {
                                     $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
+                                    continue 2;
                                 }
+                                $newLinkData[] = $linkData;
                                 break;
                             default:
                                 $newLinkData[] = $linkData;
