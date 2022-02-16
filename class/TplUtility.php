@@ -293,7 +293,7 @@ class TplUtility
      * @param $linkData - an array of link style sheet data
      * @return array - the array with the preload attributes
      */
-    private static function toPreloadCss($linkData): array
+    private static function captureStylePreloadingAndTransformToPreloadCssTag($linkData): array
     {
         /**
          * Save the stylesheet to load it at the end
@@ -1134,26 +1134,22 @@ EOF;
                         switch ($linkData['rel']) {
                             case 'edit':
                                 break;
-                            case 'stylesheet':
-                                /**
-                                 * Preloading default to the configuration
-                                 */
-                                $preload = $cssPreloadConf;
+                            case 'preload':
                                 /**
                                  * Preload can be set at the array level with the critical attribute
                                  * If the preload attribute is present
                                  * We get that for instance for css animation style sheet
                                  * that are not needed for rendering
                                  */
-                                if (isset($linkData["rel"])) {
-                                    if ($linkData["rel"] === "preload") {
-                                        $preload = true;
+                                if (isset($linkData["as"])) {
+                                    if ($linkData["as"] === "style") {
+                                        $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
                                     }
                                 }
-                                if ($preload) {
-                                    $newLinkData[] = TplUtility::toPreloadCss($linkData);
-                                } else {
-                                    $newLinkData[] = $linkData;
+                                break;
+                            case 'stylesheet':
+                                if ($cssPreloadConf) {
+                                    $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
                                 }
                                 break;
                             default:
