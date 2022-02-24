@@ -4,6 +4,9 @@
 @item-width: (@ico-width + @ico-margin + @ico-margin);
 @item-height: (@ico-width + @ico-margin);
 @canvas-control-height: 45vh;
+@primary: rgba(0, 0, 0, 0.65);
+@primary-icon: rgba(0, 0, 0, 0.35);
+@secondary: #ccc;
 
 .railbar {
 
@@ -17,7 +20,6 @@
         padding: 0;
         margin: 0;
         list-style: none;
-        font-size: 0.875em;
 
         a {
 
@@ -26,8 +28,11 @@
             border: 1px solid transparent;
             white-space: nowrap;
             line-height: @item-height;
-            vertical-align: middle;
             height: @item-height;
+            color: @primary;
+            font-weight: 400;
+            font-size: 1rem;
+            text-decoration: none;
 
             span {
                 margin: 0 @ico-margin;
@@ -39,7 +44,7 @@
                 margin: 0 @ico-margin;
                 display: inline-block;
                 vertical-align: middle;
-                fill: @ini_border;
+                fill: @primary-icon;
             }
         }
 
@@ -47,14 +52,10 @@
         a:active,
         a:focus,
         a:hover {
-            background-color: @ini_background_alt;
-
+            background-color: @secondary;
+            text-decoration: underline;
             span {
                 display: inline-block;
-            }
-
-            svg {
-                fill: @ini_link;
             }
         }
 

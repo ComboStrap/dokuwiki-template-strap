@@ -130,6 +130,14 @@ class TplUtility
     const BREAKPOINT_EXTRA_LARGE_NAME = "extra-large";
     const BREAKPOINT_EXTRA_EXTRA_LARGE_NAME = "extra-extra-large";
     const BREAKPOINT_NEVER_NAME = "never";
+    /**
+     * Name of the main footer slot
+     */
+    public const SLOT_MAIN_FOOTER_NAME = "slot_main_footer";
+    /**
+     * Name of the main header slot
+     */
+    public const SLOT_MAIN_HEADER_NAME = "slot_main_header";
 
     /**
      * @var array|null
@@ -285,7 +293,7 @@ class TplUtility
      * @param $linkData - an array of link style sheet data
      * @return array - the array with the preload attributes
      */
-    private static function toPreloadCss($linkData)
+    private static function captureStylePreloadingAndTransformToPreloadCssTag($linkData): array
     {
         /**
          * Save the stylesheet to load it at the end
@@ -322,7 +330,7 @@ class TplUtility
      * An adaptation from {@link tpl_include_page()}
      * to make the cache namespace
      *
-     * @param $barName
+     * @param $slotId
      * @return string|null
      *
      *
@@ -331,15 +339,23 @@ class TplUtility
      * debug information in the form of
      * an HTML comment
      */
-    public static function renderSlot($barName)
+    public static function renderSlot($slotId): ?string
     {
 
         if (class_exists("ComboStrap\Page")) {
-            $page = new Page($barName);
-            return $page->toXhtml();
+            $page = Page::createPageFromId($slotId);
+            try {
+                $html = $page->toXhtml();
+                if (class_exists("ComboStrap\PageEdit")) {
+                    $html = PageEdit::replaceAll($html);
+                }
+            } catch (ExceptionCombo $e) {
+                $html = "Rendering the slot, return an error. {$e->getMessage()}";
+            }
+            return $html;
         } else {
             TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
-            return tpl_include_page($barName, 0, 1);
+            return tpl_include_page($slotId, 0, 1);
         }
 
     }
@@ -420,7 +436,7 @@ class TplUtility
              * if in a php test unit, we send a php request two times
              * the headers have been already send and the
              * {@link msg()} function will send them
-             * causing the {@link TplUtility::outputBufferShouldBeEmpty() output buffer check} to fail
+             * causing the {@link TplUtility::outputBuffer() output buffer check} to fail
              */
             global $MSG_shown;
             if (isset($MSG_shown) || headers_sent()) {
@@ -533,17 +549,23 @@ class TplUtility
      * you may get a text before the HTML header
      * and it mess up the whole page
      */
-    public static function outputBufferShouldBeEmpty()
+    public static function outputBuffer()
     {
         $length = ob_get_length();
+        $ob = "";
         if ($length > 0) {
             $ob = ob_get_contents();
             ob_clean();
-            /**
-             * If you got this problem check that this is not a character before a  `<?php` declaration
-             */
-            TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
+            global $ACT;
+            if ($ACT === "show") {
+                /**
+                 * If you got this problem check that this is not a character before a  `<?php` declaration
+                 */
+                TplUtility::msg("A plugin has send text before the creation of the page. Because it will mess the rendering, we have deleted it. The content was: (" . $ob . ")", TplUtility::LVL_MSG_ERROR, "strap");
+            }
         }
+        return $ob;
+
     }
 
 
@@ -565,7 +587,7 @@ class TplUtility
         $breakpoint = tpl_getConf(TplUtility::CONF_BREAKPOINT_RAIL_BAR, TplUtility::BREAKPOINT_LARGE_NAME);
 
         $bootstrapBreakpoint = "";
-        switch($breakpoint){
+        switch ($breakpoint) {
             case TplUtility::BREAKPOINT_EXTRA_SMALL_NAME:
                 $bootstrapBreakpoint = "xs";
                 break;
@@ -586,11 +608,11 @@ class TplUtility
                 break;
         }
 
-        $classOffCanvas="";
-        $classFixed="";
-        if(!empty($bootstrapBreakpoint)){
-            $classOffCanvas="class=\"d-$bootstrapBreakpoint-none\"";
-            $classFixed="class=\"d-none d-$bootstrapBreakpoint-flex\"";
+        $classOffCanvas = "";
+        $classFixed = "";
+        if (!empty($bootstrapBreakpoint)) {
+            $classOffCanvas = "class=\"d-$bootstrapBreakpoint-none\"";
+            $classFixed = "class=\"d-none d-$bootstrapBreakpoint-flex\"";
         }
 
         $railBarListItems = TplUtility::getRailBarListItems();
@@ -617,7 +639,7 @@ class TplUtility
 </div>
 EOF;
 
-        if($breakpoint!=TplUtility::BREAKPOINT_NEVER_NAME) {
+        if ($breakpoint != TplUtility::BREAKPOINT_NEVER_NAME) {
             $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
             $railBarFixed = <<<EOF
 <div id="railbar-fixed" style="z-index: $zIndexRailbar;" $classFixed>
@@ -645,7 +667,7 @@ EOF;
      * @return string - the ul part of the railbar
      */
     public
-    static function getRailBarListItems()
+    static function getRailBarListItems(): string
     {
         $liUserTools = (new UserMenu())->getListItems('action');
         $liPageTools = (new PageMenu())->getListItems();
@@ -663,6 +685,46 @@ EOF;
 </ul>
 EOF;
 
+    }
+
+    public static function getMainHeaderSlotName(): string
+    {
+        return self::SLOT_MAIN_HEADER_NAME;
+    }
+
+    public static function getMainFooterSlotName(): string
+    {
+        return self::SLOT_MAIN_FOOTER_NAME;
+    }
+
+    public static function isNotSlot(): bool
+    {
+        global $ID;
+        return strpos($ID, TplUtility::getSideSlotPageName()) === false
+            && strpos($ID, TplUtility::getSideKickSlotPageName()) === false
+            && strpos($ID, TplUtility::SLOT_MAIN_HEADER_NAME) === false
+            && strpos($ID, TplUtility::SLOT_MAIN_FOOTER_NAME) === false
+            && strpos($ID, TplUtility::getHeaderSlotPageName()) === false
+            && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
+    }
+
+    public static function getSideSlotPageName()
+    {
+        global $conf;
+        return $conf['sidebar'];
+    }
+
+    public static function isNotRootHome(): bool
+    {
+        global $ID;
+        global $conf;
+        $startName = $conf['start'];
+        return $ID !== $startName;
+    }
+
+    public static function getRem()
+    {
+        return tpl_getConf(TplUtility::CONF_REM_SIZE, null);
     }
 
     /**
@@ -774,7 +836,6 @@ EOF;
         return $name;
 
     }
-
 
 
     /**
@@ -1066,34 +1127,34 @@ EOF;
                     $headerData[] = $bootstrapCss;
 
                     // preload all CSS is an heresy as it creates a FOUC (Flash of non-styled element)
-                    // but we known it now and this is
+                    // but we know it only now and this is it
                     $cssPreloadConf = tpl_getConf(self::CONF_PRELOAD_CSS);
                     $newLinkData = array();
                     foreach ($headerData as $linkData) {
                         switch ($linkData['rel']) {
                             case 'edit':
                                 break;
-                            case 'stylesheet':
-                                /**
-                                 * Preloading default to the configuration
-                                 */
-                                $preload = $cssPreloadConf;
+                            case 'preload':
                                 /**
                                  * Preload can be set at the array level with the critical attribute
                                  * If the preload attribute is present
                                  * We get that for instance for css animation style sheet
                                  * that are not needed for rendering
                                  */
-                                if (isset($linkData["critical"])) {
-                                    $critical = $linkData["critical"];
-                                    $preload = !(filter_var($critical, FILTER_VALIDATE_BOOLEAN));
-                                    unset($linkData["critical"]);
+                                if (isset($linkData["as"])) {
+                                    if ($linkData["as"] === "style") {
+                                        $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
+                                        continue 2;
+                                    }
                                 }
-                                if ($preload) {
-                                    $newLinkData[] = TplUtility::toPreloadCss($linkData);
-                                } else {
-                                    $newLinkData[] = $linkData;
+                                $newLinkData[] = $linkData;
+                                break;
+                            case 'stylesheet':
+                                if ($cssPreloadConf) {
+                                    $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
+                                    continue 2;
                                 }
+                                $newLinkData[] = $linkData;
                                 break;
                             default:
                                 $newLinkData[] = $linkData;
@@ -1288,14 +1349,14 @@ EOF;
 
         // Icon Png
         $possibleLocation = array(':wiki:favicon-32x32.png', ':favicon-32x32.png', 'images/favicon-32x32.png');
-        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="32x32" href="' . tpl_getMediaFile($possibleLocation, true) . '"/>';
 
         $possibleLocation = array(':wiki:favicon-16x16.png', ':favicon-16x16.png', 'images/favicon-16x16.png');
-        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation,  true) . '"/>';
+        $return .= '<link rel="icon" type="image/png" sizes="16x16" href="' . tpl_getMediaFile($possibleLocation, true) . '"/>';
 
         // Apple touch icon
         $possibleLocation = array(':wiki:apple-touch-icon.png', ':apple-touch-icon.png', 'images/apple-touch-icon.png');
-        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation,  true) . '" />' . NL;
+        $return .= '<link rel="apple-touch-icon" href="' . tpl_getMediaFile($possibleLocation, true) . '" />' . NL;
 
         return $return;
 
@@ -1421,16 +1482,58 @@ EOF;
     /**
      * @param bool $prependTOC
      * @return false|string - Adapted from {@link tpl_content()} to return the HTML
+     * Call {@link html_show()} from {@link Show::tplContent()}
      */
     static function tpl_content(bool $prependTOC = true)
     {
         global $ACT;
+        global $REV;
+        global $DATE_AT;
+
         global $INFO;
         $INFO['prependTOC'] = $prependTOC;
 
         ob_start();
-        Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
-        $html_output = ob_get_clean();
+        if (
+            class_exists("ComboStrap\Page")
+            && $ACT === "show" // show only
+            && ($REV === 0 && $DATE_AT === "") // ro revisions
+        ) {
+            /**
+             * The code below replace the other block
+             * to take the snippet management into account
+             * (ie we write them when the {@link  HtmlDocument::storeContent() document is stored into cache)
+             */
+            global $ID;
+            /**
+             * The action null does nothing.
+             * See {@link Event::trigger()}
+             */
+            Event::createAndTrigger('TPL_ACT_RENDER', $ACT, null);
+
+            /**
+             * The code below replace {@link html_show()}
+             */
+            $html_output = Page::createPageFromId($ID)
+                ->toXhtml();
+            // section editing show only if not a revision and $ACT=show
+            // which is the case in this block
+            $showEdit = true;
+            $html_output = html_secedit($html_output, $showEdit);
+
+            /**
+             * Add the buffer (eventually)
+             *
+             * Not needed with our code, may be with other plugins, it should not as the
+             * syntax plugin should use the {@link \Doku_Renderer::$doc)
+             *
+             */
+            $html_output .= ob_get_clean();
+        } else {
+            Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
+            $html_output = ob_get_clean();
+        }
+
 
         /**
          * The action null does nothing.
@@ -1441,13 +1544,13 @@ EOF;
         return $html_output;
     }
 
-    static function getPageHeader()
+    static function getPageHeader(): string
     {
 
         $navBarPageName = TplUtility::getHeaderSlotPageName();
         if ($id = page_findnearest($navBarPageName)) {
 
-            $header = tpl_include_page($id, 0, false);
+            $header = TplUtility::renderSlot($id);
 
         } else {
 
@@ -1463,13 +1566,13 @@ EOF;
 
     }
 
-    static function getFooter()
+    static function getFooter(): string
     {
         $domain = self::getApexDomainUrl();
 
         $footerPageName = TplUtility::getFooterSlotPageName();
-        if ($id = page_findnearest($footerPageName)) {
-            $footer = tpl_include_page($id, 0, false);
+        if ($nearestFooterPageId = page_findnearest($footerPageName)) {
+            $footer = TplUtility::renderSlot($nearestFooterPageId);
         } else {
             $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
         }
@@ -1478,7 +1581,7 @@ EOF;
         return "<div class=\"d-print-none\">$footer</div>";
     }
 
-    static function getPoweredBy()
+    static function getPoweredBy(): string
     {
 
         $domain = self::getApexDomainUrl();

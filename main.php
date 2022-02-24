@@ -19,17 +19,23 @@ global $conf;
  * The Content first because it contains
  * also the front matter that may influence the other bars
  *
- * The content: Show, Edit, ....
+ * If the do action is edit, php plugin uses echo
+ * a lot and the buffer is too small, we got then a buffer overflow
+ *
+ * Other action takes place further where the content should be
  */
-$mainHtml = TplUtility::tpl_content($prependTOC = false);
+$mainHtml = "";
+if ($ACT === 'show') {
+    $mainHtml = TplUtility::tpl_content($prependTOC = false);
+}
 
 /**
  * Sidebar
  */
-$sidebarName = $conf['sidebar'];
+$sidebarName = TplUtility::getSideSlotPageName();
 
-$hasSidebar = page_findnearest($sidebarName);
-$showSideBar = $hasSidebar && ($ACT == 'show');
+$nearestSidebar = page_findnearest($sidebarName);
+$showSideBar = $nearestSidebar !== false && ($ACT === 'show');
 if ($showSideBar) {
     /**
      * Even if there is no sidebar
@@ -37,7 +43,7 @@ if ($showSideBar) {
      * debug information in the form of
      * an HTML comment
      */
-    $sideBarHtml = TplUtility::renderSlot($sidebarName);
+    $sideBarHtml = TplUtility::renderSlot($nearestSidebar);
 }
 
 
@@ -50,6 +56,28 @@ $showSideKickBar = $hasRightSidebar && ($ACT == 'show');
 if ($showSideKickBar) {
     $sideKickBarHtml = TplUtility::renderSlot($sideKickPageName);
 }
+
+/**
+ * Main header and footer
+ */
+$nearestMainHeader = page_findnearest(TplUtility::SLOT_MAIN_HEADER_NAME);
+$showMainHeader = $nearestMainHeader !== false
+    && ($ACT === 'show')
+    && TplUtility::isNotSlot()
+    && TplUtility::isNotRootHome();
+if ($showMainHeader !== false) {
+    $mainHeaderHtml = TplUtility::renderSlot($nearestMainHeader);
+}
+
+$nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER_NAME);
+$showMainFooter = $nearestMainFooter !== false
+    && ($ACT === 'show')
+    && TplUtility::isNotSlot()
+    && TplUtility::isNotRootHome();
+if ($showMainFooter !== false) {
+    $mainFooterHtml = TplUtility::renderSlot($nearestMainFooter);
+}
+
 
 /**
  * Headerbar
@@ -100,11 +128,19 @@ if ($layout === "median") {
 }
 $sidebarScale = 3;
 $sideKickBarScale = 3;
-if ($showSideBar) {
-    $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
-} else {
-    $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
+
+switch ($ACT) {
+    case "show":
+        if ($showSideBar) {
+            $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
+        } else {
+            $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
+        }
+        break;
+    default:
+        $mainGridScale = $gridColumns;
 }
+
 
 /**
  * Landing page
@@ -120,6 +156,7 @@ if ($ACT != "show") {
         $landingPageGutter = "style=\"--bs-gutter-x: 0\"";
     }
 }
+$mainContainedClasses = "";
 if ($mainIsContained) {
     $mainContainedClasses = "container mb-3";
 }
@@ -133,7 +170,7 @@ TplUtility::registerHeaderHandler();
  * Default rem font size
  */
 $rootStyle = "";
-$htmlRem = tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+$htmlRem = TplUtility::getRem();
 if ($htmlRem != null) {
     $rootStyle = "style=\"font-size:{$htmlRem}px\"";
 }
@@ -146,9 +183,10 @@ if ($htmlRem != null) {
 $railBar = TplUtility::getRailBar();
 
 /**
- * The output buffer should be empty
+ * The output buffer should be empty on show
+ * and can be not empty on other do action
  */
-TplUtility::outputBufferShouldBeEmpty();
+$outputBuffer = TplUtility::outputBuffer();
 
 
 ?>
@@ -221,7 +259,14 @@ EOF;
                 right: 44px !important;
             }
         </style>
-    <?php } ?>
+    <?php }
+    // slot-combo is relative to position the edit button
+    ?>
+    <style>
+        .slot-combo {
+            position: relative;
+        }
+    </style>
 
 </head>
 <?php
@@ -259,66 +304,69 @@ echo $headerBar
     <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
 
 
-        <?php
-        // SIDE BAR
-        if ($showSideBar): ?>
-            <div role="complementary"
-                 class="col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
+        <?php if ($ACT === "show") { ?>
 
-                <nav class="bs-docs-sidebar hidden-prints">
-
+            <?php
+            // SIDE BAR
+            if ($showSideBar): ?>
+                <div role="complementary"
+                     class="slot-combo col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
 
                     <?php echo $sideBarHtml ?>
 
-                </nav>
+                </div>
+            <?php endif; ?>
 
-            </div>
-        <?php endif; ?>
+            <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
+                <?php if ($showMainHeader) { ?>
+                    <div id="main-header" class="slot-combo">
+                        <?php echo $mainHeaderHtml; ?>
+                    </div>
+                <?php }
+                // Add a p around the content to enable the reader view in Mozilla
+                // https://github.com/mozilla/readability
+                // But Firefox close the P because they must contain only inline element ???
+                echo $outputBuffer;
 
-        <main class="col-md-<?php echo($mainGridScale) ?> order-first">
+                echo $mainHtml;
+                if ($showMainFooter) { ?>
+                    <div id="main-footer" class="slot-combo">
+                        <?php echo $mainFooterHtml; ?>
+                    </div>
+                <?php }
+                ?>
+            </main>
 
-            <?php
-            // Add a p around the content to enable the reader view in Mozilla
-            // https://github.com/mozilla/readability
-            // But Firefox close the P because they must contain only inline element ???
-            echo $mainHtml;
-            ?>
+            <?php if ($showSideKickBar):  // Sidekick bar  ?>
 
-        </main>
-
-
-        <?php
-        // SIDE BAR
-        if ($showSideKickBar): ?>
-
-            <div role="complementary"
-                 class="col-md-<?php echo($sideKickBarScale) ?> order-xs-2 order-md-last d-print-none">
-
-                <nav class="bs-docs-sidebar hidden-prints">
-
-                    <?php tpl_flush() ?>
+                <div role="complementary"
+                     class="col-md-<?php echo($sideKickBarScale) ?> slot-combo order-xs-2 order-md-last d-print-none">
 
                     <?php
-                    echo $sideKickBarHtml
+                    tpl_flush();
 
-                    // <a class="back-to-top" href="#dokuwiki__top"> Back to top </a>
+                    echo $sideKickBarHtml;
+
+                    // A trigger to show content on the sidebar part of the website
+                    $data = "";// Mandatory
+                    Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
                     ?>
 
-                </nav>
+                </div>
+            <?php endif;  // end show content?>
 
-
+        <?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
+            <main class="col-md-<?php echo($mainGridScale) ?>">
                 <?php
-                // A trigger to show content on the sidebar part of the website
-                $data = "";// Mandatory
-                Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
+                // all other action are using the php buffer
+                // we can then have an overflow
+                // the buffer is flushed
+                // this is why we output the content of do page here
+                echo TplUtility::tpl_content($prependTOC = false);
                 ?>
-
-            </div>
-        <?php
-            // end content
-        endif;
-        ?>
+            </main>
+        <?php } ?>
 
     </div>
 
