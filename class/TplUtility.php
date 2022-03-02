@@ -343,14 +343,14 @@ class TplUtility
     {
 
         if (class_exists("ComboStrap\Page")) {
-            $page = Page::createPageFromId($slotId);
             try {
+                $page = Page::createPageFromId($slotId);
                 $html = $page->toXhtml();
-                if (class_exists("ComboStrap\PageEdit")) {
+                if (class_exists("ComboStrap\PageEdit") && $html !== null) {
                     $html = PageEdit::replaceAll($html);
                 }
-            } catch (ExceptionCombo $e) {
-                $html = "Rendering the slot, return an error. {$e->getMessage()}";
+            } catch (Exception $e) {
+                $html = "Rendering the slot, returns an error. {$e->getMessage()}";
             }
             return $html;
         } else {
