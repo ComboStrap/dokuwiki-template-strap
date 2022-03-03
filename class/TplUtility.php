@@ -1493,55 +1493,61 @@ EOF;
         global $INFO;
         $INFO['prependTOC'] = $prependTOC;
 
-        ob_start();
-        if (
-            class_exists("ComboStrap\Page")
-            && $ACT === "show" // show only
-            && ($REV === 0 && $DATE_AT === "") // ro revisions
-        ) {
-            /**
-             * The code below replace the other block
-             * to take the snippet management into account
-             * (ie we write them when the {@link  HtmlDocument::storeContent() document is stored into cache)
-             */
-            global $ID;
+        try {
+            ob_start();
+            if (
+                class_exists("ComboStrap\Page")
+                && $ACT === "show" // show only
+                && ($REV === 0 && $DATE_AT === "") // ro revisions
+            ) {
+                /**
+                 * The code below replace the other block
+                 * to take the snippet management into account
+                 * (ie we write them when the {@link  HtmlDocument::storeContent() document is stored into cache)
+                 */
+                global $ID;
+                /**
+                 * The action null does nothing.
+                 * See {@link Event::trigger()}
+                 */
+                Event::createAndTrigger('TPL_ACT_RENDER', $ACT, null);
+
+                /**
+                 * The code below replace {@link html_show()}
+                 */
+                $html_output = Page::createPageFromId($ID)
+                    ->toXhtml();
+                // section editing show only if not a revision and $ACT=show
+                // which is the case in this block
+                $showEdit = true;
+                $html_output = html_secedit($html_output, $showEdit);
+
+                /**
+                 * Add the buffer (eventually)
+                 *
+                 * Not needed with our code, may be with other plugins, it should not as the
+                 * syntax plugin should use the {@link \Doku_Renderer::$doc)
+                 *
+                 */
+                $html_output .= ob_get_clean();
+            } else {
+                Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
+                $html_output = ob_get_clean();
+            }
+
+
             /**
              * The action null does nothing.
              * See {@link Event::trigger()}
              */
-            Event::createAndTrigger('TPL_ACT_RENDER', $ACT, null);
+            Event::createAndTrigger('TPL_CONTENT_DISPLAY', $html_output, null);
 
-            /**
-             * The code below replace {@link html_show()}
-             */
-            $html_output = Page::createPageFromId($ID)
-                ->toXhtml();
-            // section editing show only if not a revision and $ACT=show
-            // which is the case in this block
-            $showEdit = true;
-            $html_output = html_secedit($html_output, $showEdit);
-
-            /**
-             * Add the buffer (eventually)
-             *
-             * Not needed with our code, may be with other plugins, it should not as the
-             * syntax plugin should use the {@link \Doku_Renderer::$doc)
-             *
-             */
-            $html_output .= ob_get_clean();
-        } else {
-            Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
-            $html_output = ob_get_clean();
+            return $html_output;
+        } catch (Exception $e) {
+            $message = "Unfortunately, an error has occurred during the rendering of the main content. The error was logged.";
+            LogUtility::log2file($message . " Error: " . $e->getTraceAsString());
+            return $message;
         }
-
-
-        /**
-         * The action null does nothing.
-         * See {@link Event::trigger()}
-         */
-        Event::createAndTrigger('TPL_CONTENT_DISPLAY', $html_output, null);
-
-        return $html_output;
     }
 
     static function getPageHeader(): string
