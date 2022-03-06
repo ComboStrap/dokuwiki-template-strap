@@ -213,15 +213,15 @@ class TplUtility
         return self::getTemplateInfo()["url"];
     }
 
-    private static function getTemplateInfo()
+    public static function getTemplateInfo(): array
     {
-        if (self::$TEMPLATE_INFO == null) {
+        if (self::$TEMPLATE_INFO === null) {
             self::$TEMPLATE_INFO = confToHash(__DIR__ . '/../template.info.txt');
         }
         return self::$TEMPLATE_INFO;
     }
 
-    public static function getFullQualifyVersion()
+    public static function getFullQualifyVersion(): string
     {
         return "v" . self::getTemplateInfo()['version'] . " (" . self::getTemplateInfo()['date'] . ")";
     }
