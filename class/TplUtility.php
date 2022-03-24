@@ -1511,11 +1511,19 @@ EOF;
                  * See {@link Event::trigger()}
                  */
                 Event::createAndTrigger('TPL_ACT_RENDER', $ACT, null);
+                /**
+                 * In the tpl_act_render, plugin has no other option
+                 * than to output in the buffer
+                 * https://www.dokuwiki.org/devel:event:tpl_act_render
+                 * We take the buffer
+                 */
+                $html_output = ob_get_contents();
+                ob_clean(); // delete the content to not have it twice after the rendering
 
                 /**
                  * The code below replace {@link html_show()}
                  */
-                $html_output = Page::createPageFromId($ID)
+                $html_output .= Page::createPageFromId($ID)
                     ->toXhtml();
                 // section editing show only if not a revision and $ACT=show
                 // which is the case in this block
@@ -1529,12 +1537,12 @@ EOF;
                  * syntax plugin should use the {@link \Doku_Renderer::$doc)
                  *
                  */
-                $html_output .= ob_get_clean();
+                $html_output .= ob_get_contents();
             } else {
                 Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
-                $html_output = ob_get_clean();
+                $html_output = ob_get_contents();
             }
-
+            ob_end_clean();
 
             /**
              * The action null does nothing.
