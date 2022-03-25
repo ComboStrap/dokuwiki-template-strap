@@ -301,22 +301,14 @@ echo $headerBar
 
             <main class="col-md-<?php echo($mainGridScale) ?> order-first">
 
-                <?php if ($showMainHeader) { ?>
-                    <div id="main-header" class="slot-combo">
-                        <?php echo $mainHeaderHtml; ?>
-                    </div>
-                <?php }
+                <?php
                 // Add a p around the content to enable the reader view in Mozilla
                 // https://github.com/mozilla/readability
                 // But Firefox close the P because they must contain only inline element ???
                 echo $outputBuffer;
 
                 echo $mainHtml;
-                if ($showMainFooter) { ?>
-                    <div id="main-footer" class="slot-combo">
-                        <?php echo $mainFooterHtml; ?>
-                    </div>
-                <?php }
+
                 ?>
             </main>
 
