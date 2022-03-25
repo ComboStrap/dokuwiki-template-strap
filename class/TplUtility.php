@@ -130,19 +130,12 @@ class TplUtility
     const BREAKPOINT_EXTRA_LARGE_NAME = "extra-large";
     const BREAKPOINT_EXTRA_EXTRA_LARGE_NAME = "extra-extra-large";
     const BREAKPOINT_NEVER_NAME = "never";
-    /**
-     * Name of the main footer slot
-     */
-    public const SLOT_MAIN_FOOTER_NAME = "slot_main_footer";
-    /**
-     * Name of the main header slot
-     */
-    public const SLOT_MAIN_HEADER_NAME = "slot_main_header";
 
     /**
      * @var array|null
      */
-    private static $TEMPLATE_INFO = null;
+    private static $TEMPLATE_PLUGIN_INFO = null;
+    private static $COMBO_PLUGIN_INFO;
 
 
     /**
@@ -210,26 +203,34 @@ class TplUtility
 
     private static function getApexDomainUrl()
     {
-        return self::getTemplateInfo()["url"];
+        return self::getTemplatePluginInfo()["url"];
     }
 
-    public static function getTemplateInfo(): array
+    public static function getTemplatePluginInfo(): array
     {
-        if (self::$TEMPLATE_INFO === null) {
-            self::$TEMPLATE_INFO = confToHash(__DIR__ . '/../template.info.txt');
+        if (self::$TEMPLATE_PLUGIN_INFO === null) {
+            self::$TEMPLATE_PLUGIN_INFO = confToHash(__DIR__ . '/../template.info.txt');
         }
-        return self::$TEMPLATE_INFO;
+        return self::$TEMPLATE_PLUGIN_INFO;
+    }
+
+    public static function getComboPluginInfo(): array
+    {
+        if (self::$COMBO_PLUGIN_INFO === null) {
+            self::$COMBO_PLUGIN_INFO = confToHash(__DIR__ . '/../../../plugins/combo/plugin.info.txt');
+        }
+        return self::$COMBO_PLUGIN_INFO;
     }
 
     public static function getFullQualifyVersion(): string
     {
-        return "v" . self::getTemplateInfo()['version'] . " (" . self::getTemplateInfo()['date'] . ")";
+        return "v" . self::getTemplatePluginInfo()['version'] . " (" . self::getTemplatePluginInfo()['date'] . ")";
     }
 
 
     private static function getStrapUrl()
     {
-        return self::getTemplateInfo()["strap"];
+        return self::getTemplatePluginInfo()["strap"];
     }
 
 
@@ -342,20 +343,18 @@ class TplUtility
     public static function renderSlot($slotId): ?string
     {
 
-        if (class_exists("ComboStrap\Page")) {
-            try {
-                $page = Page::createPageFromId($slotId);
-                $html = $page->toXhtml();
-                if (class_exists("ComboStrap\PageEdit") && $html !== null) {
-                    $html = PageEdit::replaceAll($html);
-                }
-            } catch (Exception $e) {
-                $html = "Rendering the slot, returns an error. {$e->getMessage()}";
-            }
-            return $html;
-        } else {
-            TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
+        try {
+            TplUtility::checkSameStrapAndComboVersion();
+        } catch (ExceptionCompile $e) {
+            TplUtility::msg("The combo plugin is not installed, slot automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
             return tpl_include_page($slotId, 0, 1);
+        }
+        try {
+            $page = Page::createPageFromId($slotId);
+            $html = $page->toXhtml();
+            return PageEdit::replaceAll($html);
+        } catch (Exception $e) {
+            return "Rendering the slot, returns an error. {$e->getMessage()}";
         }
 
     }
@@ -689,12 +688,12 @@ EOF;
 
     public static function getMainHeaderSlotName(): string
     {
-        return self::SLOT_MAIN_HEADER_NAME;
+        return Page::SLOT_MAIN_HEADER_NAME;
     }
 
     public static function getMainFooterSlotName(): string
     {
-        return self::SLOT_MAIN_FOOTER_NAME;
+        return Page::SLOT_MAIN_FOOTER_NAME;
     }
 
     public static function isNotSlot(): bool
@@ -702,8 +701,8 @@ EOF;
         global $ID;
         return strpos($ID, TplUtility::getSideSlotPageName()) === false
             && strpos($ID, TplUtility::getSideKickSlotPageName()) === false
-            && strpos($ID, TplUtility::SLOT_MAIN_HEADER_NAME) === false
-            && strpos($ID, TplUtility::SLOT_MAIN_FOOTER_NAME) === false
+            && strpos($ID, Page::SLOT_MAIN_HEADER_NAME) === false
+            && strpos($ID, Page::SLOT_MAIN_FOOTER_NAME) === false
             && strpos($ID, TplUtility::getHeaderSlotPageName()) === false
             && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
     }
@@ -725,6 +724,48 @@ EOF;
     public static function getRem()
     {
         return tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+    }
+
+
+    private static function checkSameStrapAndComboVersion()
+    {
+        /**
+         * Check the version
+         */
+        $templateVersion = TplUtility::getTemplatePluginInfo()['version'];
+        $comboVersion = TplUtility::getComboPluginInfo()['version'];
+        /** @noinspection DuplicatedCode */
+        if ($templateVersion !== $comboVersion) {
+            $strapName = "Strap";
+            $comboName = "Combo";
+            $strapLink = "<a href=\"https://www.dokuwiki.org/template:strap\">$strapName</a>";
+            $comboLink = "<a href=\"https://www.dokuwiki.org/plugin:combo\">$comboName</a>";
+            if ($comboVersion > $templateVersion) {
+                $upgradeTarget = $strapName;
+            } else {
+                $upgradeTarget = $comboName;
+            }
+            $upgradeLink = "<a href=\"" . wl() . "&do=admin&page=extension" . "\">upgrade <b>$upgradeTarget</b> via the extension manager</a>";
+            $message = "You should $upgradeLink to the latest version to get a fully functional experience. The version of $comboLink is ($comboVersion) while the version of $strapLink is ($templateVersion).";
+            LogUtility::msg($message);
+            throw new ExceptionCompile($message);
+        }
+    }
+
+    /**
+     * Copy of {@link Identity::isManager()}
+     */
+    private static function isManager()
+    {
+        global $INFO;
+        if ($INFO !== null) {
+            return $INFO['ismanager'];
+        } else {
+            /**
+             * In test
+             */
+            return auth_ismanager();
+        }
     }
 
     /**
@@ -1493,17 +1534,24 @@ EOF;
         global $INFO;
         $INFO['prependTOC'] = $prependTOC;
 
+
+        $comboSameVersionThanStrap = true;
+        try {
+            TplUtility::checkSameStrapAndComboVersion();
+        } catch (ExceptionCompile $e) {
+            $comboSameVersionThanStrap = false;
+        }
+        $showViaCombo = $ACT === "show" // show only
+            && ($REV === 0 && $DATE_AT === "") // ro revisions
+            && $comboSameVersionThanStrap;
         try {
             ob_start();
-            if (
-                class_exists("ComboStrap\Page")
-                && $ACT === "show" // show only
-                && ($REV === 0 && $DATE_AT === "") // ro revisions
-            ) {
+            if ($showViaCombo) {
+
                 /**
                  * The code below replace the other block
                  * to take the snippet management into account
-                 * (ie we write them when the {@link  HtmlDocument::storeContent() document is stored into cache)
+                 * (ie we write them when the {@link  HtmlDocument::storeOutputContent() document is stored into cache)
                  */
                 global $ID;
                 /**
@@ -1552,9 +1600,21 @@ EOF;
 
             return $html_output;
         } catch (Exception $e) {
-            $message = "Unfortunately, an error has occurred during the rendering of the main content. The error was logged.";
-            LogUtility::log2file($message . " Error: " . $e->getTraceAsString());
-            return $message;
+            $prefix = "Unfortunately, an error has occurred during the rendering of the main content.";
+            $class = get_class($e);
+            $message = $e->getMessage();
+            $trace = $e->getTraceAsString();
+            LogUtility::log2file("$prefix. Error: $message, $class: $trace");
+
+            /**
+             * To the HTML page
+             */
+            if (TplUtility::isManager()) {
+                return "$prefix <br/> <br/> Error (only seen by manager): <br/>$message ($class) <br/>" . str_replace("\n", "<br/>", $trace);
+            } else {
+                return "$prefix <br/> The error was logged in the log file. Errors are only visible by managers";
+            }
+
         }
     }
 

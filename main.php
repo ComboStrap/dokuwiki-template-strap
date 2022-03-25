@@ -26,6 +26,7 @@ global $conf;
  */
 $mainHtml = "";
 if ($ACT === 'show') {
+
     $mainHtml = TplUtility::tpl_content($prependTOC = false);
 }
 
@@ -57,26 +58,7 @@ if ($showSideKickBar) {
     $sideKickBarHtml = TplUtility::renderSlot($sideKickPageName);
 }
 
-/**
- * Main header and footer
- */
-$nearestMainHeader = page_findnearest(TplUtility::SLOT_MAIN_HEADER_NAME);
-$showMainHeader = $nearestMainHeader !== false
-    && ($ACT === 'show')
-    && TplUtility::isNotSlot()
-    && TplUtility::isNotRootHome();
-if ($showMainHeader !== false) {
-    $mainHeaderHtml = TplUtility::renderSlot($nearestMainHeader);
-}
 
-$nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER_NAME);
-$showMainFooter = $nearestMainFooter !== false
-    && ($ACT === 'show')
-    && TplUtility::isNotSlot()
-    && TplUtility::isNotRootHome();
-if ($showMainFooter !== false) {
-    $mainFooterHtml = TplUtility::renderSlot($nearestMainFooter);
-}
 
 
 /**
