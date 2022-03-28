@@ -686,26 +686,6 @@ EOF;
 
     }
 
-    public static function getMainHeaderSlotName(): string
-    {
-        return Page::SLOT_MAIN_HEADER_NAME;
-    }
-
-    public static function getMainFooterSlotName(): string
-    {
-        return Page::SLOT_MAIN_FOOTER_NAME;
-    }
-
-    public static function isNotSlot(): bool
-    {
-        global $ID;
-        return strpos($ID, TplUtility::getSideSlotPageName()) === false
-            && strpos($ID, TplUtility::getSideKickSlotPageName()) === false
-            && strpos($ID, Page::SLOT_MAIN_HEADER_NAME) === false
-            && strpos($ID, Page::SLOT_MAIN_FOOTER_NAME) === false
-            && strpos($ID, TplUtility::getHeaderSlotPageName()) === false
-            && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
-    }
 
     public static function getSideSlotPageName()
     {
