@@ -80,6 +80,9 @@ class TplUtility
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
     const BS_4_BOOTSTRAP_VERSION_STYLESHEET = "4.5.0 - bootstrap";
 
+    /**
+     * @deprecated
+     */
     const CONF_SIDEKICK_OLD = "sidekickbar";
     const CONF_SIDEKICK_SLOT_PAGE_NAME = "sidekickSlotPageName";
     const CONF_SLOT_HEADER_PAGE_NAME_VALUE = "slot_header";
@@ -365,6 +368,10 @@ class TplUtility
     }
 
 
+    /**
+     * @deprecated for `slot_main_side`
+     * @return mixed|string
+     */
     public static function getSideKickSlotPageName()
     {
 
@@ -767,7 +774,7 @@ EOF;
         global $lang;
 
         // check if enabled
-        if (!$conf['youarehere']) return;
+        if (!$conf['youarehere']) return "";
 
         // print intermediate namespace links
         $htmlOutput = '<ol class="breadcrumb">' . PHP_EOL;

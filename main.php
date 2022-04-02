@@ -50,6 +50,7 @@ if ($showSideBar) {
 
 /**
  * Sidekickbar
+ * @deprecated
  */
 $sideKickPageName = TplUtility::getSideKickSlotPageName();
 $hasRightSidebar = page_findnearest($sideKickPageName);
@@ -236,6 +237,7 @@ EOF;
      * See for the HTML code {@link TplUtility::getRailBar()}
      */
     if ($layout == "landing" & $ACT == "show") { ?>
+        <!--suppress CssUnusedSymbol -->
         <style>
             #railbar-fixed {
                 right: 44px !important;
@@ -320,6 +322,9 @@ echo $headerBar
                     <?php
                     tpl_flush();
 
+                    /**
+                     * @deprecated
+                     */
                     echo $sideKickBarHtml;
 
                     // A trigger to show content on the sidebar part of the website
