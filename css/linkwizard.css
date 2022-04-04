@@ -1,0 +1,17 @@
+#link__wiz_result div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+#link__wiz_result span {
+    text-decoration: underline dotted;
+}
+
+#link__wiz_result {
+    margin-top: 1rem;
+}
+
+#link__wiz .ui-dialog-content {
+    margin: 1rem;
+}
