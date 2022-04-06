@@ -293,7 +293,7 @@ echo $headerBar
             <?php
             // SIDE BAR
             if ($showSideBar): ?>
-                <div role="complementary"
+                <div id="page-side" role="complementary"
                      class="slot-combo col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
 
                     <?php echo $sideBarHtml ?>

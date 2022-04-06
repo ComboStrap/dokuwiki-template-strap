@@ -23,12 +23,23 @@
     margin: 1px 1px 5px;
 }
 
+.qq-upload-button {
+    color: #333;
+    background-color: #eee;
+    background-image: linear-gradient(to bottom, #ffffff 0%, #f4f4f4 30%, #eeeeee 99%, #cccccc 99%);
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    padding: .1em .5em;
+    cursor: pointer;
+}
+
 .qq-upload-button-focus {
     outline: 1px dotted;
 }
 
 /* drop area */
 
+//noinspection LessUnresolvedVariable
 .qq-upload-drop-area {
     position: absolute;
     top: 0;
@@ -51,6 +62,7 @@
     font-size: 120%;
 }
 
+//noinspection LessUnresolvedVariable
 .qq-upload-drop-area-active {
     background: @ini_background_alt;
 }
@@ -63,6 +75,7 @@ div.qq-uploader ul {
     list-style: none;
 }
 
+//noinspection LessUnresolvedVariable
 .qq-uploader li {
     margin: 0 0 5px;
     color: @ini_text;
@@ -81,7 +94,7 @@ div.qq-uploader ul {
 
 .qq-upload-spinner {
     display: inline-block;
-    background: url("../../images/throbber.gif");
+    background: url("../../../images/throbber.gif");
     width: 15px;
     height: 15px;
     vertical-align: text-bottom;
