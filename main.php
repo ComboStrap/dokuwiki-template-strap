@@ -60,8 +60,6 @@ if ($showSideKickBar) {
 }
 
 
-
-
 /**
  * Headerbar
  */

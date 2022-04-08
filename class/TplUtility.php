@@ -1623,7 +1623,8 @@ EOF;
 
         }
         // No header on print
-        return "<div class=\"d-print-none\">$header</div>";
+        // position relative to place the edit button
+        return "<header class=\"d-print-none position-relative\" id=\"page-header\">$header</header>";
 
     }
 
@@ -1639,7 +1640,8 @@ EOF;
         }
 
         // No footer on print
-        return "<div class=\"d-print-none\">$footer</div>";
+        // relative for the edit button
+        return "<footer class=\"d-print-none position-relative\" id=\"page-footer\">$footer</footer>";
     }
 
     static function getPoweredBy(): string
