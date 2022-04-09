@@ -145,78 +145,76 @@ $outputBuffer = TplUtility::outputBuffer();
 <body class="dokuwiki">
 
 <?php
-echo $headerBar
+echo $headerBar;
 
-// Relative positioning is important for the positioning of the pagetools
+echo $layoutObject->getOrCreateArea("page-core")->toEnterHtmlTag("div");
 ?>
-<div class="<?php echo tpl_classes() ?> position-relative" id="page-core">
 
 
-    <?php // To go at the top of the page, style is for the fix top page --> ?>
-    <div id="dokuwiki__top"></div>
+
+<?php // To go at the top of the page, style is for the fix top page --> ?>
+<div id="dokuwiki__top"></div>
 
 
-    <?php
-    // The global message array
-    html_msgarea()
-    ?>
+<?php
+// The global message array
+html_msgarea()
+?>
 
 
-    <?php
-    //  A trigger to show content on the top part of the website
-    $layoutObject = "";// Mandatory
-    Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $layoutObject);
+<?php
+//  A trigger to show content on the top part of the website
+$layoutObject = "";// Mandatory
+Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $layoutObject);
 
-    if ($ACT === "show") {
+if ($ACT === "show") {
 
-        // sidebar
-        if ($showSideBar): ?>
-            <aside class="slot-combo d-print-none" id="page-side" role="complementary">
-                <?php echo $sideBarHtml ?>
+    // sidebar
+    if ($showSideBar): ?>
+        <aside class="slot-combo d-print-none" id="page-side" role="complementary">
+            <?php echo $sideBarHtml ?>
+        </aside>
+    <?php endif; ?>
+
+    <main id="page-main">
+
+        <?php
+        // Readibilty: Add a p around the content to enable the reader view in Mozilla
+        // https://github.com/mozilla/readability
+        // But Firefox close the P because they must contain only inline element ???
+
+        echo $outputBuffer;
+
+        echo $mainHtml;
+
+        /**
+         * @deprecated
+         */
+        if ($showSideKickBar): ?>
+
+            <aside class="slot-combo d-print-none" id="main-sidekickbar" role="complementary">
+
+                <?php echo $sideKickBarHtml; ?>
+
             </aside>
         <?php endif; ?>
 
-        <main id="page-main">
-
-            <?php
-            // Readibilty: Add a p around the content to enable the reader view in Mozilla
-            // https://github.com/mozilla/readability
-            // But Firefox close the P because they must contain only inline element ???
-
-            echo $outputBuffer;
-
-            echo $mainHtml;
-
-            /**
-             * @deprecated
-             */
-            if ($showSideKickBar): ?>
-
-                <aside class="slot-combo d-print-none" id="main-sidekickbar" role="complementary">
-
-                    <?php echo $sideKickBarHtml; ?>
-
-                </aside>
-            <?php endif; ?>
-
-        </main>
+    </main>
 
 
-    <?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
-        <main id="page-main">
-            <?php
-            // all other action are using the php buffer
-            // we can then have an overflow
-            // the buffer is flushed
-            // this is why we output the content of do/admin page here
-            echo TplUtility::tpl_content($prependTOC = false);
-            ?>
-        </main>
-    <?php } ?>
+<?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
+    <main id="page-main">
+        <?php
+        // all other action are using the php buffer
+        // we can then have an overflow
+        // the buffer is flushed
+        // this is why we output the content of do/admin page here
+        echo TplUtility::tpl_content($prependTOC = false);
+        ?>
+    </main>
+<?php } ?>
 
-    <?php echo $railBar ?>
-
-</div>
+<?php echo $railBar ?>
 
 
 <?php

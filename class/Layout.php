@@ -2,20 +2,23 @@
 
 namespace ComboStrap;
 
+require_once (__DIR__."/LayoutArea.php");
+
 class Layout
 {
 
-
     /**
-     * @throws ExceptionNotFound
+     * @var LayoutArea[]
      */
-    public function load($layoutName){
+    private $layoutAreas;
 
-        $layoutDirectory = DokuPath::createDokuPath(":layout:$layoutName:", DokuPath::COMBO_DRIVE);
-        if(!FileSystems::exists($layoutDirectory)){
-            throw new ExceptionNotFound("The layout ($layoutName) does not exist at $layoutDirectory");
+    public function getOrCreateArea($areaName): LayoutArea
+    {
+        $layoutArea = $this->layoutAreas[$areaName];
+        if($layoutArea===null){
+            $layoutArea = new LayoutArea($areaName);
+            $this->layoutAreas[$areaName]=$layoutArea;
         }
-
+        return $layoutArea;
     }
-
 }
