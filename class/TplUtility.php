@@ -10,6 +10,8 @@
  *
  */
 
+
+
 namespace ComboStrap;
 
 use Doku_Event;
@@ -74,7 +76,12 @@ class TplUtility
      */
     const CONF_JQUERY_DOKU = 'jQueryDoku';
     const CONF_REM_SIZE = "remSize";
+
+    /**
+     * Deprecated
+     */
     const CONF_GRID_COLUMNS = "gridColumns";
+
     const CONF_USE_CDN = "useCDN";
 
     const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?

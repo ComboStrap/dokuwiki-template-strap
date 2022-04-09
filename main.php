@@ -2,9 +2,11 @@
 if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 
 
-//Library of template function
+// Classes
 require_once(__DIR__ . '/class/TplUtility.php');
+require_once(__DIR__ . '/class/Layout.php');
 
+use ComboStrap\Layout;
 use Combostrap\TplUtility;
 use dokuwiki\Extension\Event;
 
@@ -75,69 +77,13 @@ $footerBar = TplUtility::getFooter();
  * Grid
  */
 $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
-/**
- * Layout
- *
- * See also: https://1linelayouts.glitch.me/ and https://www.cssportal.com/layout-generator/layout.php
- *
- * Two basic layouts for the web: fixed or liquid
- * A liquid design (also referred to as a fluid or dynamic design) fills the entire browser window by using percentages
- * rather than fixed pixel values to define the width / height
- *
- * dimension =
- *   "fluid" = max-width / min-height
- *   "contained" =
- *
- * In fluid web design, the widths of page elements are set proportional to the width of the screen or browser window.
- * A fluid website expands or contracts based on the width of the current viewport.
- *
- * Contained (ie fixed)
- * https://getbootstrap.com/docs/5.0/layout/containers/
- *
- */
-// for the identity forms
-global $ACT;
-if (in_array($ACT, ["login", "resendpwd", "register", "profile"])) {
-    $layout = "median";
-} else {
-    $layout = p_get_metadata($ID, "layout");
-}
-if ($layout === "median") {
-    $maximalWidthMain = 8;
-} else {
-    $maximalWidthMain = $gridColumns;
-}
-$sidebarScale = 3;
-$sideKickBarScale = 3;
-
-switch ($ACT) {
-    case "show":
-        if ($showSideBar) {
-            $mainGridScale = $showSideKickBar ? $gridColumns - $sidebarScale - $sideKickBarScale : $gridColumns - $sidebarScale;
-        } else {
-            $mainGridScale = $showSideKickBar ? $gridColumns - $sideKickBarScale : $maximalWidthMain;
-        }
-        break;
-    default:
-        $mainGridScale = $gridColumns;
-}
-
 
 /**
- * Landing page
+ * Layout init
  */
-$mainIsContained = true;
-if ($ACT != "show") {
-    $mainIsContained = true;
-} else {
-    if ($layout == "landing") {
-        $mainIsContained = false;
-    }
-}
-$mainContainedClasses = "";
-if ($mainIsContained) {
-    $mainContainedClasses = "container mb-3";
-}
+$layoutObject = new Layout();// Mandatory
+Event::createAndTrigger('COMBO_LAYOUT', $layoutObject);
+
 
 /**
  * Bootstrap meta-headers
@@ -190,7 +136,6 @@ $outputBuffer = TplUtility::outputBuffer();
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
 
-
 </head>
 <?php
 // * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
@@ -204,7 +149,7 @@ echo $headerBar
 
 // Relative positioning is important for the positioning of the pagetools
 ?>
-<div class="<?php echo $mainContainedClasses ?> <?php echo tpl_classes() ?> " id="page-core" style="position: relative">
+<div class="<?php echo tpl_classes() ?> position-relative" id="page-core">
 
 
     <?php // To go at the top of the page, style is for the fix top page --> ?>
@@ -219,8 +164,8 @@ echo $headerBar
 
     <?php
     //  A trigger to show content on the top part of the website
-    $data = "";// Mandatory
-    Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
+    $layoutObject = "";// Mandatory
+    Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $layoutObject);
 
     if ($ACT === "show") {
 
