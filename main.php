@@ -126,15 +126,12 @@ switch ($ACT) {
 /**
  * Landing page
  */
-$landingPageGutter = "";
 $mainIsContained = true;
 if ($ACT != "show") {
     $mainIsContained = true;
 } else {
     if ($layout == "landing") {
         $mainIsContained = false;
-        // No gutter on x otherwise there is a overflow on the right
-        $landingPageGutter = "style=\"--bs-gutter-x: 0\"";
     }
 }
 $mainContainedClasses = "";
@@ -174,32 +171,6 @@ $outputBuffer = TplUtility::outputBuffer();
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
 <!DOCTYPE html >
-<?php
-/**
- * Lang for a page
- *
- * https://www.w3.org/International/questions/qa-html-language-declarations
- *   * Always use a language attribute on the html element.
- *   * When serving XHTML 1.x (ie. using a MIME type such as application/xhtml+xml),
- * use both the lang attribute and the xml:lang attribute together
- *
- * See also {@link \ComboStrap\Lang::processLangAttribute()} for the localization of an element
- *
- * @var $javascriptRTL - put the button to the end when the page has a language direction of rtl
- */
-$javascriptRTL = "";
-if ($lang['direction'] == "rtl") {
-    $javascriptRTL = <<<EOF
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    Array.from(document.getElementsByClassName("secedit")).forEach(e=>e.classList.add('float-end'));
-    }
-);
-</script>
-EOF;
-
-}
-?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
 <head>
@@ -218,37 +189,7 @@ EOF;
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
 
-    <?php
-    /**
-     * In case of a RTL lang,
-     * we put the secedit button to the left
-     */
-    echo $javascriptRTL;
-    ?>
 
-    <?php
-    /**
-     * When we have a landing page, the railbar
-     * which is by default on the right side is not visible
-     * This setting will set up inside and make it visible alongside the page
-     * We may also just put it completely in the offcanvas
-     * See for the HTML code {@link TplUtility::getRailBar()}
-     */
-    if ($layout == "landing" & $ACT == "show") { ?>
-        <!--suppress CssUnusedSymbol -->
-        <style>
-            #railbar-fixed {
-                right: 44px !important;
-            }
-        </style>
-    <?php }
-    // slot-combo is relative to position the edit button
-    ?>
-    <style>
-        .slot-combo {
-            position: relative;
-        }
-    </style>
 
 </head>
 <?php
@@ -263,7 +204,7 @@ echo $headerBar
 
 // Relative positioning is important for the positioning of the pagetools
 ?>
-<div class="<?php echo $mainContainedClasses ?> <?php echo tpl_classes() ?> " style="position: relative">
+<div class="<?php echo $mainContainedClasses ?> <?php echo tpl_classes() ?> " id="page-core" style="position: relative">
 
 
     <?php // To go at the top of the page, style is for the fix top page --> ?>
@@ -280,72 +221,53 @@ echo $headerBar
     //  A trigger to show content on the top part of the website
     $data = "";// Mandatory
     Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
-    ?>
 
+    if ($ACT === "show") {
 
-    <div class="row justify-content-md-center" <?php echo($landingPageGutter) ?>>
+        // sidebar
+        if ($showSideBar): ?>
+            <aside class="slot-combo d-print-none" id="page-side" role="complementary">
+                <?php echo $sideBarHtml ?>
+            </aside>
+        <?php endif; ?>
 
-
-        <?php if ($ACT === "show") { ?>
+        <main id="page-main">
 
             <?php
-            // SIDE BAR
-            if ($showSideBar): ?>
-                <div id="page-side" role="complementary"
-                     class="slot-combo col-md-<?php echo($sidebarScale) ?> order-last order-md-first d-print-none">
+            // Readibilty: Add a p around the content to enable the reader view in Mozilla
+            // https://github.com/mozilla/readability
+            // But Firefox close the P because they must contain only inline element ???
 
-                    <?php echo $sideBarHtml ?>
+            echo $outputBuffer;
 
-                </div>
+            echo $mainHtml;
+
+            /**
+             * @deprecated
+             */
+            if ($showSideKickBar): ?>
+
+                <aside class="slot-combo d-print-none" id="main-sidekickbar" role="complementary">
+
+                    <?php echo $sideKickBarHtml; ?>
+
+                </aside>
             <?php endif; ?>
 
-            <main class="col-md-<?php echo($mainGridScale) ?> order-first">
+        </main>
 
-                <?php
-                // Add a p around the content to enable the reader view in Mozilla
-                // https://github.com/mozilla/readability
-                // But Firefox close the P because they must contain only inline element ???
-                echo $outputBuffer;
 
-                echo $mainHtml;
-
-                ?>
-            </main>
-
-            <?php if ($showSideKickBar):  // Sidekick bar  ?>
-
-                <div role="complementary"
-                     class="col-md-<?php echo($sideKickBarScale) ?> slot-combo order-xs-2 order-md-last d-print-none">
-
-                    <?php
-                    tpl_flush();
-
-                    /**
-                     * @deprecated
-                     */
-                    echo $sideKickBarHtml;
-
-                    // A trigger to show content on the sidebar part of the website
-                    $data = "";// Mandatory
-                    Event::createAndTrigger('TPL_SIDEBAR_BOTTOM_OUTPUT', $data);
-                    ?>
-
-                </div>
-            <?php endif;  // end show content?>
-
-        <?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
-            <main class="col-md-<?php echo($mainGridScale) ?>">
-                <?php
-                // all other action are using the php buffer
-                // we can then have an overflow
-                // the buffer is flushed
-                // this is why we output the content of do page here
-                echo TplUtility::tpl_content($prependTOC = false);
-                ?>
-            </main>
-        <?php } ?>
-
-    </div>
+    <?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
+        <main id="page-main">
+            <?php
+            // all other action are using the php buffer
+            // we can then have an overflow
+            // the buffer is flushed
+            // this is why we output the content of do/admin page here
+            echo TplUtility::tpl_content($prependTOC = false);
+            ?>
+        </main>
+    <?php } ?>
 
     <?php echo $railBar ?>
 
@@ -355,8 +277,6 @@ echo $headerBar
 <?php
 // Footer
 echo $footerBar;
-// Powered By
-echo TplUtility::getPoweredBy();
 // The stylesheet (before indexer work and script at the end)
 TplUtility::addPreloadedResources();
 ?>

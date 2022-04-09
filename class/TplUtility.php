@@ -1639,9 +1639,12 @@ EOF;
             $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
         }
 
+        // Powered By
+        $poweredBy =  TplUtility::getPoweredBy();
+
         // No footer on print
         // relative for the edit button
-        return "<footer class=\"d-print-none position-relative\" id=\"page-footer\">$footer</footer>";
+        return "<footer class=\"d-print-none position-relative\" id=\"page-footer\">$footer $poweredBy</footer>";
     }
 
     static function getPoweredBy(): string
