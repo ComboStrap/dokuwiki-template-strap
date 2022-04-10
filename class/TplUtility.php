@@ -11,7 +11,6 @@
  */
 
 
-
 namespace ComboStrap;
 
 use Doku_Event;
@@ -376,8 +375,8 @@ class TplUtility
 
 
     /**
-     * @deprecated for `slot_main_side`
      * @return mixed|string
+     * @deprecated for `slot_main_side`
      */
     public static function getSideKickSlotPageName()
     {
@@ -760,6 +759,39 @@ EOF;
              */
             return auth_ismanager();
         }
+    }
+
+    /**
+     * Variation of {@link html_msgarea()}
+     * @return void
+     */
+    public static function printMessage()
+    {
+
+        global $MSG, $MSG_shown;
+        /** @var array $MSG */
+        // store if the global $MSG has already been shown and thus HTML output has been started
+        $MSG_shown = true;
+
+        if (!isset($MSG)) return;
+
+        // to not participate into the grid
+        $absolutePositioning = "position-absolute";
+
+        $shown = array();
+        foreach ($MSG as $msg) {
+            $hash = md5($msg['msg']);
+            if (isset($shown[$hash])) continue; // skip double messages
+            if (info_msg_allowed($msg)) {
+                print "<div class=\"$absolutePositioning {$msg['lvl']}\">";
+                print $msg['msg'];
+                print '</div>';
+            }
+            $shown[$hash] = 1;
+        }
+
+        unset($GLOBALS['MSG']);
+
     }
 
     /**
@@ -1647,7 +1679,7 @@ EOF;
         }
 
         // Powered By
-        $poweredBy =  TplUtility::getPoweredBy();
+        $poweredBy = TplUtility::getPoweredBy();
 
         // No footer on print
         // relative for the edit button

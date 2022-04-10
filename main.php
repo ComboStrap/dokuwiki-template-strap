@@ -152,13 +152,13 @@ echo $layoutObject->getOrCreateArea("page-core")->toEnterHtmlTag("div");
 
 
 
-<?php // To go at the top of the page, style is for the fix top page --> ?>
-<div id="dokuwiki__top"></div>
+<?php // To go at the top of the page, style is for the fix top page, absolute to not participate to the grid --> ?>
+<div id="dokuwiki__top" class="position-absolute"></div>
 
 
 <?php
 // The global message array
-html_msgarea()
+TplUtility::printMessage()
 ?>
 
 

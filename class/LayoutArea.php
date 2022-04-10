@@ -36,7 +36,7 @@ class LayoutArea
         foreach ($this->attributes as $attribute => $value) {
             $attribute = htmlspecialchars($attribute, ENT_XHTML | ENT_QUOTES);
             $value = htmlspecialchars($value, ENT_XHTML | ENT_QUOTES);
-            $htmlAttributesAsArray[] = "\"$attribute\"=\"$value\"";
+            $htmlAttributesAsArray[] = "$attribute=\"$value\"";
         };
         $htmlAttributesAsString = implode(" ", $htmlAttributesAsArray);
         return "<$string id=\"$this->areaId\" $htmlAttributesAsString>";
