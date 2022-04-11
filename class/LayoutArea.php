@@ -46,4 +46,5 @@ class LayoutArea
     {
         $this->attributes = $attributes;
     }
+
 }

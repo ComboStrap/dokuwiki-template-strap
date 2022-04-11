@@ -164,45 +164,47 @@ TplUtility::printMessage()
 
 <?php
 //  A trigger to show content on the top part of the website
-$layoutObject = "";// Mandatory
-Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $layoutObject);
+$data = "";// Mandatory
+Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
 
 if ($ACT === "show") {
 
     // sidebar
-    if ($showSideBar): ?>
-        <aside class="slot-combo d-print-none" id="page-side" role="complementary">
-            <?php echo $sideBarHtml ?>
-        </aside>
-    <?php endif; ?>
+    if ($showSideBar):
 
-    <main id="page-main">
+        echo $layoutObject->getOrCreateArea("page-side")->toEnterHtmlTag("aside");
+        echo $sideBarHtml;
+        echo "</aside>";
 
-        <?php
-        // Readibilty: Add a p around the content to enable the reader view in Mozilla
-        // https://github.com/mozilla/readability
-        // But Firefox close the P because they must contain only inline element ???
+    endif;
 
-        echo $outputBuffer;
+    echo $layoutObject->getOrCreateArea("page-main")->toEnterHtmlTag("main");
 
-        echo $mainHtml;
+    // Readibilty: Add a p around the content to enable the reader view in Mozilla
+    // https://github.com/mozilla/readability
+    // But Firefox close the P because they must contain only inline element ???
 
-        /**
-         * @deprecated
-         */
-        if ($showSideKickBar): ?>
+    echo $outputBuffer;
 
-            <aside class="slot-combo d-print-none" id="main-sidekickbar" role="complementary">
+    echo $mainHtml;
 
-                <?php echo $sideKickBarHtml; ?>
+    /**
+     * @deprecated
+     */
+    if ($showSideKickBar):
 
-            </aside>
-        <?php endif; ?>
+        echo '<aside class="slot-combo d-print-none" id="main-sidekickbar" role="complementary">';
 
-    </main>
+        echo $sideKickBarHtml;
 
+        echo '</aside>';
 
-<?php } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
+    endif;
+
+    echo "</main>";
+
+} else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
+
     <main id="page-main">
         <?php
         // all other action are using the php buffer
@@ -212,12 +214,16 @@ if ($ACT === "show") {
         echo TplUtility::tpl_content($prependTOC = false);
         ?>
     </main>
+
 <?php } ?>
 
 <?php echo $railBar ?>
 
 
+
 <?php
+// End page core
+echo "</div>";
 // Footer
 echo $footerBar;
 // The stylesheet (before indexer work and script at the end)
