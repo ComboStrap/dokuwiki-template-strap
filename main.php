@@ -30,6 +30,7 @@ $mainHtml = "";
 if ($ACT === 'show') {
 
     $mainHtml = TplUtility::tpl_content($prependTOC = false);
+
 }
 
 /**

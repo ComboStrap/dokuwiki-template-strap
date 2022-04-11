@@ -623,8 +623,8 @@ class TplUtility
         $classOffCanvas = "";
         $classFixed = "";
         if (!empty($bootstrapBreakpoint)) {
-            $classOffCanvas = "class=\"d-$bootstrapBreakpoint-none\"";
-            $classFixed = "class=\"d-none d-$bootstrapBreakpoint-flex\"";
+            $classOffCanvas = "class=\"d-$bootstrapBreakpoint-none d-print-none\"";
+            $classFixed = "class=\"d-none d-$bootstrapBreakpoint-flex d-print-none\"";
         }
 
         $railBarListItems = TplUtility::getRailBarListItems();
