@@ -361,7 +361,7 @@ class TplUtility
         try {
             $page = Page::createPageFromId($slotId);
             $html = $page->toXhtml();
-            return EditorSection::replaceAll($html);
+            return EditButton::replaceAll($html);
         } catch (Exception $e) {
             return "Rendering the slot, returns an error. {$e->getMessage()}";
         }
