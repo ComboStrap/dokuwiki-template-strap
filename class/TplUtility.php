@@ -779,15 +779,49 @@ EOF;
         $absolutePositioning = "position-absolute";
 
         $shown = array();
+
+        $messages = "";
         foreach ($MSG as $msg) {
             $hash = md5($msg['msg']);
             if (isset($shown[$hash])) continue; // skip double messages
             if (info_msg_allowed($msg)) {
-                print "<div class=\"$absolutePositioning {$msg['lvl']}\">";
-                print $msg['msg'];
-                print '</div>';
+                $level = ucfirst($msg['lvl']);
+                switch($level){
+                    case "Error":
+                        $class = "text-danger";
+                        break;
+                    default:
+                        $class = "text-primary";
+                        break;
+                }
+                $messages .= "<p><span class=\"$class\">{$level}</span> - {$msg['msg']}</p>";
             }
             $shown[$hash] = 1;
+        }
+        if ($messages !== "") {
+            print <<<EOF
+<div class="toast-container position-absolute" id="toastPlacement" style="width: 100vw; height:100vh; top:0; z-index:1060">
+    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade position-absolute start-50 translate-middle" style="top: 15vh">
+      <div class="toast-header">
+        <strong class="me-auto">Message</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        $messages
+        </div>
+    </div>
+</div>
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+    const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    toastElList.map(function (toastEl) {
+      let toast = new bootstrap.Toast(toastEl, {autohide: false});
+      toast.show();
+      return toast;
+    });
+});
+</script>
+EOF;
         }
 
         unset($GLOBALS['MSG']);

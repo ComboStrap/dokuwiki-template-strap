@@ -148,6 +148,10 @@ $outputBuffer = TplUtility::outputBuffer();
 <?php
 echo $headerBar;
 
+// The global message array
+// should be just below body for absolute placement
+TplUtility::printMessage();
+
 echo $layoutObject->getOrCreateArea("page-core")->toEnterHtmlTag("div");
 ?>
 
@@ -157,10 +161,6 @@ echo $layoutObject->getOrCreateArea("page-core")->toEnterHtmlTag("div");
 <div id="dokuwiki__top" class="position-absolute"></div>
 
 
-<?php
-// The global message array
-TplUtility::printMessage()
-?>
 
 
 <?php
