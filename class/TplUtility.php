@@ -780,43 +780,52 @@ EOF;
 
         $shown = array();
 
-        $messages = "";
+        $toasts = "";
         foreach ($MSG as $msg) {
             $hash = md5($msg['msg']);
             if (isset($shown[$hash])) continue; // skip double messages
             if (info_msg_allowed($msg)) {
                 $level = ucfirst($msg['lvl']);
-                switch($level){
+                switch ($level) {
                     case "Error":
                         $class = "text-danger";
+                        $autoHide = "false";
                         break;
                     default:
                         $class = "text-primary";
+                        $autoHide = "true";
                         break;
                 }
-                $messages .= "<p><span class=\"$class\">{$level}</span> - {$msg['msg']}</p>";
+                $toasts .= <<<EOF
+<div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade" data-bs-autohide="$autoHide">
+  <div class="toast-header">
+    <strong class="me-auto $class">{$level}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body">
+        <p>{$msg['msg']}</p>
+  </div>
+</div>
+EOF;
+
             }
             $shown[$hash] = 1;
         }
-        if ($messages !== "") {
+        if ($toasts !== "") {
             print <<<EOF
-<div class="toast-container position-absolute" id="toastPlacement" style="width: 100vw; height:100vh; top:0; z-index:1060">
-    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade position-absolute start-50 translate-middle" style="top: 15vh">
-      <div class="toast-header">
-        <strong class="me-auto">Message</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        $messages
-        </div>
-    </div>
+<div class="toast-container position-absolute mt-3 top-0 start-50 translate-middle-x" id="toastPlacement" style="z-index:1060">
+$toasts
 </div>
 <script>
 window.addEventListener("DOMContentLoaded",function(){
-    const toastElList = [].slice.call(document.querySelectorAll('.toast'));
-    toastElList.map(function (toastEl) {
-      let toast = new bootstrap.Toast(toastEl, {autohide: false});
+    const toastElements = [].slice.call(document.querySelectorAll('.toast'));
+    toastElements.map(function (toastElement) {
+      let toast = new bootstrap.Toast(toastElement);
       toast.show();
+      debugger;
+      if(toastElement.dataset.bsAutohide==="false"){
+          toastElement.querySelector("button").focus();
+      }
     });
 });
 </script>
