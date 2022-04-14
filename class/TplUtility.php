@@ -817,7 +817,6 @@ window.addEventListener("DOMContentLoaded",function(){
     toastElList.map(function (toastEl) {
       let toast = new bootstrap.Toast(toastEl, {autohide: false});
       toast.show();
-      return toast;
     });
 });
 </script>
