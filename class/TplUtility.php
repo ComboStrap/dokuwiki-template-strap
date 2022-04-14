@@ -1641,10 +1641,16 @@ EOF;
                  */
                 $html_output .= Page::createPageFromId($ID)
                     ->toXhtml();
-                // section editing show only if not a revision and $ACT=show
-                // which is the case in this block
-                $showEdit = true;
-                $html_output = html_secedit($html_output, $showEdit);
+
+                $wikiEnabled = \syntax_plugin_combo_headingwiki::isEnabled();
+                if($wikiEnabled) {
+                    $html_output = EditButton::replaceAll($html_output);
+                } else {
+                    // section editing show only if not a revision and $ACT=show
+                    // which is the case in this block
+                    $showEdit = true;
+                    $html_output = html_secedit($html_output, $showEdit);
+                }
 
                 /**
                  * Add the buffer (eventually)
