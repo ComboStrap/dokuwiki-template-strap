@@ -34,32 +34,60 @@ if ($ACT === 'show') {
 }
 
 /**
- * Sidebar
+ * Layout init
  */
-$sidebarName = TplUtility::getSideSlotPageName();
 
-$nearestSidebar = page_findnearest($sidebarName);
-$showSideBar = $nearestSidebar !== false && ($ACT === 'show');
-if ($showSideBar) {
-    /**
-     * Even if there is no sidebar
-     * the rendering may output
-     * debug information in the form of
-     * an HTML comment
-     */
-    $sideBarHtml = TplUtility::renderSlot($nearestSidebar);
+$layoutObject = Layout::create();
+Event::createAndTrigger('COMBO_LAYOUT', $layoutObject);
+
+/**
+ * Layout object was not processed (ie Combo not installed)
+ */
+$pageSideArea = $layoutObject->getOrCreateArea(Layout::PAGE_SIDE);
+$showPageSideArea = $pageSideArea->show();
+if ($showPageSideArea !== null) {
+    $sideBarHtml = $pageSideArea->getHtml();
+} else {
+    $nearestWikiId = page_findnearest($pageSideArea->getSlotName());
+    $showPageSideArea = $nearestWikiId !== false && ($ACT === 'show');
+    if ($showPageSideArea) {
+        $sideBarHtml = tpl_include_page($nearestWikiId, 0, 1);
+    }
+}
+
+/**
+ * Main footer
+ * (Header is part of the main content)
+ */
+$mainFooterArea = $layoutObject->getOrCreateArea(Layout::MAIN_FOOTER);
+$showMainFooter = $mainFooterArea->show();
+if ($showMainFooter !== null) {
+    $mainFooterHtml = $mainFooterArea->getHtml();
+} else {
+    $nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER);
+    $showMainFooter = $nearestMainFooter !== false
+        && ($ACT === 'show')
+        && TplUtility::isNotSlot()
+        && TplUtility::isNotRootHome();
+    if ($showMainFooter !== false) {
+        $mainFooterHtml = tpl_include_page($nearestMainFooter, 0, 1);
+    }
 }
 
 
 /**
- * Sidekickbar
- * @deprecated
+ * Main Side
  */
-$sideKickPageName = TplUtility::getSideKickSlotPageName();
-$hasRightSidebar = page_findnearest($sideKickPageName);
-$showSideKickBar = $hasRightSidebar && ($ACT == 'show');
-if ($showSideKickBar) {
-    $sideKickBarHtml = TplUtility::renderSlot($sideKickPageName);
+$mainSideArea = $layoutObject->getOrCreateArea(Layout::MAIN_SIDE);
+$showMainSide = $mainSideArea->show();
+if ($showMainSide !== null) {
+    $mainSideHtml = $mainSideArea->getHtml();
+} else {
+    $mainSideWikiId = page_findnearest($mainSideArea->getSlotName());
+    $showMainSide = $mainSideWikiId && ($ACT == 'show');
+    if ($showMainSide !== false) {
+        $mainSideHtml = tpl_include_page($mainSideWikiId, 0, 1);
+    }
 }
 
 
@@ -78,12 +106,6 @@ $footerBar = TplUtility::getFooter();
  * Grid
  */
 $gridColumns = tpl_getConf(TplUtility::CONF_GRID_COLUMNS);
-
-/**
- * Layout init
- */
-$layoutObject = new Layout();// Mandatory
-Event::createAndTrigger('COMBO_LAYOUT', $layoutObject);
 
 
 /**
@@ -112,7 +134,6 @@ $railBar = TplUtility::getRailBar();
  * and can be not empty on other do action
  */
 $outputBuffer = TplUtility::outputBuffer();
-
 
 ?>
 
@@ -161,8 +182,6 @@ echo $layoutObject->getOrCreateArea("page-core")->toEnterHtmlTag("div");
 <div id="dokuwiki__top" class="position-absolute"></div>
 
 
-
-
 <?php
 //  A trigger to show content on the top part of the website
 $data = "";// Mandatory
@@ -170,33 +189,26 @@ Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
 
 if ($ACT === "show") {
 
-    // sidebar
-    if ($showSideBar):
+    // sidebar / page side
+    if ($showPageSideArea):
 
-        echo $layoutObject->getOrCreateArea("page-side")->toEnterHtmlTag("aside");
+        echo $pageSideArea->toEnterHtmlTag("aside");
         echo $sideBarHtml;
         echo "</aside>";
 
     endif;
 
-    echo $layoutObject->getOrCreateArea("page-main")->toEnterHtmlTag("main");
-
-    // Readibilty: Add a p around the content to enable the reader view in Mozilla
-    // https://github.com/mozilla/readability
-    // But Firefox close the P because they must contain only inline element ???
+    echo $layoutObject->getOrCreateArea(Layout::PAGE_MAIN)->toEnterHtmlTag("main");
 
     echo $outputBuffer;
 
     echo $mainHtml;
 
-    /**
-     * @deprecated
-     */
-    if ($showSideKickBar):
+    if ($showMainSide):
 
-        echo '<aside class="slot-combo d-print-none" id="main-sidekickbar" role="complementary">';
+        echo $mainSideArea->toEnterHtmlTag("aside");
 
-        echo $sideKickBarHtml;
+        echo $mainSideHtml;
 
         echo '</aside>';
 
@@ -206,15 +218,13 @@ if ($ACT === "show") {
 
 } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
 
-    <main id="page-main">
-        <?php
-        // all other action are using the php buffer
-        // we can then have an overflow
-        // the buffer is flushed
-        // this is why we output the content of do/admin page here
-        echo TplUtility::tpl_content($prependTOC = false);
-        ?>
-    </main>
+    <?php
+    // all other action are using the php buffer
+    // we can then have an overflow
+    // the buffer is flushed
+    // this is why we output the content of do/admin page here
+    echo TplUtility::tpl_content($prependTOC = false);
+    ?>
 
 <?php } ?>
 

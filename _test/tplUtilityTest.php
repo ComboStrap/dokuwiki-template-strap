@@ -117,27 +117,6 @@ class tplUtilityTest extends DokuWikiTest
     }
 
 
-    /**
-     * Testing the {@link TplUtility::renderSlot()}
-     */
-    public function testBarCache()
-    {
-
-        $sidebarName = "sidebar";
-        $sidebarId = ":" . $sidebarName;
-        saveWikiText($sidebarId, "=== title ===", "");
-        $metadata = p_read_metadata($sidebarId);
-        p_save_metadata($sidebarName, $metadata);
-        global $ID;
-        $ID = ":namespace:whatever";
-        $data = TplUtility::renderSlot($sidebarName);
-        $this->assertNotEmpty($data);
-        /**
-         * TODO:  We should test that the file are not the same with bar plugin that shows the files of a namespace
-         * The test was done manually
-         */
-
-    }
 
     /**
      * Test that a wiki with an old header configuration

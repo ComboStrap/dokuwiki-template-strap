@@ -139,6 +139,8 @@ class TplUtility
     const BREAKPOINT_EXTRA_LARGE_NAME = "extra-large";
     const BREAKPOINT_EXTRA_EXTRA_LARGE_NAME = "extra-extra-large";
     const BREAKPOINT_NEVER_NAME = "never";
+    const SLOT_MAIN_FOOTER = "slot_main_footer";
+    const SLOT_MAIN_HEADER = "slot_main_header";
 
     /**
      * @var array|null
@@ -356,15 +358,9 @@ class TplUtility
             TplUtility::checkSameStrapAndComboVersion();
         } catch (ExceptionCompile $e) {
             TplUtility::msg("The combo plugin is not installed, slot automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
-            return tpl_include_page($slotId, 0, 1);
+
         }
-        try {
-            $page = Page::createPageFromId($slotId);
-            $html = $page->toXhtml();
-            return EditButton::replaceAll($html);
-        } catch (Exception $e) {
-            return "Rendering the slot, returns an error. {$e->getMessage()}";
-        }
+
 
     }
 
@@ -376,18 +372,20 @@ class TplUtility
 
     /**
      * @return mixed|string
-     * @deprecated for `slot_main_side`
      */
-    public static function getSideKickSlotPageName()
+    public static function getMainSideSlotName()
     {
-
-        return TplUtility::migrateSlotConfAndGetValue(
+        $oldSideKickSlotName =  TplUtility::migrateSlotConfAndGetValue(
             TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
             "slot_sidekick",
             TplUtility::CONF_SIDEKICK_OLD,
             "sidekickbar",
             "sidekick_slot"
         );
+        if($oldSideKickSlotName!==null){
+            return $oldSideKickSlotName;
+        }
+        return "slot_main_side";
     }
 
     public static function getHeaderSlotPageName()
@@ -834,6 +832,19 @@ EOF;
         unset($GLOBALS['MSG']);
 
     }
+
+
+    public static function isNotSlot(): bool
+    {
+        global $ID;
+        return strpos($ID, TplUtility::getSideSlotPageName()) === false
+            && strpos($ID, TplUtility::getMainSideSlotName()) === false
+            && strpos($ID, self::SLOT_MAIN_FOOTER) === false
+            && (strpos($ID, self::SLOT_MAIN_HEADER) === false)
+            && strpos($ID, TplUtility::getHeaderSlotPageName()) === false
+            && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
+    }
+
 
     /**
      * Hierarchical breadcrumbs
@@ -1642,7 +1653,7 @@ EOF;
                     ->toXhtml();
 
                 $wikiEnabled = \syntax_plugin_combo_headingwiki::isEnabled();
-                if($wikiEnabled) {
+                if ($wikiEnabled) {
                     $html_output = EditButton::replaceAll($html_output);
                 } else {
                     // section editing show only if not a revision and $ACT=show
