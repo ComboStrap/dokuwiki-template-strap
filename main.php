@@ -207,7 +207,7 @@ $outputBuffer = TplUtility::outputBuffer();
 // * dokuwiki__top ID is needed for the "Back to top" utility
 // * used also by some plugins
 ?>
-<body class="dokuwiki">
+<body class="dokuwiki position-relative">
 
 <?php
 if ($showPageHeader === true) {

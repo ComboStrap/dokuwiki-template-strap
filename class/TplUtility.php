@@ -783,9 +783,10 @@ EOF;
         }
         if ($toasts !== "") {
             print <<<EOF
-<div class="toast-container position-absolute mb-3 bottom-0 right-0" id="toastPlacement" style="z-index:1060">
+<div class="toast-container position-fixed mb-3 me-3 bottom-0 end-0" id="toastPlacement" style="z-index:1060">
 $toasts
 </div>
+
 <script>
 window.addEventListener("DOMContentLoaded",function(){
     const toastElements = [].slice.call(document.querySelectorAll('.toast'));
