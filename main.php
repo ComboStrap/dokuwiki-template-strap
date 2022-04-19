@@ -94,12 +94,55 @@ if ($showMainSide !== null) {
 /**
  * Headerbar
  */
-$headerBar = TplUtility::getPageHeader();
+$pageHeaderArea = $layoutObject->getOrCreateArea(Layout::PAGE_HEADER);
+$showPageHeader = $pageHeaderArea->show();
+if ($showPageHeader !== null) {
+    $pageHeaderHtml = $pageHeaderArea->getHtml();
+    if ($showPageHeader === true && $pageHeaderHtml === null) {
+        $domain = TplUtility::getApexDomainUrl();
+        $pageHeaderHtml = <<<EOF
+<div class="container p-3" style="text-align: center;position:relative;z-index:100">
+    <p>Welcome to the <a href="$domain/">Strap template</a>.<p>
+    <p>
+      If you don\'t known <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="$domain/getting_started">Getting Started Guide</a>.<br/>
+      Otherwise, to create a menu bar in the header, create a slot with the name (<a href="$domain/{$pageHeaderArea->getSlotName()}">{$pageHeaderArea->getSlotName()}</a>) and the <a href="$domain/menubar">menubar component</a>.
+    </p>
+</div>
+EOF;
+    }
+} else {
+    $pageHeaderWikiId = page_findnearest($pageHeaderArea->getSlotName());
+    $showPageHeader = $pageHeaderWikiId;
+    if ($showPageHeader !== false) {
+        $pageHeaderHtml = tpl_include_page($pageHeaderWikiId, 0, 1);
+    }
+}
+
 
 /**
- * Footerbar
+ * Page Footer / Fat Footer
  */
-$footerBar = TplUtility::getFooter();
+$pageFooterArea = $layoutObject->getOrCreateArea(Layout::PAGE_FOOTER);
+$showPageFooter = $pageFooterArea->show();
+if ($showPageFooter !== null) {
+    $pageFooterHtml = $pageFooterArea->getHtml();
+    if ($showPageFooter === true && $pageFooterHtml === null) {
+        $domain = TplUtility::getApexDomainUrl();
+        $pageFooterHtml = <<<EOF
+<div class="container p-3" style="text-align: center">
+    <p>
+    Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id  {$pageFooterArea->getSlotName()} to create a footer.
+    </p>
+</div>
+EOF;
+    }
+} else {
+    $pageFooterWikiId = page_findnearest($pageFooterArea->getSlotName());
+    $showPageFooter = $pageFooterWikiId;
+    if ($showPageFooter !== false) {
+        $pageFooterHtml = tpl_include_page($pageFooterWikiId, 0, 1);
+    }
+}
 
 
 /**
@@ -167,7 +210,9 @@ $outputBuffer = TplUtility::outputBuffer();
 <body class="dokuwiki">
 
 <?php
-echo $headerBar;
+if ($showPageHeader === true) {
+    echo $pageHeaderHtml;
+}
 
 // The global message array
 // should be just below body for absolute placement
@@ -235,8 +280,16 @@ if ($ACT === "show") {
 <?php
 // End page core
 echo "</div>";
-// Footer
-echo $footerBar;
+
+// Page Footer
+if($showPageFooter) {
+    echo $pageFooterArea->toEnterHtmlTag("footer");
+    echo $pageFooterHtml;
+    // Powered By
+    echo TplUtility::getPoweredBy();
+    echo "</footer>";
+}
+
 // The stylesheet (before indexer work and script at the end)
 TplUtility::addPreloadedResources();
 ?>

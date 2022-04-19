@@ -212,7 +212,7 @@ class TplUtility
         print_r('<!-- TplUtility Comment: ' . hsc($text) . '-->');
     }
 
-    private static function getApexDomainUrl()
+    public static function getApexDomainUrl()
     {
         return self::getTemplatePluginInfo()["url"];
     }
@@ -334,34 +334,6 @@ class TplUtility
         $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
         $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
         return $bootstrapStyleSheetArray[1];
-    }
-
-    /**
-     * Return the XHMTL for the bar or null if not found
-     *
-     * An adaptation from {@link tpl_include_page()}
-     * to make the cache namespace
-     *
-     * @param $slotId
-     * @return string|null
-     *
-     *
-     * Note: Even if there is no sidebar
-     * the rendering may output
-     * debug information in the form of
-     * an HTML comment
-     */
-    public static function renderSlot($slotId): ?string
-    {
-
-        try {
-            TplUtility::checkSameStrapAndComboVersion();
-        } catch (ExceptionCompile $e) {
-            TplUtility::msg("The combo plugin is not installed, slot automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
-
-        }
-
-
     }
 
     private static function getBootStrapMajorVersion()
@@ -811,7 +783,7 @@ EOF;
         }
         if ($toasts !== "") {
             print <<<EOF
-<div class="toast-container position-absolute mt-3 top-0 start-50 translate-middle-x" id="toastPlacement" style="z-index:1060">
+<div class="toast-container position-absolute mb-3 bottom-0 right-0" id="toastPlacement" style="z-index:1060">
 $toasts
 </div>
 <script>
@@ -1702,47 +1674,7 @@ EOF;
         }
     }
 
-    static function getPageHeader(): string
-    {
 
-        $navBarPageName = TplUtility::getHeaderSlotPageName();
-        if ($id = page_findnearest($navBarPageName)) {
-
-            $header = TplUtility::renderSlot($id);
-
-        } else {
-
-            $domain = self::getApexDomainUrl();
-            $header = '<div class="container p-3" style="text-align: center;position:relative;z-index:100">Welcome to the <a href="' . $domain . '/">Strap template</a>.<br/>
-            If you don\'t known the <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="' . $domain . '/getting_started">Getting Started Guide</a>.<br/>
-            Otherwise, to create a menu bar in the header, create a page with the id (' . html_wikilink(':' . $navBarPageName) . ') and the <a href="' . $domain . '/menubar">menubar component</a>.
-            </div>';
-
-        }
-        // No header on print
-        // position relative to place the edit button
-        return "<header class=\"d-print-none position-relative\" id=\"page-header\">$header</header>";
-
-    }
-
-    static function getFooter(): string
-    {
-        $domain = self::getApexDomainUrl();
-
-        $footerPageName = TplUtility::getFooterSlotPageName();
-        if ($nearestFooterPageId = page_findnearest($footerPageName)) {
-            $footer = TplUtility::renderSlot($nearestFooterPageId);
-        } else {
-            $footer = '<div class="container p-3" style="text-align: center">Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id ' . html_wikilink(':' . $footerPageName) . ' to create a footer.</div>';
-        }
-
-        // Powered By
-        $poweredBy = TplUtility::getPoweredBy();
-
-        // No footer on print
-        // relative for the edit button
-        return "<footer class=\"d-print-none position-relative\" id=\"page-footer\">$footer $poweredBy</footer>";
-    }
 
     static function getPoweredBy(): string
     {

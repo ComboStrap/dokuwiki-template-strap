@@ -14,8 +14,10 @@ class LayoutArea
     private $areaId;
     /**
      * @var string
+     * The html may be null to set
+     * the default (for instance, with a page header)
      */
-    private $html = "";
+    private $html = null;
     private $slotName = "";
 
     public function __construct(string $areaId)
@@ -78,7 +80,7 @@ class LayoutArea
         return $this->show;
     }
 
-    public function getHtml(): string
+    public function getHtml(): ?string
     {
         return $this->html;
     }

@@ -10,6 +10,8 @@ class Layout
     const MAIN_FOOTER = "main-footer";
     const MAIN_SIDE = "main-side";
     const PAGE_MAIN = "page-main";
+    const PAGE_HEADER = "page-header";
+    const PAGE_FOOTER = "page-footer";
 
     /**
      * @var LayoutArea[]
@@ -37,6 +39,10 @@ class Layout
             ->setSlotName(TplUtility::SLOT_MAIN_FOOTER);
         $layout->getOrCreateArea(self::MAIN_SIDE)
             ->setSlotName(TplUtility::getMainSideSlotName());
+        $layout->getOrCreateArea(self::PAGE_HEADER)
+            ->setSlotName(TplUtility::getHeaderSlotPageName());
+        $layout->getOrCreateArea(self::PAGE_FOOTER)
+            ->setSlotName(TplUtility::getFooterSlotPageName());
         return $layout;
     }
 
@@ -50,65 +56,5 @@ class Layout
         return $layoutArea;
     }
 
-    public function setPageSideSlotName($sideBarName): Layout
-    {
-        $this->pageSideName = $sideBarName;
-        return $this;
-    }
-
-    public function showPageSideSlot(): ?bool
-    {
-        return $this->showPageSideSlot;
-    }
-
-    public function getPageSideSlotName()
-    {
-        return $this->pageSideName;
-    }
-
-    public function setShowPageSideSlot(bool $showSideSlot): Layout
-    {
-        $this->showPageSideSlot = $showSideSlot;
-        return $this;
-    }
-
-    public function setPageSideHtml(string $html): Layout
-    {
-        $this->pageSideHtml = $html;
-        return $this;
-
-    }
-
-    public function setMainFooterSlotName(string $mainFooterSlotName): Layout
-    {
-        $this->mainFooterSlotName = $mainFooterSlotName;
-        return $this;
-    }
-
-    public function showMainFooterSlot()
-    {
-        return $this->showMainFooterSlot;
-    }
-
-    public function getMainFooterHtml(): string
-    {
-        return $this->mainFooterHtml;
-    }
-
-    public function getMainFooterSlotName(): string
-    {
-        return $this->mainFooterSlotName;
-    }
-
-    public function setShowMainFooterSlot(bool $showMainFooterSlot)
-    {
-        $this->showMainFooterSlot = $showMainFooterSlot;
-    }
-
-    public function setMainFooterHtml(string $html): Layout
-    {
-        $this->mainFooterHtml = $html;
-        return $this;
-    }
 
 }
