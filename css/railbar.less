@@ -1,8 +1,8 @@
-
 @ico-width: 28px;
 @ico-margin: 8px;
 @item-width: (@ico-width + @ico-margin + @ico-margin);
 @item-height: (@ico-width + @ico-margin);
+@line-height: (@item-height - 1); // -1 to not overflow, why I don't know
 @canvas-control-height: 45vh;
 @primary: rgba(0, 0, 0, 0.65);
 @primary-icon: rgba(0, 0, 0, 0.35);
@@ -27,7 +27,7 @@
             /* add transparent border to prevent jumping when proper border is added on focus */
             border: 1px solid transparent;
             white-space: nowrap;
-            line-height: @item-height;
+            line-height: @line-height;
             height: @item-height;
             color: @primary;
             font-weight: 400;
@@ -54,6 +54,7 @@
         a:hover {
             background-color: @secondary;
             text-decoration: underline;
+
             span {
                 display: inline-block;
             }
@@ -67,16 +68,19 @@
 
     position: absolute;
     top: 0;
-    right: (-1 * @item-width);
+    right: (-1 * (@item-width+22));
     width: @item-width;
 
-    div.tools {
+    div {
+
         position: fixed;
-        width: @item-width;
 
         ul {
             position: absolute;
             right: 0;
+            max-height: 85vh;
+            overflow-y: auto;
+
             li {
                 a {
                     span {
@@ -104,7 +108,7 @@
 // on hover show all items
 #railbar-fixed:hover {
     //noinspection ALL
-    div.tools ul {
+    ul {
         background-color: @ini_background;
         border-color: @ini_border;
         border-radius: 2px;
@@ -121,7 +125,7 @@
     .btn {
         background-color: #e2f1ff;
         border-color: #e2f1ff;
-        color:@ini_link;
+        color: @ini_link;
     }
 }
 

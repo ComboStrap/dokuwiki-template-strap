@@ -150,61 +150,6 @@ class TplUtility
 
 
     /**
-     * Print the breadcrumbs trace with Bootstrap class
-     *
-     * @param string $sep Separator between entries
-     * @return bool
-     * @author Nicolas GERARD
-     *
-     *
-     */
-    static function renderTrailBreadcrumb($sep = '�')
-    {
-
-        global $conf;
-        global $lang;
-
-        //check if enabled
-        if (!$conf['breadcrumbs']) return false;
-
-        $crumbs = breadcrumbs(); //setup crumb trace
-
-        echo '<nav id="breadcrumb" aria-label="breadcrumb" class="my-3 d-print-none">' . PHP_EOL;
-
-        $i = 0;
-        // Try to get the template custom breadcrumb
-        // $breadCrumb = tpl_getLang('breadcrumb');
-        // if ($breadCrumb == '') {
-        //    // If not present for the language, get the default one
-        //    $breadCrumb = $lang['breadcrumb'];
-        // }
-
-        // echo '<span id="breadCrumbTitle" ">' . $breadCrumb . ':   </span>' . PHP_EOL;
-        echo '<ol class="breadcrumb py-1 px-2" style="background-color:unset">' . PHP_EOL;
-        print '<li class="pr-2" style="display:flex;font-weight: 200">' . $lang['breadcrumb'] . '</li>';
-
-        foreach ($crumbs as $id => $name) {
-            $i++;
-
-            if ($i == 0) {
-                print '<li class="breadcrumb-item active">';
-            } else {
-                print '<li class="breadcrumb-item">';
-            }
-            if ($name == "start") {
-                $name = "Home";
-            }
-            tpl_link(wl($id), hsc($name), 'title="' . $name . '"');
-
-            print '</li>' . PHP_EOL;
-
-        }
-        echo '</ol>' . PHP_EOL;
-        echo '</nav>' . PHP_EOL;
-        return true;
-    }
-
-    /**
      * @param string $text add a comment into the HTML page
      */
     private static function addAsHtmlComment($text)
@@ -347,14 +292,14 @@ class TplUtility
      */
     public static function getMainSideSlotName()
     {
-        $oldSideKickSlotName =  TplUtility::migrateSlotConfAndGetValue(
+        $oldSideKickSlotName = TplUtility::migrateSlotConfAndGetValue(
             TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
             "slot_sidekick",
             TplUtility::CONF_SIDEKICK_OLD,
             "sidekickbar",
             "sidekick_slot"
         );
-        if($oldSideKickSlotName!==null){
+        if ($oldSideKickSlotName !== null) {
             return $oldSideKickSlotName;
         }
         return "slot_main_side";
@@ -625,7 +570,7 @@ EOF;
             $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
             $railBarFixed = <<<EOF
 <div id="railbar-fixed" style="z-index: $zIndexRailbar;" $classFixed>
-    <div class="tools">
+    <div>
         $railBarListItems
     </div>
 </div>
@@ -1674,7 +1619,6 @@ EOF;
 
         }
     }
-
 
 
     static function getPoweredBy(): string
