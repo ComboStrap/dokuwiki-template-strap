@@ -211,7 +211,9 @@ $outputBuffer = TplUtility::outputBuffer();
 
 <?php
 if ($showPageHeader === true) {
+    echo $layoutObject->getOrCreateArea("page-header")->toEnterHtmlTag("header");
     echo $pageHeaderHtml;
+    echo "</header>";
 }
 
 // The global message array
