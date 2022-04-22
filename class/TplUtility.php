@@ -597,7 +597,8 @@ EOF;
     static function getRailBarListItems(): string
     {
         $liUserTools = (new UserMenu())->getListItems('action');
-        $liPageTools = (new PageMenu())->getListItems();
+        $pageMenu = new PageMenu();
+        $liPageTools = $pageMenu->getListItems();
         $liSiteTools = (new SiteMenu())->getListItems('action');
         // FYI: The below code outputs all menu in mobile (in another HTML layout)
         // echo (new \dokuwiki\Menu\MobileMenu())->getDropdown($lang['tools']);

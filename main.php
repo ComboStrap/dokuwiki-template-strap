@@ -84,7 +84,7 @@ if ($showMainSide !== null) {
     $mainSideHtml = $mainSideArea->getHtml();
 } else {
     $mainSideWikiId = page_findnearest($mainSideArea->getSlotName());
-    $showMainSide = $mainSideWikiId && ($ACT == 'show');
+    $showMainSide = $mainSideWikiId !== false && $ACT === 'show';
     if ($showMainSide !== false) {
         $mainSideHtml = tpl_include_page($mainSideWikiId, 0, 1);
     }
@@ -112,7 +112,7 @@ EOF;
     }
 } else {
     $pageHeaderWikiId = page_findnearest($pageHeaderArea->getSlotName());
-    $showPageHeader = $pageHeaderWikiId;
+    $showPageHeader = $pageHeaderWikiId !== false;
     if ($showPageHeader !== false) {
         $pageHeaderHtml = tpl_include_page($pageHeaderWikiId, 0, 1);
     }
@@ -138,7 +138,7 @@ EOF;
     }
 } else {
     $pageFooterWikiId = page_findnearest($pageFooterArea->getSlotName());
-    $showPageFooter = $pageFooterWikiId;
+    $showPageFooter = $pageFooterWikiId !== false;
     if ($showPageFooter !== false) {
         $pageFooterHtml = tpl_include_page($pageFooterWikiId, 0, 1);
     }
@@ -220,7 +220,12 @@ if ($showPageHeader === true) {
 // should be just below body for absolute placement
 TplUtility::printMessage();
 
-echo $layoutObject->getOrCreateArea("page-core")->toEnterHtmlTag("div");
+
+$pageCoreLayoutArea = $layoutObject->getOrCreateArea("page-core");
+if ($pageCoreLayoutArea->getAttributes() === null) {
+    $pageCoreLayoutArea->setAttributes(["class" => "container position-relative"]);
+}
+echo $pageCoreLayoutArea->toEnterHtmlTag("div");
 ?>
 
 
@@ -265,12 +270,16 @@ if ($ACT === "show") {
 
 } else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
 
+
     <?php
+    // the viewport (constraint) is created by page-core
+    echo $layoutObject->getOrCreateArea(Layout::PAGE_MAIN)->toEnterHtmlTag("main");
     // all other action are using the php buffer
     // we can then have an overflow
     // the buffer is flushed
     // this is why we output the content of do/admin page here
     echo TplUtility::tpl_content($prependTOC = false);
+    echo "</main>"
     ?>
 
 <?php } ?>
@@ -284,7 +293,7 @@ if ($ACT === "show") {
 echo "</div>";
 
 // Page Footer
-if($showPageFooter) {
+if ($showPageFooter) {
     echo $pageFooterArea->toEnterHtmlTag("footer");
     echo $pageFooterHtml;
     // Powered By

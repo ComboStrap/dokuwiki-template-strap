@@ -33,23 +33,33 @@ class LayoutArea
      * and the rendering is done at the dokuwiki way
      */
     private $show = null;
-    private $attributes = [];
+    /**
+     * @var array|null - the attributes of the element (null means that the default value will be used, ie when combo is not used)
+     */
+    private $attributes = null;
 
     public function setShow(bool $show)
     {
         $this->show = $show;
     }
 
-    public function toEnterHtmlTag(string $string): string
+    public function toEnterHtmlTag(string $tag): string
     {
         $htmlAttributesAsArray = [];
-        foreach ($this->attributes as $attribute => $value) {
+        $attributes = $this->attributes;
+        if ($attributes === null) {
+            $attributes = [];
+        }
+        foreach ($attributes as $attribute => $value) {
             $attribute = htmlspecialchars($attribute, ENT_XHTML | ENT_QUOTES);
             $value = htmlspecialchars($value, ENT_XHTML | ENT_QUOTES);
             $htmlAttributesAsArray[] = "$attribute=\"$value\"";
         };
-        $htmlAttributesAsString = implode(" ", $htmlAttributesAsArray);
-        return "<$string id=\"$this->areaId\" $htmlAttributesAsString>";
+        $htmlAttributesAsString = "";
+        if (sizeof($htmlAttributesAsArray) > 0) {
+            $htmlAttributesAsString = " " . implode(" ", $htmlAttributesAsArray);
+        }
+        return "<$tag id=\"$this->areaId\"$htmlAttributesAsString>";
     }
 
     public function setAttributes(array $attributes): LayoutArea
@@ -64,7 +74,7 @@ class LayoutArea
         return $this;
     }
 
-    public function getSlotName()
+    public function getSlotName(): string
     {
         return $this->slotName;
     }
@@ -83,6 +93,11 @@ class LayoutArea
     public function getHtml(): ?string
     {
         return $this->html;
+    }
+
+    public function getAttributes(): ?array
+    {
+        return $this->attributes;
     }
 
 }
