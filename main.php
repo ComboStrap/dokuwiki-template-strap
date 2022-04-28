@@ -56,15 +56,50 @@ if ($showPageSideArea !== null) {
 }
 
 /**
+ * Main Header
+ */
+$mainHeaderArea = $layoutObject->getOrCreateArea(Layout::MAIN_HEADER);
+$showMainHeader = $mainHeaderArea->show();
+if ($showMainHeader !== null) {
+    $mainHeaderHtml = $mainHeaderArea->getHtml();
+} else {
+    $nearestMainHeader = page_findnearest($mainHeaderArea->getSlotName());
+    $showMainHeader = $nearestMainHeader !== false
+        && ($ACT === 'show')
+        && TplUtility::isNotSlot()
+        && TplUtility::isNotRootHome();
+    if ($showMainHeader !== false) {
+        $mainHeaderHtml = tpl_include_page($nearestMainHeader, 0, 1);
+    }
+}
+
+/**
+ * Main Toc
+ */
+$mainTocArea = $layoutObject->getOrCreateArea(Layout::MAIN_TOC);
+$showMainToc = $mainTocArea->show();
+if ($showMainToc !== null) {
+    $mainTocHtml = $mainTocArea->getHtml();
+} else {
+    $nearestMainToc = page_findnearest($mainTocArea->getSlotName());
+    $showMainToc = $nearestMainToc !== false
+        && ($ACT === 'show')
+        && TplUtility::isNotSlot()
+        && TplUtility::isNotRootHome();
+    if ($showMainToc !== false) {
+        $mainTocHtml = tpl_include_page($nearestMainToc, 0, 1);
+    }
+}
+
+/**
  * Main footer
- * (Header is part of the main content)
  */
 $mainFooterArea = $layoutObject->getOrCreateArea(Layout::MAIN_FOOTER);
 $showMainFooter = $mainFooterArea->show();
 if ($showMainFooter !== null) {
     $mainFooterHtml = $mainFooterArea->getHtml();
 } else {
-    $nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER);
+    $nearestMainFooter = page_findnearest($mainHeaderArea->getSlotName());
     $showMainFooter = $nearestMainFooter !== false
         && ($ACT === 'show')
         && TplUtility::isNotSlot()
@@ -254,6 +289,26 @@ if ($ACT === "show") {
 
     echo $outputBuffer;
 
+    if ($showMainHeader):
+
+        echo $mainHeaderArea->toEnterHtmlTag("header");
+
+        echo $mainHeaderHtml;
+
+        echo '</header>';
+
+    endif;
+
+    if ($showMainToc):
+
+        echo $mainTocArea->toEnterHtmlTag("nav");
+
+        echo $mainTocHtml;
+
+        echo '</nav>';
+
+    endif;
+
     echo $mainHtml;
 
     if ($showMainSide):
@@ -263,6 +318,16 @@ if ($ACT === "show") {
         echo $mainSideHtml;
 
         echo '</aside>';
+
+    endif;
+
+    if ($showMainFooter):
+
+        echo $mainFooterArea->toEnterHtmlTag("footer");
+
+        echo $mainFooterHtml;
+
+        echo '</footer>';
 
     endif;
 
