@@ -309,7 +309,11 @@ if ($ACT === "show") {
 
     endif;
 
+    echo $layoutObject->getOrCreateArea(Layout::MAIN_CONTENT)->toEnterHtmlTag("div");
+
     echo $mainHtml;
+
+    echo '</div>';
 
     if ($showMainSide):
 

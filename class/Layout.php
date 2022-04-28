@@ -12,8 +12,9 @@ class Layout
     const PAGE_MAIN = "page-main";
     const PAGE_HEADER = "page-header";
     const PAGE_FOOTER = "page-footer";
-    const MAIN_HEADER = "main-footer";
+    const MAIN_HEADER = "main-header";
     const MAIN_TOC = "main-toc";
+    const MAIN_CONTENT = "main-content";
 
     /**
      * @var LayoutArea[]
