@@ -343,11 +343,17 @@ if ($ACT === "show") {
     <?php
     // the viewport (constraint) is created by page-core
     echo $layoutObject->getOrCreateArea(Layout::PAGE_MAIN)->toEnterHtmlTag("main");
-    // all other action are using the php buffer
-    // we can then have an overflow
-    // the buffer is flushed
-    // this is why we output the content of do/admin page here
-    echo TplUtility::tpl_content($prependTOC = false);
+    /**
+     * all other action are using the php buffer
+     * we can then have an overflow
+     * the buffer is flushed
+     * this is why we output the content of do/admin page here
+     * the standard dokuwiki function {@link tpl_content()} is used because
+     * a admin page may create a toc See $plugin->getTOC() in {@link tpl_toc()}
+     */
+    tpl_flush();
+    tpl_content();
+    tpl_flush();
     echo "</main>"
     ?>
 
