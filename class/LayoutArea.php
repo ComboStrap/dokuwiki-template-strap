@@ -19,6 +19,10 @@ class LayoutArea
      */
     private $html = null;
     private $slotName = "";
+    /**
+     * @var string
+     */
+    private $tag;
 
     public function __construct(string $areaId)
     {
@@ -43,8 +47,12 @@ class LayoutArea
         $this->show = $show;
     }
 
-    public function toEnterHtmlTag(string $tag): string
+    public function toEnterHtmlTag(string $tag = null): string
     {
+
+        if ($tag === null) {
+            $tag = $this->getTagOrDefault();
+        }
         $htmlAttributesAsArray = [];
         $attributes = $this->attributes;
         if ($attributes === null) {
@@ -98,6 +106,30 @@ class LayoutArea
     public function getAttributes(): ?array
     {
         return $this->attributes;
+    }
+
+    public function setTag(string $string): LayoutArea
+    {
+        $this->tag = $string;
+        return $this;
+    }
+
+    public function getTagOrDefault($default = "div")
+    {
+        if ($this->tag !== null) {
+            return $this->tag;
+        }
+        return $default;
+
+    }
+
+    public function toExitTag(string $tag = null): string
+    {
+        if ($tag === null) {
+            $tag = $this->getTagOrDefault();
+        }
+        return "</$tag>";
+
     }
 
 }

@@ -25,7 +25,8 @@ class Layout
     {
         $layout = new Layout();
         $layout->getOrCreateArea(self::PAGE_HEADER)
-            ->setSlotName(TplUtility::getHeaderSlotPageName());
+            ->setSlotName(TplUtility::getHeaderSlotPageName())
+            ->setTag("header");
         $layout->getOrCreateArea(self::PAGE_SIDE)
             ->setSlotName(TplUtility::getSideSlotPageName());
         $layout->getOrCreateArea(self::MAIN_HEADER)

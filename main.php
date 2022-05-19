@@ -127,34 +127,6 @@ if ($showMainSide !== null) {
 
 
 /**
- * Headerbar
- */
-$pageHeaderArea = $layoutObject->getOrCreateArea(Layout::PAGE_HEADER);
-$showPageHeader = $pageHeaderArea->show();
-if ($showPageHeader !== null) {
-    $pageHeaderHtml = $pageHeaderArea->getHtml();
-    if ($showPageHeader === true && $pageHeaderHtml === null) {
-        $domain = TplUtility::getApexDomainUrl();
-        $pageHeaderHtml = <<<EOF
-<div class="container p-3" style="text-align: center;position:relative;z-index:100">
-    <p>Welcome to the <a href="$domain/">Strap template</a>.<p>
-    <p>
-      If you don\'t known <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="$domain/getting_started">Getting Started Guide</a>.<br/>
-      Otherwise, to create a menu bar in the header, create a slot with the name (<a href="$domain/{$pageHeaderArea->getSlotName()}">{$pageHeaderArea->getSlotName()}</a>) and the <a href="$domain/menubar">menubar component</a>.
-    </p>
-</div>
-EOF;
-    }
-} else {
-    $pageHeaderWikiId = page_findnearest($pageHeaderArea->getSlotName());
-    $showPageHeader = $pageHeaderWikiId !== false;
-    if ($showPageHeader !== false) {
-        $pageHeaderHtml = tpl_include_page($pageHeaderWikiId, 0, 1);
-    }
-}
-
-
-/**
  * Page Footer / Fat Footer
  */
 $pageFooterArea = $layoutObject->getOrCreateArea(Layout::PAGE_FOOTER);
@@ -238,17 +210,45 @@ $outputBuffer = TplUtility::outputBuffer();
 
 </head>
 <?php
-// * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
-// * dokuwiki__top ID is needed for the "Back to top" utility
-// * used also by some plugins
+/**
+ * * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
+ * dokuwiki__top ID is needed for the "Back to top" utility
+ * used also by some plugins
+ */
 ?>
 <body class="dokuwiki position-relative">
 
 <?php
-if ($showPageHeader === true) {
-    echo $layoutObject->getOrCreateArea("page-header")->toEnterHtmlTag("header");
+/**
+ * Page Header
+ */
+$pageHeaderArea = $layoutObject->getOrCreateArea(Layout::PAGE_HEADER);
+$pageHeaderHtml = "";
+if ($pageHeaderArea->show() !== null) {
+    $pageHeaderHtml = $pageHeaderArea->getHtml();
+    if ($pageHeaderArea->show() === true && $pageHeaderHtml === null) {
+        $domain = TplUtility::getApexDomainUrl();
+        $pageHeaderHtml = <<<EOF
+<div class="container p-3" style="text-align: center;position:relative;z-index:100">
+    <p>Welcome to the <a href="$domain/">Strap template</a>.<p>
+    <p>
+      If you don\'t known <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="$domain/getting_started">Getting Started Guide</a>.<br/>
+      Otherwise, to create a menu bar in the header, create a slot with the name (<a href="$domain/{$pageHeaderArea->getSlotName()}">{$pageHeaderArea->getSlotName()}</a>) and the <a href="$domain/menubar">menubar component</a>.
+    </p>
+</div>
+EOF;
+    }
+} else {
+    $pageHeaderWikiId = page_findnearest($pageHeaderArea->getSlotName());
+    $showPageHeader = $pageHeaderWikiId !== false;
+    if ($showPageHeader !== false) {
+        $pageHeaderHtml = tpl_include_page($pageHeaderWikiId, 0, 1);
+    }
+}
+if ($pageHeaderArea->show() === true) {
+    echo $pageHeaderArea->toEnterHtmlTag();
     echo $pageHeaderHtml;
-    echo "</header>";
+    echo $pageHeaderArea->toExitTag();
 }
 
 // The global message array
