@@ -1573,7 +1573,7 @@ EOF;
 
                 $wikiEnabled = \syntax_plugin_combo_headingwiki::isEnabled();
                 if ($wikiEnabled) {
-                    $html_output = EditButton::replaceAll($html_output);
+                    $html_output = EditButton::replaceOrDeleteAll($html_output);
                 } else {
                     // section editing show only if not a revision and $ACT=show
                     // which is the case in this block
