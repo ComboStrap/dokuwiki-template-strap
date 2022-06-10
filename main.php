@@ -5,7 +5,6 @@ require_once(__DIR__ . '/class/TplUtility.php');
 
 use ComboStrap\Layout;
 use Combostrap\TplUtility;
-use dokuwiki\Extension\Event;
 
 
 global $ID;
@@ -13,6 +12,14 @@ global $lang;
 global $ACT;
 global $conf;
 
+/**
+ * ################################
+ * Content generation
+ * ################################
+ * Generate the content, start the process first
+ * to collect the buffer if any
+ * then create the whole HTML page
+ */
 
 /**
  * Railbar can add snippet in the head
@@ -20,98 +27,105 @@ global $conf;
  */
 $railBar = TplUtility::getRailBar();
 
+/**
+ * Powered By
+ */
 $poweredBy = TplUtility::getPoweredBy();
 
 /**
- *
- * If the do action is edit, php plugin uses echo
- * a lot and the buffer is too small, we got then a buffer overflow
- *
- * Other action takes place further where the content should be
+ * HTML body content generation
  */
-
-$htmlPageShow = "";
 if ($ACT === 'show') {
 
     /**
-     * The Content first because it contains
-     * also the front matter that may influence the other slot
+     * Layout System
      */
-    $mainHtml = TplUtility::tpl_content($prependTOC = false);
-
-    /**
-     * Page (Header/Footer/Side)
-     */
-    $pageSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getSideSlotPageName());
-    $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
-    $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
-
-    /**
-     * Main (Header/Footer/Side)
-     */
-    $mainHeaderHtml = "";
-    $mainFooterHtml = "";
-    if (TplUtility::isNotSlot() && TplUtility::isNotRootHome()) {
-        $mainHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_HEADER);
-        $mainFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_FOOTER);
+    $htmlPageShow = "";
+    $basicLayoutMessageInCaseOfError = "The page layout module could not be used, defaulting to the basic layout that is not optimized.";
+    try {
+        TplUtility::checkSameStrapAndComboVersion();
+        $filename = "../../plugins/combo/vendor/autoload.php";
+        if (file_exists($filename)) {
+            require_once($filename);
+            if (function_exists("\ComboStrap\Layout::create")) {
+                $htmlPageShow = Layout::create()->getHtmlPage();
+            }
+        } else {
+            msg("The autoloader of the combo plugin has not been found. You should upgrade combo. {$basicLayoutMessageInCaseOfError}", -1, '', '', MSG_USERS_ONLY);
+        }
+    } catch (Exception $e) {
+        // not the same version or not installed
+        $message = "{$e->getMessage()}. $basicLayoutMessageInCaseOfError";
+        msg($message, -1, '', '', MSG_MANAGERS_ONLY);
     }
-    $mainSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getMainSideSlotName());;
 
-    /**
-     * The output buffer should be empty on show
-     */
-    $outputBuffer = TplUtility::outputBuffer();
+    if ($htmlPageShow === "") {
 
-    $toc = tpl_toc(true);
-    $htmlPageShow = <<<EOF
+        /**
+         * No valid combo Installed, default template
+         */
+
+        /**
+         * The Content first because it contains
+         * also the front matter that may influence the other slot
+         */
+        $mainHtml = TplUtility::tpl_content($prependTOC = false);
+
+        /**
+         * Page (Header/Footer/Side)
+         */
+        $pageSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getSideSlotPageName());
+        $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
+        $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
+
+        /**
+         * Main (Header/Footer/Side)
+         */
+        $mainHeaderHtml = "";
+        $mainFooterHtml = "";
+        if (TplUtility::isNotSlot() && TplUtility::isNotRootHome()) {
+            $mainHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_HEADER);
+            $mainFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_FOOTER);
+        }
+        $mainSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getMainSideSlotName());;
+
+        /**
+         * The output buffer should be empty on show
+         */
+        $outputBuffer = TplUtility::outputBuffer();
+
+        $toc = tpl_toc(true);
+        $htmlPageShow = <<<EOF
 <header>$pageHeaderHtml</header>
 <!-- To go at the top of the page, style is for the fix top page, absolute to not participate in a grid -->
-<div id=\"dokuwiki__top\" class=\"position-absolute\"></div>
+<div id="dokuwiki__top" class="position-absolute"></div>
 <div id="page-core" class="container position-relative d-flex justify-content-md-center">
     $outputBuffer
     <aside id="main-side" class="col-md-3 order-last order-md-first">$pageSideHtml</aside>
     <main id="page-main" class="col-md-9 order-first">
-        <header id=\"main-header\">$mainHeaderHtml</header>
-        <nav id=\"main-toc\">$toc</nav>
-        <div id=\"main-content\">$mainHtml</div>
-        <aside id=\"main-side\">$mainSideHtml</aside>
-        <header id=\"main-footer\">$mainFooterHtml</header>
+        <header id="main-header\">$mainHeaderHtml</header>
+        <nav id="main-toc">$toc</nav>
+        <div id="main-content">$mainHtml</div>
+        <aside id="main-side">$mainSideHtml</aside>
+        <header id="main-footer">$mainFooterHtml</header>
     </main>
     $railBar
 </div>
 <footer>{$pageFooterHtml}{$poweredBy}</footer>
 EOF;
+    }
 
 } else {
 
     /**
      * Header/Footer/Buffer processing
+     * for other action than show
+     * (ie edit, admin, ...)
      */
     $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
     $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
-    $outputBuffer = TplUtility::outputBuffer(); // The output buffer can be not empty on other do action
+    $outputBuffer = TplUtility::outputBuffer(); // The output buffer can be not empty on other do action via plugin
 
-}
-
-/**
- * Layout System
- */
-try {
-    TplUtility::checkSameStrapAndComboVersion();
-    $filename = "../../plugins/combo/vendor/autoloady.php";
-    if (file_exists($filename)) {
-        require_once($filename);
-        if (class_exists("\ComboStrap\Layout")) {
-            $layoutObject = Layout::create();
-            Event::createAndTrigger('COMBO_LAYOUT', $layoutObject);
-            return;
-        }
-    } else {
-        msg("The autoloader of the combo plugin has not been found. You should upgrade combo.", -1, '', '', MSG_USERS_ONLY);
-    }
-} catch (Exception $e) {
-    // not the same version or not installed
-    msg($e->getMessage(), -1, '', '', MSG_MANAGERS_ONLY);
 }
 
 
@@ -176,17 +190,21 @@ if ($ACT === "show") {
 
 } else {
 
+    /**
+     * If the do action is other than show (such as edit, ...)
+     * php plugin uses echo a lot and the buffer is too small, we got then a buffer overflow
+     */
 
     /**
      * Output
      */
     echo "<header>$pageHeaderHtml</header>";
-    echo "<div id=\"page-core\" class=\"container position-relative d-flex justify-content-md-center\">";
+    echo "<div id=\"page-core\" class=\"container position-relative\">";
     echo $outputBuffer;
 
     // All other action others than show
     // the viewport (constraint) is created by page-core
-    echo "<main>";
+    echo "<main class=\"row justify-content-md-center\">";
     /**
      * all other action are using the php buffer
      * we can then have an overflow
@@ -212,7 +230,7 @@ TplUtility::addPreloadedResources();
 
 <div class="d-none">
     <?php
-    // Indexer (Background tasks)
+    // Indexer (Background tasks), mandatory
     tpl_indexerWebBug()
     ?>
 </div>
