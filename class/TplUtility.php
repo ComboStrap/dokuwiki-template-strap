@@ -767,6 +767,15 @@ EOF;
             && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
     }
 
+    public static function getXhtmlForSlotName($slotName)
+    {
+        $nearestWikiId = page_findnearest($slotName);
+        if ($nearestWikiId === false) {
+            return "";
+        }
+        return tpl_include_page($nearestWikiId, 0, 1);
+    }
+
 
     /**
      * Hierarchical breadcrumbs
