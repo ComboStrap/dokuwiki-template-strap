@@ -636,7 +636,10 @@ EOF;
     }
 
 
-    private static function checkSameStrapAndComboVersion()
+    /**
+     * @throws Exception
+     */
+    public static function checkSameStrapAndComboVersion()
     {
         /**
          * Check the version
@@ -656,8 +659,8 @@ EOF;
             }
             $upgradeLink = "<a href=\"" . wl() . "&do=admin&page=extension" . "\">upgrade <b>$upgradeTarget</b> via the extension manager</a>";
             $message = "You should $upgradeLink to the latest version to get a fully functional experience. The version of $comboLink is ($comboVersion) while the version of $strapLink is ($templateVersion).";
-            LogUtility::msg($message);
-            throw new ExceptionCompile($message);
+
+            throw new Exception($message);
         }
     }
 
@@ -1535,7 +1538,7 @@ EOF;
         $comboSameVersionThanStrap = true;
         try {
             TplUtility::checkSameStrapAndComboVersion();
-        } catch (ExceptionCompile $e) {
+        } catch (Exception $e) {
             $comboSameVersionThanStrap = false;
         }
         $showViaCombo = $ACT === "show" // show only
@@ -1570,16 +1573,8 @@ EOF;
                  */
                 $html_output .= Page::createPageFromId($ID)
                     ->toXhtml();
+                $html_output = EditButton::replaceOrDeleteAll($html_output);
 
-                $wikiEnabled = \syntax_plugin_combo_headingwiki::isEnabled();
-                if ($wikiEnabled) {
-                    $html_output = EditButton::replaceOrDeleteAll($html_output);
-                } else {
-                    // section editing show only if not a revision and $ACT=show
-                    // which is the case in this block
-                    $showEdit = true;
-                    $html_output = html_secedit($html_output, $showEdit);
-                }
 
                 /**
                  * Add the buffer (eventually)

@@ -1,10 +1,7 @@
 <?php
-if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
-
 
 // Classes
 require_once(__DIR__ . '/class/TplUtility.php');
-require_once(__DIR__ . '/class/Layout.php');
 
 use ComboStrap\Layout;
 use Combostrap\TplUtility;
@@ -34,121 +31,86 @@ if ($ACT === 'show') {
 }
 
 /**
- * Layout init
+ * Layout System
  */
+try {
+    TplUtility::checkSameStrapAndComboVersion();
+    $filename = "../../plugins/combo/vendor/autoloadyolo.php";
+    if (file_exists($filename)) {
+        require_once($filename);
+        if (class_exists("\ComboStrap\Layout")) {
+            $layoutObject = Layout::create();
+            Event::createAndTrigger('COMBO_LAYOUT', $layoutObject);
+            return;
+        }
+    } else {
+        msg("The autoloader of the combo plugin has not been found. You should upgrade combo.", -1, '', '', MSG_USERS_ONLY);
+    }
+} catch (Exception $e) {
+    // not the same version or not installed
+    msg($e->getMessage(),-1,'','', MSG_MANAGERS_ONLY);
+}
 
-$layoutObject = Layout::create();
-Event::createAndTrigger('COMBO_LAYOUT', $layoutObject);
+
 
 /**
  * Layout object was not processed (ie Combo not installed)
  */
-$pageSideArea = $layoutObject->getOrCreateArea(Layout::PAGE_SIDE);
-$showPageSideArea = $pageSideArea->show();
-if ($showPageSideArea !== null) {
-    $sideBarHtml = $pageSideArea->getHtml();
-} else {
-    $nearestWikiId = page_findnearest($pageSideArea->getSlotName());
-    $showPageSideArea = $nearestWikiId !== false && ($ACT === 'show');
-    if ($showPageSideArea) {
-        $sideBarHtml = tpl_include_page($nearestWikiId, 0, 1);
-    }
+$nearestWikiId = page_findnearest(TplUtility::getSideSlotPageName());
+$showPageSideArea = $nearestWikiId !== false && ($ACT === 'show');
+$sideBarHtml = "";
+if ($showPageSideArea) {
+    $sideBarHtml = tpl_include_page($nearestWikiId, 0, 1);
 }
+
 
 /**
  * Main Header
  */
-$mainHeaderArea = $layoutObject->getOrCreateArea(Layout::MAIN_HEADER);
-$showMainHeader = $mainHeaderArea->show();
-if ($showMainHeader !== null) {
-    $mainHeaderHtml = $mainHeaderArea->getHtml();
-} else {
-    $nearestMainHeader = page_findnearest($mainHeaderArea->getSlotName());
-    $showMainHeader = $nearestMainHeader !== false
-        && ($ACT === 'show')
-        && TplUtility::isNotSlot()
-        && TplUtility::isNotRootHome();
-    if ($showMainHeader !== false) {
-        $mainHeaderHtml = tpl_include_page($nearestMainHeader, 0, 1);
-    }
+$nearestMainHeader = page_findnearest(TplUtility::SLOT_MAIN_HEADER);
+$showMainHeader = $nearestMainHeader !== false
+    && ($ACT === 'show')
+    && TplUtility::isNotSlot()
+    && TplUtility::isNotRootHome();
+$mainHeaderHtml = "";
+if ($showMainHeader !== false) {
+    $mainHeaderHtml = tpl_include_page($nearestMainHeader, 0, 1);
 }
 
-/**
- * Main Toc
- */
-$mainTocArea = $layoutObject->getOrCreateArea(Layout::MAIN_TOC);
-$showMainToc = $mainTocArea->show();
-if ($showMainToc !== null) {
-    $mainTocHtml = $mainTocArea->getHtml();
-} else {
-    $nearestMainToc = page_findnearest($mainTocArea->getSlotName());
-    $showMainToc = $nearestMainToc !== false
-        && ($ACT === 'show')
-        && TplUtility::isNotSlot()
-        && TplUtility::isNotRootHome();
-    if ($showMainToc !== false) {
-        $mainTocHtml = tpl_include_page($nearestMainToc, 0, 1);
-    }
-}
 
 /**
  * Main footer
  */
-$mainFooterArea = $layoutObject->getOrCreateArea(Layout::MAIN_FOOTER);
-$showMainFooter = $mainFooterArea->show();
-if ($showMainFooter !== null) {
-    $mainFooterHtml = $mainFooterArea->getHtml();
-} else {
-    $nearestMainFooter = page_findnearest($mainHeaderArea->getSlotName());
-    $showMainFooter = $nearestMainFooter !== false
-        && ($ACT === 'show')
-        && TplUtility::isNotSlot()
-        && TplUtility::isNotRootHome();
-    if ($showMainFooter !== false) {
-        $mainFooterHtml = tpl_include_page($nearestMainFooter, 0, 1);
-    }
+$nearestMainFooter = page_findnearest(TplUtility::SLOT_MAIN_FOOTER);
+$showMainFooter = $nearestMainFooter !== false
+    && ($ACT === 'show')
+    && TplUtility::isNotSlot()
+    && TplUtility::isNotRootHome();
+$mainFooterHtml = "";
+if ($showMainFooter !== false) {
+    $mainFooterHtml = tpl_include_page($nearestMainFooter, 0, 1);
 }
 
 
 /**
  * Main Side
  */
-$mainSideArea = $layoutObject->getOrCreateArea(Layout::MAIN_SIDE);
-$showMainSide = $mainSideArea->show();
-if ($showMainSide !== null) {
-    $mainSideHtml = $mainSideArea->getHtml();
-} else {
-    $mainSideWikiId = page_findnearest($mainSideArea->getSlotName());
-    $showMainSide = $mainSideWikiId !== false && $ACT === 'show';
-    if ($showMainSide !== false) {
-        $mainSideHtml = tpl_include_page($mainSideWikiId, 0, 1);
-    }
+$mainSideWikiId = page_findnearest(TplUtility::getMainSideSlotName());
+$showMainSide = $mainSideWikiId !== false && $ACT === 'show';
+$mainSideHtml = "";
+if ($showMainSide !== false) {
+    $mainSideHtml = tpl_include_page($mainSideWikiId, 0, 1);
 }
 
 
 /**
  * Page Footer / Fat Footer
  */
-$pageFooterArea = $layoutObject->getOrCreateArea(Layout::PAGE_FOOTER);
-$showPageFooter = $pageFooterArea->show();
-if ($showPageFooter !== null) {
-    $pageFooterHtml = $pageFooterArea->getHtml();
-    if ($showPageFooter === true && $pageFooterHtml === null) {
-        $domain = TplUtility::getApexDomainUrl();
-        $pageFooterHtml = <<<EOF
-<div class="container p-3" style="text-align: center">
-    <p>
-    Welcome to the <a href="' . $domain . '/strap">Strap template</a>. To get started, create a page with the id  {$pageFooterArea->getSlotName()} to create a footer.
-    </p>
-</div>
-EOF;
-    }
-} else {
-    $pageFooterWikiId = page_findnearest($pageFooterArea->getSlotName());
-    $showPageFooter = $pageFooterWikiId !== false;
-    if ($showPageFooter !== false) {
-        $pageFooterHtml = tpl_include_page($pageFooterWikiId, 0, 1);
-    }
+$pageFooterWikiId = page_findnearest(TplUtility::getFooterSlotPageName());
+$showPageFooter = $pageFooterWikiId !== false;
+$pageFooterHtml = "";
+if ($showPageFooter !== false) {
+    $pageFooterHtml = tpl_include_page($pageFooterWikiId, 0, 1);
 }
 
 
@@ -222,127 +184,53 @@ $outputBuffer = TplUtility::outputBuffer();
 /**
  * Page Header
  */
-$pageHeaderArea = $layoutObject->getOrCreateArea(Layout::PAGE_HEADER);
+
+$pageHeaderWikiId = page_findnearest(TplUtility::getHeaderSlotPageName());
+$showPageHeader = $pageHeaderWikiId !== false;
 $pageHeaderHtml = "";
-if ($pageHeaderArea->show() !== null) {
-    $pageHeaderHtml = $pageHeaderArea->getHtml();
-    if ($pageHeaderArea->show() === true && $pageHeaderHtml === null) {
-        $domain = TplUtility::getApexDomainUrl();
-        $pageHeaderHtml = <<<EOF
-<div class="container p-3" style="text-align: center;position:relative;z-index:100">
-    <p>Welcome to the <a href="$domain/">Strap template</a>.<p>
-    <p>
-      If you don\'t known <a href="https://combostrap.com/">ComboStrap</a>, it\'s recommended to follow the <a href="$domain/getting_started">Getting Started Guide</a>.<br/>
-      Otherwise, to create a menu bar in the header, create a slot with the name (<a href="$domain/{$pageHeaderArea->getSlotName()}">{$pageHeaderArea->getSlotName()}</a>) and the <a href="$domain/menubar">menubar component</a>.
-    </p>
-</div>
-EOF;
-    }
-} else {
-    $pageHeaderWikiId = page_findnearest($pageHeaderArea->getSlotName());
-    $showPageHeader = $pageHeaderWikiId !== false;
-    if ($showPageHeader !== false) {
-        $pageHeaderHtml = tpl_include_page($pageHeaderWikiId, 0, 1);
-    }
+if ($showPageHeader !== false) {
+    $pageHeaderHtml = tpl_include_page($pageHeaderWikiId, 0, 1);
 }
-if ($pageHeaderArea->show() === true) {
-    echo $pageHeaderArea->toEnterHtmlTag();
-    echo $pageHeaderHtml;
-    echo $pageHeaderArea->toExitTag();
-}
+echo "<header>$pageHeaderHtml</header>";
+
 
 // The global message array
 // should be just below body for absolute placement
 TplUtility::printMessage();
 
-
-$pageCoreLayoutArea = $layoutObject->getOrCreateArea("page-core");
-if ($pageCoreLayoutArea->getAttributes() === null) {
-    $pageCoreLayoutArea->setAttributes(["class" => "container position-relative"]);
-}
-echo $pageCoreLayoutArea->toEnterHtmlTag("div");
-?>
+echo "<div id=\"page-core\" class=\"container position-relative d-flex justify-content-md-center\">";
 
 
+// To go at the top of the page, style is for the fix top page, absolute to not participate to the grid -->
+echo "<div id=\"dokuwiki__top\" class=\"position-absolute\"></div>";
 
-<?php // To go at the top of the page, style is for the fix top page, absolute to not participate to the grid --> ?>
-<div id="dokuwiki__top" class="position-absolute"></div>
-
-
-<?php
 //  A trigger to show content on the top part of the website
 $data = "";// Mandatory
 Event::createAndTrigger('TPL_PAGE_TOP_OUTPUT', $data);
 
 if ($ACT === "show") {
 
-    // sidebar / page side
-    if ($showPageSideArea):
+    $toc = tpl_toc(true);
+    echo <<<EOF
+<aside id="main-side" class="col-md-3 order-last order-md-first">$sideBarHtml</aside>
+<main id="page-main" class="col-md-9 order-first">
 
-        echo $pageSideArea->toEnterHtmlTag("aside");
-        echo $sideBarHtml;
-        echo "</aside>";
+$outputBuffer
+    <header id=\"main-header\">$mainHeaderHtml</header>
+    <nav id=\"main-toc\">$toc</nav>
+    <div id=\"main-content\">$mainHtml</div>
+    <aside id=\"main-side\">$mainSideHtml</aside>
+    <header id=\"main-footer\">$mainFooterHtml</header>
 
-    endif;
+</main>
+EOF;
 
-    echo $layoutObject->getOrCreateArea(Layout::PAGE_MAIN)->toEnterHtmlTag("main");
+} else {
 
-    echo $outputBuffer;
+    // do not use the main html element for do/admin content, main is reserved for the styling of the page content
 
-    if ($showMainHeader):
-
-        echo $mainHeaderArea->toEnterHtmlTag("header");
-
-        echo $mainHeaderHtml;
-
-        echo '</header>';
-
-    endif;
-
-    if ($showMainToc):
-
-        echo $mainTocArea->toEnterHtmlTag("nav");
-
-        echo $mainTocHtml;
-
-        echo '</nav>';
-
-    endif;
-
-    echo $layoutObject->getOrCreateArea(Layout::MAIN_CONTENT)->toEnterHtmlTag("div");
-
-    echo $mainHtml;
-
-    echo '</div>';
-
-    if ($showMainSide):
-
-        echo $mainSideArea->toEnterHtmlTag("aside");
-
-        echo $mainSideHtml;
-
-        echo '</aside>';
-
-    endif;
-
-    if ($showMainFooter):
-
-        echo $mainFooterArea->toEnterHtmlTag("footer");
-
-        echo $mainFooterHtml;
-
-        echo '</footer>';
-
-    endif;
-
-    echo "</main>";
-
-} else { // do not use the main html element for do/admin content, main is reserved for the styling of the page content ?>
-
-
-    <?php
     // the viewport (constraint) is created by page-core
-    echo $layoutObject->getOrCreateArea(Layout::PAGE_MAIN)->toEnterHtmlTag("main");
+    echo "<main>";
     /**
      * all other action are using the php buffer
      * we can then have an overflow
@@ -354,27 +242,18 @@ if ($ACT === "show") {
     tpl_flush();
     tpl_content();
     tpl_flush();
-    echo "</main>"
-    ?>
+    echo "</main>";
 
-<?php } ?>
+}
 
-<?php echo $railBar ?>
-
+echo $railBar;
 
 
-<?php
 // End page core
 echo "</div>";
 
 // Page Footer
-if ($showPageFooter) {
-    echo $pageFooterArea->toEnterHtmlTag("footer");
-    echo $pageFooterHtml;
-    // Powered By
-    echo TplUtility::getPoweredBy();
-    echo "</footer>";
-}
+echo "<footer>" . $pageFooterHtml . TplUtility::getPoweredBy() . "</footer>";
 
 // The stylesheet (before indexer work and script at the end)
 TplUtility::addPreloadedResources();
