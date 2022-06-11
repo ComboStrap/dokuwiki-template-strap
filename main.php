@@ -4,6 +4,7 @@
 require_once(__DIR__ . '/class/TplUtility.php');
 
 use ComboStrap\Layout;
+use ComboStrap\PageLayout;
 use Combostrap\TplUtility;
 
 
@@ -93,6 +94,16 @@ if ($ACT === 'show') {
          * The output buffer should be empty on show
          */
         $outputBuffer = TplUtility::outputBuffer();
+        /**
+         * Space between side and main
+         */
+        if(empty($pageSideHtml)){
+            $sideWidth = 0;
+            $mainWidth = 12;
+        } else {
+            $sideWidth = 3;
+            $mainWidth = 8;
+        }
 
         $toc = tpl_toc(true);
         $htmlPageShow = <<<EOF
@@ -101,8 +112,8 @@ if ($ACT === 'show') {
 <div id="dokuwiki__top" class="position-absolute"></div>
 <div id="page-core" class="container position-relative d-flex justify-content-md-center">
     $outputBuffer
-    <aside id="main-side" class="col-md-3 order-last order-md-first">$pageSideHtml</aside>
-    <main id="page-main" class="col-md-9 order-first">
+    <aside id="main-side" class="col-md-$sideWidth order-last order-md-first">$pageSideHtml</aside>
+    <main id="page-main" class="col-md-$mainWidth order-first">
         <header id="main-header\">$mainHeaderHtml</header>
         <nav id="main-toc">$toc</nav>
         <div id="main-content">$mainHtml</div>
@@ -194,17 +205,38 @@ if ($ACT === "show") {
      * If the do action is other than show (such as edit, ...)
      * php plugin uses echo a lot and the buffer is too small, we got then a buffer overflow
      */
+    global $ACT;
+    switch ($ACT) {
+        case "preview": // edit preview
+        case "edit": // edit
+        case "media": // media manager
+            $mainClass = "col-12 mb-3"; // hamburger
+            break;
+        default:
+        case "login": // login
+        case "resendpwd": // passwd resend
+        case "register": // register form
+        case "profile": // profile form
+        case "search": // search
+        case "recent": // the revisions for the website
+        case "index": // the website index
+        case "diff": // diff between revisions
+        case "revisions": // Known as old revisions (old version of the page)
+        case "admin": // admin page
+            $mainClass = "col-md-8 mx-auto"; // median
+            break;
+    }
 
     /**
      * Output
      */
     echo "<header>$pageHeaderHtml</header>";
-    echo "<div id=\"page-core\" class=\"container position-relative\">";
+    echo "<div id=\"page-core\" class=\"container position-relative justify-content-md-center mt-3\">";
     echo $outputBuffer;
 
     // All other action others than show
     // the viewport (constraint) is created by page-core
-    echo "<main class=\"row justify-content-md-center\">";
+    echo "<main class=\"$mainClass\">";
     /**
      * all other action are using the php buffer
      * we can then have an overflow
