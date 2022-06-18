@@ -4,7 +4,6 @@
 require_once(__DIR__ . '/class/TplUtility.php');
 
 use ComboStrap\Layout;
-use ComboStrap\PageLayout;
 use Combostrap\TplUtility;
 
 
@@ -70,14 +69,30 @@ if ($ACT === 'show') {
          * The Content first because it contains
          * also the front matter that may influence the other slot
          */
-        $mainHtml = TplUtility::tpl_content($prependTOC = false);
+        try {
+            $mainHtml = TplUtility::tpl_content($prependTOC = false);
+        } catch (Exception $e) {
+            $mainHtml = $e->getMessage();
+        }
 
         /**
          * Page (Header/Footer/Side)
          */
-        $pageSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getSideSlotPageName());
-        $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
-        $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
+        try {
+            $pageSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getSideSlotPageName());
+        } catch (Exception $e) {
+            $pageSideHtml = $e->getMessage();
+        }
+        try {
+            $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
+        } catch (Exception $e) {
+            $pageFooterHtml = $e->getMessage();
+        }
+        try {
+            $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
+        } catch (Exception $e) {
+            $pageHeaderHtml = $e->getMessage();
+        }
 
         /**
          * Main (Header/Footer/Side)
@@ -97,7 +112,7 @@ if ($ACT === 'show') {
         /**
          * Space between side and main
          */
-        if(empty($pageSideHtml)){
+        if (empty($pageSideHtml)) {
             $sideWidth = 0;
             $mainWidth = 12;
         } else {
