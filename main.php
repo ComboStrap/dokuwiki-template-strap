@@ -100,8 +100,16 @@ if ($ACT === 'show') {
         $mainHeaderHtml = "";
         $mainFooterHtml = "";
         if (TplUtility::isNotSlot() && TplUtility::isNotRootHome()) {
-            $mainHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_HEADER);
-            $mainFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_FOOTER);
+            try {
+                $mainHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_HEADER);
+            } catch (Exception $e) {
+                $mainHeaderHtml = $e->getMessage();
+            }
+            try {
+                $mainFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_FOOTER);
+            } catch (Exception $e) {
+                $mainFooterHtml = $e->getMessage();
+            }
         }
         $mainSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getMainSideSlotName());;
 
@@ -186,7 +194,14 @@ if ($htmlRem != null) {
     <?php // Headers ?>
     <?php tpl_metaheaders() ?>
 
-    <title><?php TplUtility::renderPageTitle() ?></title>
+    <title><?php try {
+            echo TplUtility::getPageTitle();
+        } catch (Exception $e) {
+            msg($e->getMessage(), -1,'','',MSG_MANAGERS_ONLY);
+        }
+        ?></title>
+    }
+
 
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>

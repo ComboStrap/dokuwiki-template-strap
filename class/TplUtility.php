@@ -863,29 +863,7 @@ EOF;
     }
 
 
-    /*
-     * Function return the page name from an id
-     * @author Nicolas GERARD
-     *
-     * @param string $sep Separator between entries
-     * @return bool
-     */
 
-    function getPageTitle($id)
-    {
-
-        // page names
-        $name = noNSorNS($id);
-        if (useHeading('navigation')) {
-            // get page title
-            $title = p_get_first_heading($id, METADATA_RENDER_USING_SIMPLE_CACHE);
-            if ($title) {
-                $name = $title;
-            }
-        }
-        return $name;
-
-    }
 
 
     /**
@@ -1412,27 +1390,19 @@ EOF;
 
     }
 
-    static function renderPageTitle()
+    static function getPageTitle(): string
     {
 
         global $conf;
         global $ID;
-        $title = tpl_pagetitle($ID, true) . ' |' . $conf["title"];
+        $title = tpl_pagetitle($ID, true) . ' | ' . $conf["title"];
         // trigger event here
-        Event::createAndTrigger('TPL_TITLE_OUTPUT', $title, '\ComboStrap\TplUtility::callBackPageTitle', true);
-        return true;
+        Event::createAndTrigger('TPL_TITLE_OUTPUT', $title);
+        return $title;
 
     }
 
-    /**
-     * Print the title that we get back from the event TPL_TITLE_OUTPUT
-     * triggered by the function {@link tpl_strap_title()}
-     * @param $title
-     */
-    static function callBackPageTitle($title)
-    {
-        echo $title;
-    }
+
 
     /**
      *
