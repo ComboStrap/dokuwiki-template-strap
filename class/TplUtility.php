@@ -776,6 +776,11 @@ EOF;
         return tpl_include_page($nearestWikiId, 0, 1);
     }
 
+    public static function isTest(): bool
+    {
+        return defined('DOKU_UNITTEST');
+    }
+
 
     /**
      * Hierarchical breadcrumbs

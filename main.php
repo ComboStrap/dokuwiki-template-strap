@@ -4,6 +4,8 @@
 require_once(__DIR__ . '/class/TplUtility.php');
 
 use ComboStrap\Layout;
+use ComboStrap\LogUtility;
+use ComboStrap\PluginUtility;
 use Combostrap\TplUtility;
 
 
@@ -44,18 +46,27 @@ if ($ACT === 'show') {
     $basicLayoutMessageInCaseOfError = "The page layout module could not be used, defaulting to the basic layout that is not optimized.";
     try {
         TplUtility::checkSameStrapAndComboVersion();
-        $filename = "../../plugins/combo/vendor/autoload.php";
-        if (file_exists($filename)) {
-            require_once($filename);
-            if (function_exists("\ComboStrap\Layout::create")) {
-                $htmlPageShow = Layout::create()->getHtmlPage();
-            }
-        } else {
-            msg("The autoloader of the combo plugin has not been found. You should upgrade combo. {$basicLayoutMessageInCaseOfError}", -1, '', '', MSG_USERS_ONLY);
+
+        $filename = DOKU_PLUGIN . "combo/vendor/autoload.php";
+        if (!file_exists($filename)) {
+            throw new \RuntimeException("Internal Error: Combo was not found. Combo is installed ?");
         }
+        require_once($filename);
+        $layoutClass = "\ComboStrap\Layout";
+        if (!class_exists($layoutClass)) {
+            throw new \RuntimeException("Internal Error: Combo Layout component was not found.");
+        }
+        if (!method_exists($layoutClass, "create")) {
+            throw new \RuntimeException("Internal Error: Combo Layout entry point was not found.");
+        }
+        $htmlPageShow = Layout::create()->getHtmlPage();
+
     } catch (Exception $e) {
         // not the same version or not installed
-        $message = "{$e->getMessage()}. $basicLayoutMessageInCaseOfError";
+        $message = "{$e->getMessage()} $basicLayoutMessageInCaseOfError";
+        if (TplUtility::isTest()) {
+            throw new RuntimeException($message);
+        }
         msg($message, -1, '', '', MSG_MANAGERS_ONLY);
     }
 
@@ -197,7 +208,7 @@ if ($htmlRem != null) {
     <title><?php try {
             echo TplUtility::getPageTitle();
         } catch (Exception $e) {
-            msg($e->getMessage(), -1,'','',MSG_MANAGERS_ONLY);
+            msg($e->getMessage(), -1, '', '', MSG_MANAGERS_ONLY);
         }
         ?></title>
     }
