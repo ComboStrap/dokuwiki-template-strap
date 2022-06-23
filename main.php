@@ -45,13 +45,26 @@ if ($ACT === 'show') {
     $htmlPageShow = "";
     $basicLayoutMessageInCaseOfError = "The page layout module could not be used, defaulting to the basic layout that is not optimized.";
     try {
+
+        /**
+         * Combo and Strap installed, same version
+         * Otherwise throw
+         */
         TplUtility::checkSameStrapAndComboVersion();
 
+        /**
+         * Loading all combo classes
+         */
         $filename = DOKU_PLUGIN . "combo/vendor/autoload.php";
         if (!file_exists($filename)) {
             throw new \RuntimeException("Internal Error: Combo was not found. Combo is installed ?");
         }
         require_once($filename);
+        /**
+         * Checking that the Layout entry point exists
+         * From their, combo and strap have the same version, all
+         * error are internal errors
+         */
         $layoutClass = "\ComboStrap\Layout";
         if (!class_exists($layoutClass)) {
             throw new \RuntimeException("Internal Error: Combo Layout component was not found.");
@@ -65,7 +78,7 @@ if ($ACT === 'show') {
         // not the same version or not installed
         $message = "{$e->getMessage()} $basicLayoutMessageInCaseOfError";
         if (TplUtility::isTest()) {
-            throw new RuntimeException($message);
+            throw new RuntimeException($message, 0, $e);
         }
         msg($message, -1, '', '', MSG_MANAGERS_ONLY);
     }
