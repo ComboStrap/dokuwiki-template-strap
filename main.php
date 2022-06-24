@@ -224,8 +224,6 @@ if ($htmlRem != null) {
             msg($e->getMessage(), -1, '', '', MSG_MANAGERS_ONLY);
         }
         ?></title>
-    }
-
 
     <?php // Favicon ?>
     <?php echo TplUtility::renderFaviconMetaLinks() ?>
@@ -234,15 +232,15 @@ if ($htmlRem != null) {
 </head>
 <?php
 /**
- * * tpl_classes will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
+ * {@link tpl_classes} will add the dokuwiki class. See https://www.dokuwiki.org/devel:templates#dokuwiki_class
  * dokuwiki__top ID is needed for the "Back to top" utility
  * used also by some plugins
  */
+$tplClasses = tpl_classes();
 ?>
-<body class="dokuwiki position-relative">
+<body class="<?php echo $tplClasses; ?> position-relative">
 
 <?php
-
 
 // The global message array
 // should be just below body for absolute placement
