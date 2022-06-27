@@ -1535,7 +1535,7 @@ EOF;
                 /**
                  * The code below replace the other block
                  * to take the snippet management into account
-                 * (ie we write them when the {@link  HtmlDocument::storeOutputContent() document is stored into cache)
+                 * (ie we write them when the {@link  PageFragment::storeOutputContent() document is stored into cache)
                  */
                 global $ID;
                 /**
@@ -1555,7 +1555,7 @@ EOF;
                 /**
                  * The code below replace {@link html_show()}
                  */
-                $html_output .= Page::createPageFromId($ID)
+                $html_output .= PageFragment::createPageFromId($ID)
                     ->toXhtml();
                 $html_output = EditButton::replaceOrDeleteAll($html_output);
 
