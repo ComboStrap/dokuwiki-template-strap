@@ -682,9 +682,9 @@ EOF;
 
     /**
      * Variation of {@link html_msgarea()}
-     * @return void
+     * @return string
      */
-    public static function printMessage()
+    public static function printMessage(): string
     {
 
         global $MSG, $MSG_shown;
@@ -692,10 +692,8 @@ EOF;
         // store if the global $MSG has already been shown and thus HTML output has been started
         $MSG_shown = true;
 
-        if (!isset($MSG)) return;
+        if (!isset($MSG)) return "";
 
-        // to not participate into the grid
-        $absolutePositioning = "position-absolute";
 
         $shown = array();
 
@@ -730,8 +728,15 @@ EOF;
             }
             $shown[$hash] = 1;
         }
-        if ($toasts !== "") {
-            print <<<EOF
+
+        unset($GLOBALS['MSG']);
+
+        if ($toasts === "") {
+            return "";
+        }
+
+        // position fixed to not participate into the grid
+        return <<<EOF
 <div class="toast-container position-fixed mb-3 me-3 bottom-0 end-0" id="toastPlacement" style="z-index:1060">
 $toasts
 </div>
@@ -749,14 +754,11 @@ window.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 EOF;
-        }
-
-        unset($GLOBALS['MSG']);
-
     }
 
 
-    public static function isNotSlot(): bool
+    public
+    static function isNotSlot(): bool
     {
         global $ID;
         return strpos($ID, TplUtility::getSideSlotPageName()) === false
@@ -767,7 +769,8 @@ EOF;
             && strpos($ID, TplUtility::getFooterSlotPageName()) === false;
     }
 
-    public static function getXhtmlForSlotName($slotName)
+    public
+    static function getXhtmlForSlotName($slotName)
     {
         $nearestWikiId = page_findnearest($slotName);
         if ($nearestWikiId === false) {
@@ -776,7 +779,8 @@ EOF;
         return tpl_include_page($nearestWikiId, 0, 1);
     }
 
-    public static function isTest(): bool
+    public
+    static function isTest(): bool
     {
         return defined('DOKU_UNITTEST');
     }
@@ -866,9 +870,6 @@ EOF;
         return $htmlOutput;
 
     }
-
-
-
 
 
     /**
@@ -1406,7 +1407,6 @@ EOF;
         return $title;
 
     }
-
 
 
     /**

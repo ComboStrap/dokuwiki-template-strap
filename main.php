@@ -3,7 +3,7 @@
 // Classes
 require_once(__DIR__ . '/class/TplUtility.php');
 
-use ComboStrap\Layout;
+use ComboStrap\FetcherPage;
 use ComboStrap\LogUtility;
 use ComboStrap\PluginUtility;
 use Combostrap\TplUtility;
@@ -72,7 +72,7 @@ if ($ACT === 'show') {
         if (!method_exists($layoutClass, "create")) {
             throw new \RuntimeException("Internal Error: Combo Layout entry point was not found.");
         }
-        $htmlPageShow = Layout::create()->getHtmlPage();
+        $htmlPageShow = FetcherPage::create()->getFetchPath();
 
     } catch (Exception $e) {
         // not the same version or not installed
@@ -244,7 +244,7 @@ $tplClasses = tpl_classes();
 
 // The global message array
 // should be just below body for absolute placement
-TplUtility::printMessage();
+print TplUtility::printMessage();
 
 
 if ($ACT === "show") {
