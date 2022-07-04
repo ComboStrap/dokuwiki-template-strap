@@ -61,18 +61,21 @@ if ($ACT === 'show') {
         }
         require_once($filename);
         /**
-         * Checking that the Layout entry point exists
+         * Checking that the page fetcher entry point exists
          * From their, combo and strap have the same version, all
          * error are internal errors
          */
-        $layoutClass = "\ComboStrap\Layout";
-        if (!class_exists($layoutClass)) {
-            throw new \RuntimeException("Internal Error: Combo Layout component was not found.");
+        $fetcherClass = "\ComboStrap\FetcherPage";
+        if (!class_exists($fetcherClass)) {
+            throw new \RuntimeException("Internal Error: Page Fetcher component was not found.");
         }
-        if (!method_exists($layoutClass, "create")) {
-            throw new \RuntimeException("Internal Error: Combo Layout entry point was not found.");
+        if (!method_exists($fetcherClass, "createPageFetcherFromRequestedPage")) {
+            throw new \RuntimeException("Internal Error: Page Fetcher entry point was not found.");
         }
-        $htmlPageShow = FetcherPage::create()->getFetchPath();
+        if (!method_exists($fetcherClass, "getFetchPathAsHtmlString")) {
+            throw new \RuntimeException("Internal Error: Page Fetcher get point was not found.");
+        }
+        $htmlPageShow = FetcherPage::createPageFetcherFromRequestedPage()->getFetchPathAsHtmlString();
 
     } catch (Exception $e) {
         // not the same version or not installed
