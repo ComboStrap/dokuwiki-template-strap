@@ -207,7 +207,7 @@ if ($htmlRem != null) {
 ?>
 
 <?php // DocType Required: https://getbootstrap.com/docs/5.0/getting-started/introduction/#html5-doctype ?>
-<!DOCTYPE html >
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>" lang="<?php echo $conf['lang'] ?>"
       dir="<?php echo $lang['direction'] ?>" <?php echo $rootStyle ?>>
 <head>
