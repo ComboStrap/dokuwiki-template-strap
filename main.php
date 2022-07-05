@@ -14,14 +14,11 @@ global $lang;
 global $ACT;
 global $conf;
 
+
 /**
- * ################################
- * Content generation
- * ################################
- * Generate the content, start the process first
- * to collect the buffer if any
- * then create the whole HTML page
+ * Bootstrap meta-headers function registration
  */
+TplUtility::registerHeaderHandler();
 
 /**
  * Railbar can add snippet in the head
@@ -42,7 +39,7 @@ if ($ACT === 'show') {
     /**
      * Layout System
      */
-    $htmlPageShow = "";
+
     $basicLayoutMessageInCaseOfError = "The page layout module could not be used, defaulting to the basic layout that is not optimized.";
     try {
 
@@ -76,6 +73,8 @@ if ($ACT === 'show') {
             throw new \RuntimeException("Internal Error: Page Fetcher get point was not found.");
         }
         $htmlPageShow = FetcherPage::createPageFetcherFromRequestedPage()->getFetchPathAsHtmlString();
+        echo $htmlPageShow;
+        return;
 
     } catch (Exception $e) {
         // not the same version or not installed
@@ -86,77 +85,65 @@ if ($ACT === 'show') {
         msg($message, -1, '', '', MSG_MANAGERS_ONLY);
     }
 
-    if ($htmlPageShow === "") {
+    /**
+     * If the script is here, no valid combo Installed, default old output
+     *
+     * The Content first because it contains
+     * also the front matter that may influence the other slot
+     */
+    try {
+        $mainHtml = TplUtility::tpl_content($prependTOC = false);
+    } catch (Exception $e) {
+        $mainHtml = $e->getMessage();
+    }
 
-        /**
-         * No valid combo Installed, default template
-         */
+    /**
+     * Page (Header/Footer/Side)
+     */
+    $pageHeaderHtml = TplUtility::getPageHeader();
+    $pageFooterHtml = TplUtility::getPageFooter();
+    try {
+        $pageSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getSideSlotPageName());
+    } catch (Exception $e) {
+        $pageSideHtml = $e->getMessage();
+    }
 
-        /**
-         * The Content first because it contains
-         * also the front matter that may influence the other slot
-         */
+    /**
+     * Main (Header/Footer/Side)
+     */
+    $mainHeaderHtml = "";
+    $mainFooterHtml = "";
+    if (TplUtility::isNotSlot() && TplUtility::isNotRootHome()) {
         try {
-            $mainHtml = TplUtility::tpl_content($prependTOC = false);
+            $mainHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_HEADER);
         } catch (Exception $e) {
-            $mainHtml = $e->getMessage();
-        }
-
-        /**
-         * Page (Header/Footer/Side)
-         */
-        try {
-            $pageSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getSideSlotPageName());
-        } catch (Exception $e) {
-            $pageSideHtml = $e->getMessage();
+            $mainHeaderHtml = $e->getMessage();
         }
         try {
-            $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
+            $mainFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_FOOTER);
         } catch (Exception $e) {
-            $pageFooterHtml = $e->getMessage();
+            $mainFooterHtml = $e->getMessage();
         }
-        try {
-            $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
-        } catch (Exception $e) {
-            $pageHeaderHtml = $e->getMessage();
-        }
+    }
+    $mainSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getMainSideSlotName());;
 
-        /**
-         * Main (Header/Footer/Side)
-         */
-        $mainHeaderHtml = "";
-        $mainFooterHtml = "";
-        if (TplUtility::isNotSlot() && TplUtility::isNotRootHome()) {
-            try {
-                $mainHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_HEADER);
-            } catch (Exception $e) {
-                $mainHeaderHtml = $e->getMessage();
-            }
-            try {
-                $mainFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::SLOT_MAIN_FOOTER);
-            } catch (Exception $e) {
-                $mainFooterHtml = $e->getMessage();
-            }
-        }
-        $mainSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getMainSideSlotName());;
+    /**
+     * The output buffer should be empty on show
+     */
+    $outputBuffer = TplUtility::outputBuffer();
+    /**
+     * Space between side and main
+     */
+    if (empty($pageSideHtml)) {
+        $sideWidth = 0;
+        $mainWidth = 12;
+    } else {
+        $sideWidth = 3;
+        $mainWidth = 8;
+    }
 
-        /**
-         * The output buffer should be empty on show
-         */
-        $outputBuffer = TplUtility::outputBuffer();
-        /**
-         * Space between side and main
-         */
-        if (empty($pageSideHtml)) {
-            $sideWidth = 0;
-            $mainWidth = 12;
-        } else {
-            $sideWidth = 3;
-            $mainWidth = 8;
-        }
-
-        $toc = tpl_toc(true);
-        $htmlPageShow = <<<EOF
+    $toc = tpl_toc(true);
+    $htmlPageShow = <<<EOF
 <header>$pageHeaderHtml</header>
 <!-- To go at the top of the page, style is for the fix top page, absolute to not participate in a grid -->
 <div id="dokuwiki__top" class="position-absolute"></div>
@@ -174,7 +161,7 @@ if ($ACT === 'show') {
 </div>
 <footer>{$pageFooterHtml}{$poweredBy}</footer>
 EOF;
-    }
+
 
 } else {
 
@@ -183,17 +170,12 @@ EOF;
      * for other action than show
      * (ie edit, admin, ...)
      */
-    $pageHeaderHtml = TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
-    $pageFooterHtml = TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
+    $pageHeaderHtml = TplUtility::getPageHeader();
+    $pageFooterHtml = TplUtility::getPageFooter();
     $outputBuffer = TplUtility::outputBuffer(); // The output buffer can be not empty on other do action via plugin
 
 }
 
-
-/**
- * Bootstrap meta-headers function registration
- */
-TplUtility::registerHeaderHandler();
 
 /**
  * Default rem font size

@@ -190,6 +190,10 @@ class TplUtility
     }
 
 
+    /**
+     * TODO: move it into Combo
+     * @return void
+     */
     public static function registerHeaderHandler()
     {
         /**
@@ -783,6 +787,32 @@ EOF;
     static function isTest(): bool
     {
         return defined('DOKU_UNITTEST');
+    }
+
+    /**
+     * Page footer use in main.php and detail.php
+     * @return string
+     */
+    public static function getPageFooter(): string
+    {
+        try {
+            return TplUtility::getXhtmlForSlotName(TplUtility::getFooterSlotPageName());
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Page header use in main.php and detail.php
+     * @return string
+     */
+    public static function getPageHeader()
+    {
+        try {
+            return TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
 

@@ -21,8 +21,6 @@ global $REV;
  */
 TplUtility::registerHeaderHandler();
 
-// must be run from within DokuWiki
-if (!defined('DOKU_INC')) die();
 
 /**
  * Should be run before the HTML head function
@@ -30,7 +28,7 @@ if (!defined('DOKU_INC')) die();
  */
 $railBar = TplUtility::getRailBar();
 $pageHeader = TplUtility::getPageHeader();
-$pageFooter = TplUtility::getFooter();
+$pageFooter = TplUtility::getPageFooter();
 
 ?>
 <!DOCTYPE html>
