@@ -191,7 +191,7 @@ class TplUtility
 
 
     /**
-     * TODO: move it into Combo
+     *
      * @return void
      */
     public static function registerHeaderHandler()
