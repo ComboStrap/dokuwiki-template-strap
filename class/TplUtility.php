@@ -806,7 +806,7 @@ EOF;
      * Page header use in main.php and detail.php
      * @return string
      */
-    public static function getPageHeader()
+    public static function getPageHeader(): string
     {
         try {
             return TplUtility::getXhtmlForSlotName(TplUtility::getHeaderSlotPageName());
@@ -1172,10 +1172,6 @@ EOF;
     static function handleBootstrapMetaHeaders(Doku_Event &$event, $param)
     {
 
-        $debug = tpl_getConf('debug');
-        if ($debug) {
-            self::addAsHtmlComment('Request: ' . json_encode($_REQUEST));
-        }
 
 
         $newHeaderTypes = array();
@@ -1387,9 +1383,6 @@ EOF;
             }
         }
 
-        if ($debug) {
-            self::addAsHtmlComment('Script Header : ' . json_encode($newHeaderTypes['script']));
-        }
         $event->data = $newHeaderTypes;
 
 
