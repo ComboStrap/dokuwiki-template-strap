@@ -14,12 +14,6 @@ global $lang;
 global $ACT;
 global $conf;
 
-/**
- * We make a copy of the action
- * because it's a global variable and may be changed
- * by third plugin
- */
-$act = $ACT;
 
 /**
  * Bootstrap meta-headers function registration
@@ -40,7 +34,7 @@ $poweredBy = TplUtility::getPoweredBy();
 /**
  * HTML body content generation
  */
-if ($act === 'show') {
+if ($ACT === 'show') {
 
     /**
      * Layout System
@@ -238,7 +232,7 @@ $tplClasses = tpl_classes();
 print TplUtility::printMessage();
 
 
-if ($act === "show") {
+if ($ACT === "show") {
 
     echo $htmlPageShow;
 
@@ -248,7 +242,7 @@ if ($act === "show") {
      * If the do action is other than show (such as edit, ...)
      * php plugin uses echo a lot and the buffer is too small, we got then a buffer overflow
      */
-    switch ($act) {
+    switch ($ACT) {
         case "preview": // edit preview
         case "edit": // edit
         case "media": // media manager
