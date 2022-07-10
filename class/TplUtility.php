@@ -570,7 +570,7 @@ class TplUtility
 </div>
 EOF;
 
-        if ($breakpoint != TplUtility::BREAKPOINT_NEVER_NAME) {
+        if ($breakpoint !== TplUtility::BREAKPOINT_NEVER_NAME) {
             $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
             $railBarFixed = <<<EOF
 <div id="railbar-fixed" style="z-index: $zIndexRailbar;" $classFixed>
