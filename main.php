@@ -40,7 +40,7 @@ if ($ACT === 'show') {
      * Layout System
      */
 
-    $basicLayoutMessageInCaseOfError = "The page layout module could not be used, defaulting to the basic layout that is not optimized.";
+    $basicLayoutMessageInCaseOfError = "The page layout module could not be used, you are running in the degraded mode.";
     try {
 
         /**
