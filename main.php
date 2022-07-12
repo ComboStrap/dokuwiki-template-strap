@@ -20,11 +20,6 @@ global $conf;
  */
 TplUtility::registerHeaderHandler();
 
-/**
- * Railbar can add snippet in the head
- * And should then be before the head output
- */
-$railBar = TplUtility::getRailBar();
 
 /**
  * Powered By
@@ -128,6 +123,12 @@ if ($ACT === 'show') {
     $mainSideHtml = TplUtility::getXhtmlForSlotName(TplUtility::getMainSideSlotName());;
 
     /**
+     * Railbar can add snippet in the head
+     * And should then be before the head output
+     */
+    $railBar = TplUtility::getRailBar();
+
+    /**
      * The output buffer should be empty on show
      */
     $outputBuffer = TplUtility::outputBuffer();
@@ -173,6 +174,11 @@ EOF;
     $pageHeaderHtml = TplUtility::getPageHeader();
     $pageFooterHtml = TplUtility::getPageFooter();
     $outputBuffer = TplUtility::outputBuffer(); // The output buffer can be not empty on other do action via plugin
+    /**
+     * Railbar can add snippet in the head
+     * And should then be before the head output
+     */
+    $railBar = TplUtility::getRailBar();
 
 }
 
