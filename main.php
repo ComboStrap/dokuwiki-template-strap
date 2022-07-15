@@ -64,10 +64,10 @@ if ($ACT === 'show') {
         if (!method_exists($fetcherClass, "createPageFetcherFromRequestedPage")) {
             throw new \RuntimeException("Internal Error: Page Fetcher entry point was not found.");
         }
-        if (!method_exists($fetcherClass, "getFetchPathAsHtmlString")) {
-            throw new \RuntimeException("Internal Error: Page Fetcher get point was not found.");
+        if (!method_exists($fetcherClass, "getFetchString")) {
+            throw new \RuntimeException("Internal Error: Page Fetcher get string method was not found.");
         }
-        $htmlPageShow = FetcherPage::createPageFetcherFromRequestedPage()->getFetchPathAsHtmlString();
+        $htmlPageShow = FetcherPage::createPageFetcherFromRequestedPage()->getFetchString();
         echo $htmlPageShow;
         return;
 

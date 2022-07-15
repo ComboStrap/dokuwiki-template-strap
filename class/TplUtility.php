@@ -509,13 +509,16 @@ class TplUtility
      * navigational drawer
      * https://material.io/components/navigation-drawer
      */
-    public static function getRailBar()
+    public static function getRailBar($breakpoint = null): string
     {
 
         if (tpl_getConf(TplUtility::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
             return "";
         }
-        $breakpoint = tpl_getConf(TplUtility::CONF_BREAKPOINT_RAIL_BAR, TplUtility::BREAKPOINT_LARGE_NAME);
+
+        if ($breakpoint === null) {
+            $breakpoint = tpl_getConf(TplUtility::CONF_BREAKPOINT_RAIL_BAR, TplUtility::BREAKPOINT_LARGE_NAME);
+        }
 
         $bootstrapBreakpoint = "";
         switch ($breakpoint) {
@@ -570,25 +573,22 @@ class TplUtility
 </div>
 EOF;
 
-        if ($breakpoint !== TplUtility::BREAKPOINT_NEVER_NAME) {
-            $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
-            $railBarFixed = <<<EOF
+        if ($breakpoint === TplUtility::BREAKPOINT_NEVER_NAME) {
+            return $railBarOffCanvas;
+        }
+
+        $zIndexRailbar = 1000; // A navigation bar (below the drop down because we use it in the search box for auto-completion)
+        $railBarFixed = <<<EOF
 <div id="railbar-fixed" style="z-index: $zIndexRailbar;" $classFixed>
     <div>
         $railBarListItems
     </div>
 </div>
 EOF;
-            return <<<EOF
+        return <<<EOF
 $railBarOffCanvas
 $railBarFixed
 EOF;
-        } else {
-
-            return $railBarOffCanvas;
-
-        }
-
 
     }
 
@@ -1173,7 +1173,6 @@ EOF;
     {
 
 
-
         $newHeaderTypes = array();
         $bootstrapHeaders = self::getBootstrapMetaHeaders();
         $eventHeaderTypes = $event->data;
@@ -1558,7 +1557,7 @@ EOF;
                 /**
                  * The code below replace the other block
                  * to take the snippet management into account
-                 * (ie we write them when the {@link  PageFragment::storeOutputContent() document is stored into cache)
+                 * (ie we write them when the {@link  Markup::storeOutputContent() document is stored into cache)
                  */
                 global $ID;
                 /**
@@ -1578,7 +1577,7 @@ EOF;
                 /**
                  * The code below replace {@link html_show()}
                  */
-                $html_output .= PageFragment::createPageFromId($ID)
+                $html_output .= Markup::createPageFromId($ID)
                     ->toXhtml();
                 $html_output = EditButton::replaceOrDeleteAll($html_output);
 
