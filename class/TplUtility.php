@@ -1557,7 +1557,7 @@ EOF;
                 /**
                  * The code below replace the other block
                  * to take the snippet management into account
-                 * (ie we write them when the {@link  Markup::storeOutputContent() document is stored into cache)
+                 * (ie we write them when the {@link  MarkupPath::storeOutputContent() document is stored into cache)
                  */
                 global $ID;
                 /**
@@ -1577,7 +1577,7 @@ EOF;
                 /**
                  * The code below replace {@link html_show()}
                  */
-                $html_output .= Markup::createPageFromId($ID)
+                $html_output .= MarkupPath::createPageFromId($ID)
                     ->toXhtml();
                 $html_output = EditButton::replaceOrDeleteAll($html_output);
 
