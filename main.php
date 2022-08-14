@@ -363,7 +363,7 @@ echo $headerBar
                 // we can then have an overflow
                 // the buffer is flushed
                 // this is why we output the content of do page here
-                echo TplUtility::tpl_content($prependTOC = false);
+                echo TplUtility::tpl_content($prependTOC = true);
                 ?>
             </main>
         <?php } ?>
