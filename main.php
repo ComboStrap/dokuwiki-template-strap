@@ -5,6 +5,7 @@ require_once(__DIR__ . '/class/TplUtility.php');
 
 use ComboStrap\FetcherPage;
 use ComboStrap\LogUtility;
+use ComboStrap\PageLayout;
 use ComboStrap\PluginUtility;
 use Combostrap\TplUtility;
 
@@ -24,7 +25,7 @@ TplUtility::registerHeaderHandler();
 /**
  * Powered By
  */
-$poweredBy = TplUtility::getPoweredBy();
+$poweredBy = PageLayout::getPoweredBy();
 
 /**
  * HTML body content generation
@@ -297,8 +298,6 @@ if ($ACT === "show") {
 
 }
 
-// The stylesheet (before indexer work and script at the end)
-TplUtility::addPreloadedResources();
 ?>
 
 

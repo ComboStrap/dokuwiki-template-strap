@@ -13,6 +13,7 @@
 
 namespace ComboStrap;
 
+use action_plugin_combo_snippetsbootstrap;
 use Doku_Event;
 use dokuwiki\Extension\Event;
 use dokuwiki\Menu\PageMenu;
@@ -49,41 +50,20 @@ class TplUtility
 
 
     /**
-     * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     * @deprecated for  {@link Bootstrap::CONF_BOOTSTRAP_VERSION_STYLESHEET}
      */
     const CONF_BOOTSTRAP_VERSION = "bootstrapVersion";
     /**
-     * @deprecated for  {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+     * @deprecated for  {@link Bootstrap::CONF_BOOTSTRAP_VERSION_STYLESHEET}
      */
     const CONF_BOOTSTRAP_STYLESHEET = "bootstrapStylesheet";
-
-    /**
-     * Stylesheet and Boostrap should have the same version
-     * This conf is a mix between the version and the stylesheet
-     *
-     * majorVersion.0.0 - stylesheetname
-     */
-    const CONF_BOOTSTRAP_VERSION_STYLESHEET = "bootstrapVersionStylesheet";
-    /**
-     * The separator in {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
-     */
-    const BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR = " - ";
-    const DEFAULT_BOOTSTRAP_VERSION_STYLESHEET = "5.0.1" . self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . "bootstrap";
-
-    /**
-     * Jquery UI
-     */
-    const CONF_JQUERY_DOKU = 'jQueryDoku';
-    const CONF_REM_SIZE = "remSize";
 
     /**
      * Deprecated
      */
     const CONF_GRID_COLUMNS = "gridColumns";
 
-    const CONF_USE_CDN = "useCDN";
-
-    const CONF_PRELOAD_CSS = "preloadCss"; // preload all css ?
+    // preload all css ?
     const BS_4_BOOTSTRAP_VERSION_STYLESHEET = "4.5.0 - bootstrap";
 
     /**
@@ -107,38 +87,11 @@ class TplUtility
     const CONF_FOOTER_OLD = "footerbar";
 
     /**
-     * Disable the javascript of Dokuwiki
-     * if public
-     * https://combostrap.com/frontend/optimization
-     */
-    const CONF_DISABLE_BACKEND_JAVASCRIPT = "disableBackendJavascript";
-
-    /**
      * A parameter switch to allows the update
      * of conf in test
      */
     const COMBO_TEST_UPDATE = "combo_update_conf";
 
-    /**
-     * Do we show the rail bar for anonymous user
-     */
-    const CONF_PRIVATE_RAIL_BAR = "privateRailbar";
-
-    /**
-     * When do we toggle from offcanvas to fixed railbar
-     */
-    const CONF_BREAKPOINT_RAIL_BAR = "breakpointRailbar";
-
-    /**
-     * Breakpoint naming
-     */
-    const BREAKPOINT_EXTRA_SMALL_NAME = "extra-small";
-    const BREAKPOINT_SMALL_NAME = "small";
-    const BREAKPOINT_MEDIUM_NAME = "medium";
-    const BREAKPOINT_LARGE_NAME = "large";
-    const BREAKPOINT_EXTRA_LARGE_NAME = "extra-large";
-    const BREAKPOINT_EXTRA_EXTRA_LARGE_NAME = "extra-extra-large";
-    const BREAKPOINT_NEVER_NAME = "never";
     const SLOT_MAIN_FOOTER = "slot_main_footer";
     const SLOT_MAIN_HEADER = "slot_main_header";
 
@@ -216,78 +169,9 @@ class TplUtility
 
     }
 
-    /**
-     * Add the preloaded CSS resources
-     * at the end
-     */
-    public static function addPreloadedResources()
-    {
-        // For the preload if any
-        global $preloadedCss;
-        //
-        // Note: Adding this css in an animationFrame
-        // such as https://github.com/jakearchibald/svgomg/blob/master/src/index.html#L183
-        // would be difficult to test
-        if (isset($preloadedCss)) {
-            foreach ($preloadedCss as $link) {
-                $htmlLink = '<link rel="stylesheet" href="' . $link['href'] . '" ';
-                if ($link['crossorigin'] != "") {
-                    $htmlLink .= ' crossorigin="' . $link['crossorigin'] . '" ';
-                }
-                if (!empty($link['class'])) {
-                    $htmlLink .= ' class="' . $link['class'] . '" ';
-                }
-                // No integrity here
-                $htmlLink .= '>';
-                ptln($htmlLink);
-            }
-            /**
-             * Reset
-             * Needed in test when we start two requests
-             */
-            $preloadedCss = [];
-        }
-
-    }
-
-    /**
-     * @param $linkData - an array of link style sheet data
-     * @return array - the array with the preload attributes
-     */
-    private static function captureStylePreloadingAndTransformToPreloadCssTag($linkData): array
-    {
-        /**
-         * Save the stylesheet to load it at the end
-         */
-        global $preloadedCss;
-        $preloadedCss[] = $linkData;
-
-        /**
-         * Modify the actual tag data
-         * Change the loading mechanism to preload
-         */
-        $linkData['rel'] = 'preload';
-        $linkData['as'] = 'style';
-        return $linkData;
-    }
-
-    public static function getBootStrapVersion()
-    {
-        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
-        $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
-        return $bootstrapStyleSheetArray[0];
-    }
-
-    public static function getStyleSheetConf()
-    {
-        $bootstrapStyleSheetVersion = tpl_getConf(TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET, TplUtility::DEFAULT_BOOTSTRAP_VERSION_STYLESHEET);
-        $bootstrapStyleSheetArray = explode(self::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR, $bootstrapStyleSheetVersion);
-        return $bootstrapStyleSheetArray[1];
-    }
-
     private static function getBootStrapMajorVersion()
     {
-        return self::getBootStrapVersion()[0];
+        return Bootstrap::getVersion()[0];
     }
 
 
@@ -512,32 +396,32 @@ class TplUtility
     public static function getRailBar($breakpoint = null): string
     {
 
-        if (tpl_getConf(TplUtility::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
+        if (tpl_getConf(FetcherRailBar::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
             return "";
         }
 
         if ($breakpoint === null) {
-            $breakpoint = tpl_getConf(TplUtility::CONF_BREAKPOINT_RAIL_BAR, TplUtility::BREAKPOINT_LARGE_NAME);
+            $breakpoint = tpl_getConf(FetcherRailBar::CONF_BREAKPOINT_RAIL_BAR, Breakpoint::BREAKPOINT_LARGE_NAME);
         }
 
         $bootstrapBreakpoint = "";
         switch ($breakpoint) {
-            case TplUtility::BREAKPOINT_EXTRA_SMALL_NAME:
+            case Breakpoint::EXTRA_SMALL_NAME:
                 $bootstrapBreakpoint = "xs";
                 break;
-            case TplUtility::BREAKPOINT_SMALL_NAME:
+            case Breakpoint::BREAKPOINT_SMALL_NAME:
                 $bootstrapBreakpoint = "sm";
                 break;
-            case TplUtility::BREAKPOINT_MEDIUM_NAME:
+            case Breakpoint::BREAKPOINT_MEDIUM_NAME:
                 $bootstrapBreakpoint = "md";
                 break;
-            case TplUtility::BREAKPOINT_LARGE_NAME:
+            case Breakpoint::BREAKPOINT_LARGE_NAME:
                 $bootstrapBreakpoint = "lg";
                 break;
-            case TplUtility::BREAKPOINT_EXTRA_LARGE_NAME:
+            case Breakpoint::BREAKPOINT_EXTRA_LARGE_NAME:
                 $bootstrapBreakpoint = "xl";
                 break;
-            case TplUtility::BREAKPOINT_EXTRA_EXTRA_LARGE_NAME:
+            case Breakpoint::EXTRA_EXTRA_LARGE_NAME:
                 $bootstrapBreakpoint = "xxl";
                 break;
         }
@@ -573,7 +457,7 @@ class TplUtility
 </div>
 EOF;
 
-        if ($breakpoint === TplUtility::BREAKPOINT_NEVER_NAME) {
+        if ($breakpoint === Breakpoint::NEVER_NAME) {
             return $railBarOffCanvas;
         }
 
@@ -636,7 +520,7 @@ EOF;
 
     public static function getRem()
     {
-        return tpl_getConf(TplUtility::CONF_REM_SIZE, null);
+        return tpl_getConf(PageLayout::CONF_REM_SIZE, null);
     }
 
 
@@ -965,429 +849,6 @@ EOF;
 
 
     /**
-     * @return array
-     * Return the headers needed by this template
-     *
-     * @throws Exception
-     */
-    static function getBootstrapMetaHeaders()
-    {
-
-        // The version
-        $bootstrapVersion = TplUtility::getBootStrapVersion();
-        if ($bootstrapVersion === false) {
-            /**
-             * Strap may be called for test
-             * by combo
-             * In this case, the conf may not be reloaded
-             */
-            self::reloadConf();
-            $bootstrapVersion = TplUtility::getBootStrapVersion();
-            if ($bootstrapVersion === false) {
-                throw new Exception("Bootstrap version should not be false");
-            }
-        }
-        $scriptsMeta = self::buildBootstrapMetas($bootstrapVersion);
-
-        // if cdn
-        $useCdn = tpl_getConf(self::CONF_USE_CDN);
-
-
-        // Build the returned Js script array
-        $jsScripts = array();
-        foreach ($scriptsMeta as $key => $script) {
-            $path_parts = pathinfo($script["file"]);
-            $extension = $path_parts['extension'];
-            if ($extension === "js") {
-                $src = DOKU_BASE . "lib/tpl/strap/bootstrap/$bootstrapVersion/" . $script["file"];
-                if ($useCdn) {
-                    if (isset($script["url"])) {
-                        $src = $script["url"];
-                    }
-                }
-                $jsScripts[$key] =
-                    array(
-                        'src' => $src,
-                        'defer' => null
-                    );
-                if (isset($script['integrity'])) {
-                    $jsScripts[$key]['integrity'] = $script['integrity'];
-                    $jsScripts[$key]['crossorigin'] = 'anonymous';
-                }
-            }
-        }
-
-        $css = array();
-        $cssScript = $scriptsMeta['css'];
-        $href = DOKU_BASE . "lib/tpl/strap/bootstrap/$bootstrapVersion/" . $cssScript["file"];
-        if ($useCdn) {
-            if (isset($script["url"])) {
-                $href = $script["url"];
-            }
-        }
-        $css['css'] =
-            array(
-                'href' => $href,
-                'rel' => "stylesheet"
-            );
-        if (isset($script['integrity'])) {
-            $css['css']['integrity'] = $script['integrity'];
-            $css['css']['crossorigin'] = 'anonymous';
-        }
-
-
-        return array(
-            'script' => $jsScripts,
-            'link' => $css
-        );
-
-
-    }
-
-    /**
-     * @return array - A list of all available stylesheets
-     * This function is used to build the configuration as a list of files
-     */
-    static function getStylesheetsForMetadataConfiguration()
-    {
-        $cssVersionsMetas = self::getStyleSheetsFromJsonFileAsArray();
-        $listVersionStylesheetMeta = array();
-        foreach ($cssVersionsMetas as $bootstrapVersion => $cssVersionMeta) {
-            foreach ($cssVersionMeta as $fileName => $values) {
-                $listVersionStylesheetMeta[] = $bootstrapVersion . TplUtility::BOOTSTRAP_VERSION_STYLESHEET_SEPARATOR . $fileName;
-            }
-        }
-        return $listVersionStylesheetMeta;
-    }
-
-    /**
-     *
-     * @param $version - return only the selected version if set
-     * @return array - an array of the meta JSON custom files
-     */
-    static function getStyleSheetsFromJsonFileAsArray($version = null)
-    {
-
-        $jsonAsArray = true;
-        $stylesheetsFile = __DIR__ . '/../bootstrap/bootstrapStylesheet.json';
-        $styleSheets = json_decode(file_get_contents($stylesheetsFile), $jsonAsArray);
-        if ($styleSheets == null) {
-            self::msg("Unable to read the file {$stylesheetsFile} as json");
-        }
-
-
-        $localStyleSheetsFile = __DIR__ . '/../bootstrap/bootstrapLocal.json';
-        if (file_exists($localStyleSheetsFile)) {
-            $localStyleSheets = json_decode(file_get_contents($localStyleSheetsFile), $jsonAsArray);
-            if ($localStyleSheets == null) {
-                self::msg("Unable to read the file {$localStyleSheets} as json");
-            }
-            foreach ($styleSheets as $bootstrapVersion => &$stylesheetsFiles) {
-                if (isset($localStyleSheets[$bootstrapVersion])) {
-                    $stylesheetsFiles = array_merge($stylesheetsFiles, $localStyleSheets[$bootstrapVersion]);
-                }
-            }
-        }
-
-        if (isset($version)) {
-            if (!isset($styleSheets[$version])) {
-                self::msg("The bootstrap version ($version) could not be found in the custom CSS file ($stylesheetsFile, or $localStyleSheetsFile)");
-            } else {
-                $styleSheets = $styleSheets[$version];
-            }
-        }
-
-        /**
-         * Select Rtl or Ltr
-         * Stylesheet name may have another level
-         * with direction property of the language
-         *
-         * Bootstrap needs another stylesheet
-         * See https://getbootstrap.com/docs/5.0/getting-started/rtl/
-         */
-        global $lang;
-        $direction = $lang["direction"];
-        if (empty($direction)) {
-            $direction = "ltr";
-        }
-        $directedStyleSheets = [];
-        foreach ($styleSheets as $name => $styleSheetDefinition) {
-            if (isset($styleSheetDefinition[$direction])) {
-                $directedStyleSheets[$name] = $styleSheetDefinition[$direction];
-            } else {
-                $directedStyleSheets[$name] = $styleSheetDefinition;
-            }
-        }
-
-        return $directedStyleSheets;
-    }
-
-    /**
-     *
-     * Build from all Bootstrap JSON meta files only one array
-     * @param $version
-     * @return array
-     *
-     */
-    static function buildBootstrapMetas($version)
-    {
-
-        $jsonAsArray = true;
-        $bootstrapJsonFile = __DIR__ . '/../bootstrap/bootstrapJavascript.json';
-        $bootstrapMetas = json_decode(file_get_contents($bootstrapJsonFile), $jsonAsArray);
-        // Decodage problem
-        if ($bootstrapMetas == null) {
-            self::msg("Unable to read the file {$bootstrapJsonFile} as json");
-            return array();
-        }
-        if (!isset($bootstrapMetas[$version])) {
-            self::msg("The bootstrap version ($version) could not be found in the file $bootstrapJsonFile");
-            return array();
-        }
-        $bootstrapMetas = $bootstrapMetas[$version];
-
-
-        // Css
-        $bootstrapCssFile = TplUtility::getStyleSheetConf();
-        $bootstrapCustomMetas = self::getStyleSheetsFromJsonFileAsArray($version);
-
-        if (!isset($bootstrapCustomMetas[$bootstrapCssFile])) {
-            self::msg("The bootstrap custom file ($bootstrapCssFile) could not be found in the custom CSS files for the version ($version)");
-        } else {
-            $bootstrapMetas['css'] = $bootstrapCustomMetas[$bootstrapCssFile];
-        }
-
-
-        return $bootstrapMetas;
-    }
-
-    /**
-     * @param Doku_Event $event
-     * @param $param
-     * Function that handle the META HEADER event
-     *   * It will add the Bootstrap Js and CSS
-     *   * Make all script and resources defer
-     * @throws Exception
-     */
-    static function handleBootstrapMetaHeaders(Doku_Event &$event, $param)
-    {
-
-
-        $newHeaderTypes = array();
-        $bootstrapHeaders = self::getBootstrapMetaHeaders();
-        $eventHeaderTypes = $event->data;
-        foreach ($eventHeaderTypes as $headerType => $headerData) {
-            switch ($headerType) {
-
-                case "link":
-                    // index, rss, manifest, search, alternate, stylesheet
-                    // delete edit
-                    $bootstrapCss = $bootstrapHeaders[$headerType]['css'];
-                    $headerData[] = $bootstrapCss;
-
-                    // preload all CSS is an heresy as it creates a FOUC (Flash of non-styled element)
-                    // but we know it only now and this is it
-                    $cssPreloadConf = tpl_getConf(self::CONF_PRELOAD_CSS);
-                    $newLinkData = array();
-                    foreach ($headerData as $linkData) {
-                        switch ($linkData['rel']) {
-                            case 'edit':
-                                break;
-                            case 'preload':
-                                /**
-                                 * Preload can be set at the array level with the critical attribute
-                                 * If the preload attribute is present
-                                 * We get that for instance for css animation style sheet
-                                 * that are not needed for rendering
-                                 */
-                                if (isset($linkData["as"])) {
-                                    if ($linkData["as"] === "style") {
-                                        $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
-                                        continue 2;
-                                    }
-                                }
-                                $newLinkData[] = $linkData;
-                                break;
-                            case 'stylesheet':
-                                if ($cssPreloadConf) {
-                                    $newLinkData[] = TplUtility::captureStylePreloadingAndTransformToPreloadCssTag($linkData);
-                                    continue 2;
-                                }
-                                $newLinkData[] = $linkData;
-                                break;
-                            default:
-                                $newLinkData[] = $linkData;
-                                break;
-                        }
-                    }
-
-                    $newHeaderTypes[$headerType] = $newLinkData;
-                    break;
-
-                case "script":
-
-                    /**
-                     * Do we delete the dokuwiki javascript ?
-                     */
-                    $scriptToDeletes = [];
-                    if (empty($_SERVER['REMOTE_USER']) && tpl_getConf(TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT, 0)) {
-                        $scriptToDeletes = [
-                            //'JSINFO', Don't delete Jsinfo !! It contains metadata information (that is used to get context)
-                            'js.php'
-                        ];
-                        if (TplUtility::getBootStrapMajorVersion() == "5") {
-                            // bs 5 does not depends on jquery
-                            $scriptToDeletes[] = "jquery.php";
-                        }
-                    }
-
-                    /**
-                     * The new script array
-                     */
-                    $newScriptData = array();
-                    // A variable to hold the Jquery scripts
-                    // jquery-migrate, jquery, jquery-ui ou jquery.php
-                    // see https://www.dokuwiki.org/config:jquerycdn
-                    $jqueryDokuScripts = array();
-                    foreach ($headerData as $scriptData) {
-
-                        foreach ($scriptToDeletes as $scriptToDelete) {
-                            if (isset($scriptData["_data"]) && !empty($scriptData["_data"])) {
-                                $haystack = $scriptData["_data"];
-                            } else {
-                                $haystack = $scriptData["src"];
-                            }
-                            if (preg_match("/$scriptToDelete/i", $haystack)) {
-                                continue 2;
-                            }
-                        }
-
-                        $critical = false;
-                        if (isset($scriptData["critical"])) {
-                            $critical = $scriptData["critical"];
-                            unset($scriptData["critical"]);
-                        }
-
-                        // defer is only for external resource
-                        // if this is not, this is illegal
-                        if (isset($scriptData["src"])) {
-                            if (!$critical) {
-                                $scriptData['defer'] = null;
-                            }
-                        }
-
-                        if (isset($scriptData["type"])) {
-                            $type = strtolower($scriptData["type"]);
-                            if ($type == "text/javascript") {
-                                unset($scriptData["type"]);
-                            }
-                        }
-
-                        // The charset attribute on the script element is obsolete.
-                        if (isset($scriptData["charset"])) {
-                            unset($scriptData["charset"]);
-                        }
-
-                        // Jquery ?
-                        $jqueryFound = false;
-                        // script may also be just an online script without the src attribute
-                        if (array_key_exists('src', $scriptData)) {
-                            $jqueryFound = strpos($scriptData['src'], 'jquery');
-                        }
-                        if ($jqueryFound === false) {
-                            $newScriptData[] = $scriptData;
-                        } else {
-                            $jqueryDokuScripts[] = $scriptData;
-                        }
-
-                    }
-
-                    // Add Jquery at the beginning
-                    $boostrapMajorVersion = TplUtility::getBootStrapMajorVersion();
-                    if ($boostrapMajorVersion == "4") {
-                        if (
-                            empty($_SERVER['REMOTE_USER'])
-                            && tpl_getConf(self::CONF_JQUERY_DOKU) == 0
-                        ) {
-                            // We take the Jquery of Bootstrap
-                            $newScriptData = array_merge($bootstrapHeaders[$headerType], $newScriptData);
-                        } else {
-                            // Logged in
-                            // We take the Jqueries of doku and we add Bootstrap
-                            $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
-                            // We had popper of Bootstrap
-                            $newScriptData[] = $bootstrapHeaders[$headerType]['popper'];
-                            // We had the js of Bootstrap
-                            $newScriptData[] = $bootstrapHeaders[$headerType]['js'];
-                        }
-                    } else {
-
-                        // There is no JQuery in 5
-                        // We had the js of Bootstrap and popper
-                        // Add Jquery before the js.php
-                        $newScriptData = array_merge($jqueryDokuScripts, $newScriptData); // js
-                        // Then add at the top of the top (first of the first) bootstrap
-                        // Why ? Because Jquery should be last to be able to see the missing icon
-                        // https://stackoverflow.com/questions/17367736/jquery-ui-dialog-missing-close-icon
-                        $bootstrap[] = $bootstrapHeaders[$headerType]['popper'];
-                        $bootstrap[] = $bootstrapHeaders[$headerType]['js'];
-                        $newScriptData = array_merge($bootstrap, $newScriptData);
-
-                    }
-
-
-                    $newHeaderTypes[$headerType] = $newScriptData;
-                    break;
-                case "meta":
-                    $newHeaderData = array();
-                    foreach ($headerData as $metaData) {
-                        // Content should never be null
-                        // Name may change
-                        // https://www.w3.org/TR/html4/struct/global.html#edef-META
-                        if (!key_exists("content", $metaData)) {
-                            $message = "Strap - The head meta (" . print_r($metaData, true) . ") does not have a content property";
-                            msg($message, -1, "", "", MSG_ADMINS_ONLY);
-                            if (defined('DOKU_UNITTEST')
-                            ) {
-                                throw new \RuntimeException($message);
-                            }
-                        } else {
-                            $content = $metaData["content"];
-                            if (empty($content)) {
-                                $messageEmpty = "Strap - the below head meta has an empty content property (" . print_r($metaData, true) . ")";
-                                msg($messageEmpty, -1, "", "", MSG_ADMINS_ONLY);
-                                if (defined('DOKU_UNITTEST')
-                                ) {
-                                    throw new \RuntimeException($messageEmpty);
-                                }
-                            } else {
-                                $newHeaderData[] = $metaData;
-                            }
-                        }
-                    }
-                    $newHeaderTypes[$headerType] = $newHeaderData;
-                    break;
-                case "noscript": // https://github.com/ComboStrap/dokuwiki-plugin-gtm/blob/master/action.php#L32
-                case "style":
-                    $newHeaderTypes[$headerType] = $headerData;
-                    break;
-                default:
-                    $message = "Strap - The header type ($headerType) is unknown and was not controlled.";
-                    $newHeaderTypes[$headerType] = $headerData;
-                    msg($message, -1, "", "", MSG_ADMINS_ONLY);
-                    if (defined('DOKU_UNITTEST')
-                    ) {
-                        throw new \RuntimeException($message);
-                    }
-            }
-        }
-
-        $event->data = $newHeaderTypes;
-
-
-    }
-
-    /**
      * Returns the icon link as created by https://realfavicongenerator.net/
      *
      *
@@ -1577,7 +1038,7 @@ EOF;
                 /**
                  * The code below replace {@link html_show()}
                  */
-                $html_output .= MarkupPath::createPageFromId($ID)
+                $html_output .= MarkupPath::createMarkupFromId($ID)
                     ->toXhtml();
                 $html_output = EditButton::replaceOrDeleteAll($html_output);
 
@@ -1620,18 +1081,6 @@ EOF;
             }
 
         }
-    }
-
-
-    static function getPoweredBy(): string
-    {
-
-        $domain = self::getApexDomainUrl();
-        $version = self::getFullQualifyVersion();
-        $poweredBy = "<div class=\"mx-auto\" style=\"width: 300px;text-align: center;margin-bottom: 1rem\">";
-        $poweredBy .= "  <small><i>Powered by <a href=\"$domain\" title=\"ComboStrap " . $version . "\" style=\"color:#495057\">ComboStrap</a></i></small>";
-        $poweredBy .= '</div>';
-        return $poweredBy;
     }
 
 

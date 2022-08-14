@@ -10,6 +10,10 @@
  *
  */
 
+use ComboStrap\Bootstrap;
+use ComboStrap\FetcherRailBar;
+use ComboStrap\Snippet;
+use ComboStrap\SnippetSystem;
 use ComboStrap\TplUtility;
 
 /**
@@ -22,7 +26,7 @@ use ComboStrap\TplUtility;
 
 /**
  * CDN for anonymous
- * See {@link TplUtility::CONF_USE_CDN}
+ * See {@link Snippet::CONF_USE_CDN}
  */
 $conf['useCDN'] = 1;
 
@@ -31,7 +35,7 @@ $conf['debug'] = 1;
 
 
 /**
- * {@link TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET}
+ * {@link Bootstrap::CONF_BOOTSTRAP_VERSION_STYLESHEET}
  */
 $conf["bootstrapVersionStylesheet"] = "5.0.1 - bootstrap";
 
@@ -45,25 +49,19 @@ $conf['preloadCss'] = 0;
 $conf['preloadCss'] = 0;
 
 /**
- * {@link TplUtility::CONF_PRIVATE_RAIL_BAR}
+ * {@link FetcherRailBar::CONF_PRIVATE_RAIL_BAR}
  */
 $conf['privateRailbar'] = 0;
 /**
- * {@link TplUtility::CONF_BREAKPOINT_RAIL_BAR}
+ * {@link FetcherRailBar::CONF_BREAKPOINT_RAIL_BAR}
  */
 $conf['breakpointRailbar'] = "large";
 
-/**
- * @see {@link TplUtility::CONF_JQUERY_DOKU}
- */
-$conf['jQueryDoku'] = 0;
 
 /**
- * See {@link TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT}
+ * See {@link action_plugin_combo_snippetsbootstrap::CONF_DISABLE_BACKEND_JAVASCRIPT}
  */
 $conf["disableBackendJavascript"] = 0;
-
-
 
 
 ?>

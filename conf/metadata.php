@@ -6,6 +6,12 @@
 require_once(__DIR__ . '/../class/TplUtility.php');
 
 
+use ComboStrap\Bootstrap;
+use ComboStrap\Breakpoint;
+use ComboStrap\FetcherRailBar;
+use ComboStrap\PageLayout;
+use ComboStrap\Snippet;
+use ComboStrap\SnippetSystem;
 use ComboStrap\TplUtility;
 
 $meta[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = array('string',
@@ -27,7 +33,7 @@ $meta[TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME] = array('string',
 /**
  * Do we use CDN when possible
  */
-$meta[TplUtility::CONF_USE_CDN] = array('onoff');
+$meta[Snippet::CONF_USE_CDN] = array('onoff');
 
 /**
  * Do we print debug statement
@@ -37,33 +43,19 @@ $meta['debug'] = array('onoff');
 /**
  * The size of 1 rem in pixel
  */
-$meta[TplUtility::CONF_REM_SIZE] = array('string');
+$meta[PageLayout::CONF_REM_SIZE] = array('string');
 
 
 $meta[TplUtility::CONF_GRID_COLUMNS] = array('multichoice', '_choices' => array('12', '16'));
 
 $meta['preloadCss'] = array('onoff');
 
-$meta[TplUtility::CONF_PRIVATE_RAIL_BAR] = array('onoff');
-$meta[TplUtility::CONF_BREAKPOINT_RAIL_BAR] = array('multichoice', '_choices' => array(
-    TplUtility::BREAKPOINT_EXTRA_SMALL_NAME,
-    TplUtility::BREAKPOINT_SMALL_NAME,
-    TplUtility::BREAKPOINT_MEDIUM_NAME,
-    TplUtility::BREAKPOINT_LARGE_NAME,
-    TplUtility::BREAKPOINT_EXTRA_LARGE_NAME,
-    TplUtility::BREAKPOINT_EXTRA_EXTRA_LARGE_NAME,
-    TplUtility::BREAKPOINT_NEVER_NAME
-));
 
+$cssFiles = Bootstrap::getQualifiedVersions();
+$meta[Bootstrap::CONF_BOOTSTRAP_VERSION_STYLESHEET] = array('multichoice', '_choices' => $cssFiles);
 
-// $meta[TplUtility::CONF_BOOTSTRAP_VERSION] = array('multichoice', '_choices' => array('4.4.1', '4.5.0', '5.0.1'));
+$meta[action_plugin_combo_snippetsbootstrap::CONF_JQUERY_DOKU] = array('onoff');
 
-
-$cssFiles = TplUtility::getStylesheetsForMetadataConfiguration();
-$meta[TplUtility::CONF_BOOTSTRAP_VERSION_STYLESHEET] = array('multichoice', '_choices' => $cssFiles);
-
-$meta[TplUtility::CONF_JQUERY_DOKU] = array('onoff');
-
-$meta[TplUtility::CONF_DISABLE_BACKEND_JAVASCRIPT] = array('onoff');
+$meta[action_plugin_combo_snippetsbootstrap::CONF_DISABLE_BACKEND_JAVASCRIPT] = array('onoff');
 
 ?>

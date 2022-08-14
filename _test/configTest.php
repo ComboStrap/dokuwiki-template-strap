@@ -1,5 +1,6 @@
 <?php
 
+use ComboStrap\PageLayout;
 use ComboStrap\TplUtility;
 use dokuwiki\plugin\config\core\ConfigParser;
 use dokuwiki\plugin\config\core\Loader;
@@ -19,7 +20,7 @@ class configTest extends DokuWikiTest
     const CONF_WITHOUT_DEFAULT = [TplUtility::CONF_FOOTER_SLOT_PAGE_NAME,
         TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
         TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
-        TplUtility::CONF_REM_SIZE
+        PageLayout::CONF_REM_SIZE
         ];
 
     public function setUp()

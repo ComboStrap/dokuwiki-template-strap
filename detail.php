@@ -5,6 +5,7 @@
  */
 
 //Library of template function
+use ComboStrap\PageLayout;
 use ComboStrap\TplUtility;
 use dokuwiki\Extension\Event;
 
@@ -119,11 +120,11 @@ $pageFooter = TplUtility::getPageFooter();
 </div>
 
 <?php echo $pageFooter ?>
-<?php echo TplUtility::getPoweredBy() ?>
+<?php echo PageLayout::getPoweredBy() ?>
 
 <?php
 // The stylesheet (before indexer work and script at the end)
-TplUtility::addPreloadedResources();
+action_plugin_combo_snippetsbootstrap::addPreloadedResources();
 ?>
 
 
