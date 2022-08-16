@@ -52,3 +52,7 @@ em.u {
 em em.u {
     font-style: italic;
 }
+
+img.icon.smiley {
+    height: 1.2em;
+}
