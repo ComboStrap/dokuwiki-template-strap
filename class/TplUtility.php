@@ -622,7 +622,7 @@ class TplUtility
             data-bs-target="#railbar-offcanvas" aria-controls="railbar-offcanvas">
     </button>
 
-    <div id="railbar-offcanvas" class="offcanvas offcanvas-end" tabindex="-1"
+    <div id="railbar-offcanvas" class="offcanvas offcanvas-end"
          aria-labelledby="offcanvas-label"
          style="visibility: hidden;" aria-hidden="true">
          <h5 class="d-none" id="offcanvas-label">Railbar</h5>
@@ -746,7 +746,7 @@ EOF;
         global $lang;
 
         // check if enabled
-        if (!$conf['youarehere']) return;
+        if (!$conf['youarehere']) return "";
 
         // print intermediate namespace links
         $htmlOutput = '<ol class="breadcrumb">' . PHP_EOL;
