@@ -17,12 +17,6 @@ global $conf;
 
 
 /**
- * Bootstrap meta-headers function registration
- */
-TplUtility::registerHeaderHandler();
-
-
-/**
  * Powered By
  */
 $poweredBy = PageLayout::getPoweredBy();

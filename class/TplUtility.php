@@ -143,36 +143,7 @@ class TplUtility
     }
 
 
-    /**
-     *
-     * @return void
-     */
-    public static function registerHeaderHandler()
-    {
-        /**
-         * In test, we may test for 4 and for 5
-         * on the same test, making two request
-         * This two requests will register the event two times
-         * To avoid that we use a global variable
-         */
-        global $COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED;
-        if ($COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED !== true) {
-            global $EVENT_HANDLER;
-            $method = array('\Combostrap\TplUtility', 'handleBootstrapMetaHeaders');
-            /**
-             * A call to a method is via an array and the hook declare a string
-             * @noinspection PhpParamsInspection
-             */
-            $EVENT_HANDLER->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', null, $method);
-            $COMBO_STRAP_METAHEADER_HOOK_ALREADY_REGISTERED = true;
-        }
 
-    }
-
-    private static function getBootStrapMajorVersion()
-    {
-        return Bootstrap::getVersion()[0];
-    }
 
 
     /**
