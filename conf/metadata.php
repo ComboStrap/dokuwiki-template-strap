@@ -6,12 +6,16 @@
 require_once(__DIR__ . '/../class/TplUtility.php');
 
 
+try {
+    /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+    \ComboStrap\TplUtility::checkSameStrapAndComboVersion();
+} catch (Exception $e) {
+    return;
+}
+
 use ComboStrap\Bootstrap;
-use ComboStrap\Breakpoint;
-use ComboStrap\FetcherRailBar;
 use ComboStrap\PageLayout;
 use ComboStrap\Snippet;
-use ComboStrap\SnippetSystem;
 use ComboStrap\TplUtility;
 
 $meta[TplUtility::CONF_FOOTER_SLOT_PAGE_NAME] = array('string',

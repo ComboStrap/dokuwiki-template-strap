@@ -143,9 +143,6 @@ class TplUtility
     }
 
 
-
-
-
     /**
      * @return mixed|string
      */
@@ -367,35 +364,43 @@ class TplUtility
     public static function getRailBar($breakpoint = null): string
     {
 
-        if (tpl_getConf(FetcherRailBar::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
-            return "";
+
+        try {
+            self::checkSameStrapAndComboVersion();
+
+            if (tpl_getConf(FetcherRailBar::CONF_PRIVATE_RAIL_BAR) === 1 && empty($_SERVER['REMOTE_USER'])) {
+                return "";
+            }
+
+            if ($breakpoint === null) {
+                $breakpoint = tpl_getConf(FetcherRailBar::CONF_BREAKPOINT_RAIL_BAR, Breakpoint::BREAKPOINT_LARGE_NAME);
+            }
+
+            $bootstrapBreakpoint = "";
+            switch ($breakpoint) {
+                case Breakpoint::EXTRA_SMALL_NAME:
+                    $bootstrapBreakpoint = "xs";
+                    break;
+                case Breakpoint::BREAKPOINT_SMALL_NAME:
+                    $bootstrapBreakpoint = "sm";
+                    break;
+                case Breakpoint::BREAKPOINT_MEDIUM_NAME:
+                    $bootstrapBreakpoint = "md";
+                    break;
+                case Breakpoint::BREAKPOINT_LARGE_NAME:
+                    $bootstrapBreakpoint = "lg";
+                    break;
+                case Breakpoint::BREAKPOINT_EXTRA_LARGE_NAME:
+                    $bootstrapBreakpoint = "xl";
+                    break;
+                case Breakpoint::EXTRA_EXTRA_LARGE_NAME:
+                    $bootstrapBreakpoint = "xxl";
+                    break;
+            }
+        } catch (Exception $e) {
+            //
         }
 
-        if ($breakpoint === null) {
-            $breakpoint = tpl_getConf(FetcherRailBar::CONF_BREAKPOINT_RAIL_BAR, Breakpoint::BREAKPOINT_LARGE_NAME);
-        }
-
-        $bootstrapBreakpoint = "";
-        switch ($breakpoint) {
-            case Breakpoint::EXTRA_SMALL_NAME:
-                $bootstrapBreakpoint = "xs";
-                break;
-            case Breakpoint::BREAKPOINT_SMALL_NAME:
-                $bootstrapBreakpoint = "sm";
-                break;
-            case Breakpoint::BREAKPOINT_MEDIUM_NAME:
-                $bootstrapBreakpoint = "md";
-                break;
-            case Breakpoint::BREAKPOINT_LARGE_NAME:
-                $bootstrapBreakpoint = "lg";
-                break;
-            case Breakpoint::BREAKPOINT_EXTRA_LARGE_NAME:
-                $bootstrapBreakpoint = "xl";
-                break;
-            case Breakpoint::EXTRA_EXTRA_LARGE_NAME:
-                $bootstrapBreakpoint = "xxl";
-                break;
-        }
 
         $classOffCanvas = "";
         $classFixed = "";
@@ -428,7 +433,7 @@ class TplUtility
 </div>
 EOF;
 
-        if ($breakpoint === Breakpoint::NEVER_NAME) {
+        if ($breakpoint === "never") {
             return $railBarOffCanvas;
         }
 
@@ -491,7 +496,13 @@ EOF;
 
     public static function getRem()
     {
-        return tpl_getConf(PageLayout::CONF_REM_SIZE, null);
+        try {
+            self::checkSameStrapAndComboVersion();
+            return tpl_getConf(PageLayout::CONF_REM_SIZE, null);
+        } catch (Exception $e) {
+            return null;
+        }
+
     }
 
 
@@ -521,6 +532,22 @@ EOF;
 
             throw new Exception($message);
         }
+
+        // may be disabled
+//        global $plugin_controller;
+//        if (!$plugin_controller->isEnabled("combo")) {
+//            throw new Exception("Combo is disabled");
+//        }
+
+        /**
+         * Loading all combo classes
+         */
+        $filename = DOKU_PLUGIN . "combo/vendor/autoload.php";
+        if (!file_exists($filename)) {
+            throw new \Exception("Internal Error: Combo autoload was not found. Combo is installed ?");
+        }
+        require_once($filename);
+
     }
 
     /**

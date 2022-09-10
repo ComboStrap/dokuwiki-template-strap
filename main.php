@@ -19,7 +19,13 @@ global $conf;
 /**
  * Powered By
  */
-$poweredBy = PageLayout::getPoweredBy();
+try {
+    TplUtility::checkSameStrapAndComboVersion();
+    $poweredBy = PageLayout::getPoweredBy();
+} catch (Exception $e) {
+    $poweredBy = "";
+}
+
 
 /**
  * HTML body content generation
@@ -39,14 +45,7 @@ if ($ACT === 'show') {
          */
         TplUtility::checkSameStrapAndComboVersion();
 
-        /**
-         * Loading all combo classes
-         */
-        $filename = DOKU_PLUGIN . "combo/vendor/autoload.php";
-        if (!file_exists($filename)) {
-            throw new \RuntimeException("Internal Error: Combo was not found. Combo is installed ?");
-        }
-        require_once($filename);
+
         /**
          * Checking that the page fetcher entry point exists
          * From their, combo and strap have the same version, all
