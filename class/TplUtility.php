@@ -143,6 +143,7 @@ class TplUtility
      * @var array|null
      */
     private static $TEMPLATE_INFO = null;
+    private static $COMBO_INFO = null;
 
 
     /**
@@ -219,6 +220,14 @@ class TplUtility
             self::$TEMPLATE_INFO = confToHash(__DIR__ . '/../template.info.txt');
         }
         return self::$TEMPLATE_INFO;
+    }
+
+    private static function getComboInfo()
+    {
+        if (self::$COMBO_INFO == null) {
+            self::$COMBO_INFO = confToHash(__DIR__ . '/../../../plugins/combo/plugin.info.txt');
+        }
+        return self::$COMBO_INFO;
     }
 
     public static function getFullQualifyVersion()
@@ -354,7 +363,10 @@ class TplUtility
             }
             return $html;
         } else {
-            TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
+            $comboVersion = self::getComboInfo()['version'];
+            if ($comboVersion !== "1.25") {
+                TplUtility::msg("The combo plugin is not installed, sidebars automatic bursting will not work", self::LVL_MSG_INFO, "sidebars");
+            }
             return tpl_include_page($slotId, 0, 1);
         }
 
@@ -1531,8 +1543,13 @@ EOF;
                  */
                 $html_output .= ob_get_clean();
             } else {
+                $comboVersion = self::getComboInfo()['version'];
+                if ($comboVersion >= "1.25") {
+                    TplUtility::msg("The strap template has been deprecated. From the version <a href=\"https://combostrap.com/release/1.25\">1.25</a>, Combo should be used with the standard dokuwiki template.", self::LVL_MSG_WARNING);
+                }
                 Event::createAndTrigger('TPL_ACT_RENDER', $ACT, 'tpl_content_core');
                 $html_output = ob_get_clean();
+
             }
 
 
@@ -1545,7 +1562,7 @@ EOF;
             return $html_output;
         } catch (Exception $e) {
             $message = "Unfortunately, an error has occurred during the rendering of the main content. The error was logged.";
-            LogUtility::log2file($message . " Error: " . $e->getTraceAsString());
+            dbglog($message . " Error: " . $e->getTraceAsString());
             return $message;
         }
     }

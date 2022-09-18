@@ -18,7 +18,7 @@ class strapTest extends DokuWikiTest
     const DEFAULT_BOOTSTRAP_4 = "4.5.0 - bootstrap";
     const DEFAULT_BOOTSTRAP_5 = "5.0.1 - bootstrap";
 
-    public function setUp()
+    public function setUp(): void
     {
 
         global $conf;

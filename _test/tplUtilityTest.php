@@ -14,7 +14,7 @@ require_once(__DIR__ . '/../class/TplUtility.php');
 class tplUtilityTest extends DokuWikiTest
 {
 
-    public function setUp()
+    public function setUp(): void
     {
 
         global $conf;
@@ -190,7 +190,6 @@ EOF;
         global $config_cascade;
         $config = end($config_cascade['main']['local']);
         $conf = [];
-        /** @noinspection PhpIncludeInspection */
         include $config;
         $this->assertEquals($expectedValue, $conf["tpl"]["strap"][$strapKey], "Good value in config");
 
@@ -238,7 +237,6 @@ EOF;
         global $config_cascade;
         $config = end($config_cascade['main']['local']);
         $conf = [];
-        /** @noinspection PhpIncludeInspection */
         include $config;
         $this->assertEquals($expectedValue, $conf["tpl"]["strap"][$strapKey], "Good value in config");
 

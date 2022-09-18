@@ -22,7 +22,7 @@ class configTest extends DokuWikiTest
         TplUtility::CONF_REM_SIZE
         ];
 
-    public function setUp()
+    public function setUp(): void
     {
 
         global $conf;
@@ -128,7 +128,6 @@ class configTest extends DokuWikiTest
         $lang = array();
         $settings_file = __DIR__ . '/../lang/en/settings.php';
         if (file_exists($settings_file)) {
-            /** @noinspection PhpIncludeInspection */
             include($settings_file);
         }
 
