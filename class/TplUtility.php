@@ -381,7 +381,7 @@ class TplUtility
     public static function getSideKickSlotPageName()
     {
 
-        return TplUtility::migrateSlotConfAndGetValue(
+        return TplUtility::getMigratedSlotNameConfValue(
             TplUtility::CONF_SIDEKICK_SLOT_PAGE_NAME,
             "slot_sidekick",
             TplUtility::CONF_SIDEKICK_OLD,
@@ -393,7 +393,7 @@ class TplUtility
     public static function getHeaderSlotPageName()
     {
 
-        return TplUtility::migrateSlotConfAndGetValue(
+        return TplUtility::getMigratedSlotNameConfValue(
             TplUtility::CONF_HEADER_SLOT_PAGE_NAME,
             TplUtility::CONF_SLOT_HEADER_PAGE_NAME_VALUE,
             TplUtility::CONF_HEADER_OLD,
@@ -405,7 +405,7 @@ class TplUtility
 
     public static function getFooterSlotPageName()
     {
-        return self::migrateSlotConfAndGetValue(
+        return self::getMigratedSlotNameConfValue(
             TplUtility::CONF_FOOTER_SLOT_PAGE_NAME,
             "slot_footer",
             TplUtility::CONF_FOOTER_OLD,
@@ -509,49 +509,47 @@ class TplUtility
      * Helper to migrate from bar to slot
      * @return mixed|string
      */
-    public static function migrateSlotConfAndGetValue($newConf, $newDefaultValue, $oldConf, $oldDefaultValue, $canonical)
+    public static function getMigratedSlotNameConfValue($newConf, $newDefaultValue, $oldConf, $oldDefaultValue, $canonical)
     {
 
         $name = tpl_getConf($newConf, null);
-        if ($name == null) {
-            $name = tpl_getConf($oldConf, null);
+        if ($name != null) {
+            return $name;
         }
-        if ($name == null) {
+        $name = tpl_getConf($oldConf, null);
+        if ($name != null) {
+            return $name;
+        }
 
-            $foundOldName = false;
-            if (page_exists($oldConf)) {
-                $foundOldName = true;
-            }
+        /**
+         * Try to find an old page with the old default value
+         */
+        global $conf;
+        $startPageName = $conf["start"];
+        $startPagePath = wikiFN($startPageName);
+        $directory = dirname($startPagePath);
 
-            if (!$foundOldName) {
+        $childrenDirectories = glob($directory . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+        foreach ($childrenDirectories as $childrenDirectory) {
+            $directoryName = pathinfo($childrenDirectory)['filename'];
+            $dokuFilePath = $directoryName . ":" . $oldDefaultValue;
+            if (page_exists($dokuFilePath)) {
+                // store for cache
                 global $conf;
-                $startPageName = $conf["start"];
-                $startPagePath = wikiFN($startPageName);
-                $directory = dirname($startPagePath);
-
-
-                $childrenDirectories = glob($directory . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
-                foreach ($childrenDirectories as $childrenDirectory) {
-                    $directoryName = pathinfo($childrenDirectory)['filename'];
-                    $dokuFilePath = $directoryName . ":" . $oldDefaultValue;
-                    if (page_exists($dokuFilePath)) {
-                        $foundOldName = true;
-                        break;
-                    }
-                }
-            }
-
-            if ($foundOldName) {
-                $name = $oldDefaultValue;
-            } else {
-                $name = $newDefaultValue;
-            }
-            $updated = TplUtility::updateConfiguration($newConf, $name);
-            if ($updated) {
-                TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">$newConf</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
+                $conf['tpl']['strap'][$oldConf] = $oldDefaultValue;
+                return $oldDefaultValue;
             }
         }
-        return $name;
+
+        // Performance issue on the upgrade
+        // the get function is called really often to see if the page is a main page
+        // and it causes performance issue
+        // $updated = TplUtility::updateConfiguration($newConf, $name);
+        // if ($updated) {
+        //    TplUtility::msg("The <a href=\"https://combostrap.com/$canonical\">$newConf</a> configuration was set with the value <mark>$name</mark>", self::LVL_MSG_INFO, $canonical);
+        // }
+        return $newDefaultValue;
+
     }
 
     /**
