@@ -567,7 +567,7 @@ class TplUtility
             $ob = ob_get_contents();
             ob_clean();
             global $ACT;
-            if ($ACT === "show") {
+            if ($ACT === "show" && !empty($ob)) {
                 /**
                  * If you got this problem check that this is not a character before a  `<?php` declaration
                  */
