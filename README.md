@@ -8,7 +8,13 @@
 
 ## About
 
-`Strap` is the companion template of [ComboStrap](https://combostrap.com/)
+`Strap` is the template engine of [ComboStrap](https://combostrap.com/)
+
+## Installation
+
+It's now included into the [combo plugin](https://combostrap.com/get-started/how-to-install-combo-zzjmtimy).
+
+You should not install it from this repository.
 
 
 ## Features
@@ -36,18 +42,3 @@
 ## Release
 
 See the [dedicated page](https://combostrap.com/release-a-log-of-all-combostrap-changes-and-release-9g2si7zb)
-
-
-## Dev
-
-For developers
-
-The function `tpl_strap_meta_header` found in the file [tpl_lib_strap](class/TplUtility.php)
-
-* control the headers and is call via the registration of the event `TPL_METAHEADER_OUTPUT`
-* control the Jquery version. Not logged in, Bootstrap, logged in Dokuwiki (with ui,..)
-
-Ter info, the template file are:
-* [main.php](./main.php): The main page. [Doc](https://www.dokuwiki.org/devel:templates:main.php)
-* [detail.php](./detail.php): The template to show the detail of an image. [Doc](https://www.dokuwiki.org/devel:templates:detail.php)
-* [mediamanager.php](./mediamanager.php): The template to show the media manager.
